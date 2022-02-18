@@ -376,14 +376,48 @@ public:
         SDL_RenderPresent(renderer);
     }
 
+    // prepared notficitions, one per message category
+    const std::vector<std::string> notification_messages {
+      "category:\nUnknown",
+      "Lorem ipsum\ndolor sit amet,\nconsectetur adipiscing elit,\n",
+      "SimpleAlert",
+      "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Email:",
+      "Vitae aliquet nec ullamcorper sit amet.",
+      "News:",
+      "Id\naliquet\nrisus\nfeugiat\nin\nante\nmetus\ndictum\nat.",
+      "IncomingCall:",
+      "Ut porttitor leo a diam sollicitudin.",
+      "MissedCall:",
+      "Ultrices tincidunt arcu non sodales neque sodales ut etiam sit.",
+      "Sms:",
+      "Pellentesque dignissim enim sit amet.",
+      "VoiceMail:",
+      "Urna nec tincidunt praesent semper feugiat nibh sed pulvinar proin.",
+      "Schedule:",
+      "Tellus id interdum velit laoreet id donec ultrices tincidunt.",
+      "HighProriotyAlert:",
+      "Viverra maecenas accumsan lacus vel facilisis volutpat est velit egestas.",
+      "InstantMessage:",
+      "Volutpat consequat mauris nunc congue.",
+    };
+    size_t notification_idx = 0; // which message to send next
     void send_notification() {
       Pinetime::Controllers::NotificationManager::Notification notif;
-      const std::string message("Lorem Ipsum");
-      std::copy(message.begin(), message.end(), notif.message.data());
-      notif.message[message.size() - 1] = '\0';
-      notif.size = message.size();
-      notif.category = Pinetime::Controllers::NotificationManager::Categories::SimpleAlert;
+      const std::string &title   = notification_messages.at(notification_idx*2);
+      const std::string &message = notification_messages.at(notification_idx*2+1);
+      std::copy(title.begin(), title.end(), notif.message.data());
+      notif.message[title.size()] = '\0'; // title and message is \0 separated
+      std::copy(message.begin(), message.end(), notif.message.data()+title.size()+1);
+      notif.message[title.size() + 1 + message.size()] = '\0'; // zero terminate the message
+      notif.size = title.size() + 1 + message.size();
+      notif.category = static_cast<Pinetime::Controllers::NotificationManager::Categories>(notification_idx % 11);
       notificationManager.Push(std::move(notif));
+      // send next message the next time
+      notification_idx++;
+      if (notification_idx >= notification_messages.size()) {
+        notification_idx = 0;
+      }
     }
 
     // can't use SDL_PollEvent, as those are fed to lvgl
