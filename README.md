@@ -18,7 +18,7 @@ For a history on how this simulator started and the challenges on its way visit 
 On Ubuntu/Debian install the following packages:
 
 ```sh
-sudo apt get install -y cmake libsdl2-dev g++
+sudo apt install -y cmake libsdl2-dev g++
 ```
 
 On Arch Linux the following packages are needed:
