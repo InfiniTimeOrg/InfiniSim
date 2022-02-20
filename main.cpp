@@ -630,6 +630,11 @@ public:
           lv_label_set_text_static(screen_off_label, "Screen is OFF");
           lv_obj_align(screen_off_label, nullptr, LV_ALIGN_CENTER, 0, -20);
         }
+        /* Periodically call the lv_task handler.
+        * It could be done in a timer interrupt or an OS task too.*/
+        // only call the task handler if the screen is off,
+        // when the screen is enabled the call is done in the SystemTask class
+        lv_task_handler();
       } else {
         if (screen_off_created) {
           screen_off_created = false;
@@ -722,9 +727,6 @@ int main(int argc, char **argv)
   Framework fw(fw_status_window_visible, 240,240);
 
   while(1) {
-      /* Periodically call the lv_task handler.
-       * It could be done in a timer interrupt or an OS task too.*/
-      lv_task_handler();
       fw.handle_keys(); // key event polling
       fw.handle_touch_and_button();
       fw.refresh();
