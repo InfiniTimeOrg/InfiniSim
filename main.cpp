@@ -55,6 +55,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <algorithm>
+#include <cmath> // std::pow
 
 /*********************
  *      DEFINES

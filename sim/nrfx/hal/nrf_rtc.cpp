@@ -3,6 +3,7 @@
 #include "task.h"
 #include <chrono>
 #include <stdexcept>
+#include <string> // std::to_string
 
 uint32_t nrf_rtc_counter_get(NRF_RTC_Type p_reg)
 {

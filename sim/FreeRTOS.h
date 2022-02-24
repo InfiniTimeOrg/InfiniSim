@@ -60,6 +60,7 @@
 #define NRF_ERROR_INVALID_ADDR                (NRF_ERROR_BASE_NUM + 16) ///< Bad Memory Address
 #define NRF_ERROR_BUSY                        (NRF_ERROR_BASE_NUM + 17) ///< Busy
 #include <stdexcept>
+#include <string> // std::to_string()
 template<typename T>
 void APP_ERROR_HANDLER(T err) {
   throw std::runtime_error("APP_ERROR_HANDLER: " + std::to_string(err));

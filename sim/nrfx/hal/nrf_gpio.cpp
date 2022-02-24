@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <stdexcept>
+#include <string> // std::to_string
 
 void nrf_gpio_cfg_default(uint32_t pin_number) {}
 void nrf_gpio_pin_set(uint32_t pin_number) {}
