@@ -258,6 +258,7 @@
 /*-----------------------------------------
  *  Linux frame buffer device (/dev/fbx)
  *-----------------------------------------*/
+#define USE_FBDEV           0
 #ifndef USE_FBDEV
 #  define USE_FBDEV           1
 #endif
