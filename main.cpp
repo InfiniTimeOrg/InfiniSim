@@ -806,7 +806,7 @@ private:
 int main(int argc, char **argv)
 {
   // parse arguments
-  bool fw_status_window_visible = true;
+  bool fw_status_window_visible = false;
   bool arg_help = false;
   for (int i=1; i<argc; i++)
   {
