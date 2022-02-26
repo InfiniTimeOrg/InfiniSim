@@ -376,6 +376,23 @@ void NimbleController::NotifyBatteryLevel(uint8_t level) {
 //  }
 }
 
+void NimbleController::EnableRadio() {
+//  bleController.EnableRadio();
+//  bleController.Disconnect();
+//  fastAdvCount = 0;
+//  StartAdvertising();
+}
+
+void NimbleController::DisableRadio() {
+//  bleController.DisableRadio();
+//  if (bleController.IsConnected()) {
+//    ble_gap_terminate(connectionHandle, BLE_ERR_REM_USER_CONN_TERM);
+//    bleController.Disconnect();
+//  } else {
+//    ble_gap_adv_stop();
+//  }
+}
+
 //void NimbleController::PersistBond(struct ble_gap_conn_desc& desc) {
 //  union ble_store_key key;
 //  union ble_store_value our_sec, peer_sec, peer_cccd_set[MYNEWT_VAL(BLE_STORE_MAX_CCCDS)] = {0};

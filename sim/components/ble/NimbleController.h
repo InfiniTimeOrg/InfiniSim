@@ -89,6 +89,9 @@ namespace Pinetime {
         fastAdvCount = 0;
       }
 
+      void EnableRadio();
+      void DisableRadio();
+
     private:
 //      void PersistBond(struct ble_gap_conn_desc& desc);
 //      void RestoreBond();
