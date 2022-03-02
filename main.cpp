@@ -617,6 +617,17 @@ public:
         std::cout << "unhandled screen_idx: " << int(screen_idx) << std::endl;
       }
     }
+    static void screen_off_delete_cb(lv_obj_t *obj, lv_event_t event)
+    {
+      if (event == LV_EVENT_DELETE) {
+        auto* fw = static_cast<Framework*>(obj->user_data);
+        if (obj == fw->screen_off_bg)
+        {
+          // on delete make sure to not double free the screen_off objects
+          fw->screen_off_created = false;
+        }
+      }
+    }
     // render the current status of the simulated controller
     void refresh_screen() {
       const Pinetime::Controllers::BrightnessController::Levels level = brightnessController.Level();
@@ -627,6 +638,8 @@ public:
           lv_obj_set_size(screen_off_bg, 240, 240);
           lv_obj_set_pos(screen_off_bg, 0, 0);
           lv_obj_set_style_local_bg_color(screen_off_bg, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+          screen_off_bg->user_data = this; // add callback to prevent double free through Alarm Screen
+          lv_obj_set_event_cb(screen_off_bg, screen_off_delete_cb);
           screen_off_label = lv_label_create(lv_scr_act(), nullptr);
           lv_label_set_text_static(screen_off_label, "Screen is OFF");
           lv_obj_align(screen_off_label, nullptr, LV_ALIGN_CENTER, 0, -20);
