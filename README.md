@@ -97,6 +97,7 @@ Using the keyboard the following events can be triggered:
 - `S` ... decrease step count by 500 steps
 - `h` ... set heartrate running, and on further presses increase by 10 bpm
 - `H` ... stop heartrate
+- `i` ... take screenshot
 
 ## Licenses
 
