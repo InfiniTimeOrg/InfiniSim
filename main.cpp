@@ -610,9 +610,6 @@ public:
       else if (screen_idx == 17) {
         displayApp.StartApp(Pinetime::Applications::Apps::PassKey, Pinetime::Applications::DisplayApp::FullRefreshDirections::None);
       }
-      else if (screen_idx == 10) {
-        displayApp.StartApp(Pinetime::Applications::Apps::Missing, Pinetime::Applications::DisplayApp::FullRefreshDirections::None);
-      }
       else {
         std::cout << "unhandled screen_idx: " << int(screen_idx) << std::endl;
       }
