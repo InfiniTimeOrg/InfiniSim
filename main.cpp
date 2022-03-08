@@ -57,6 +57,13 @@
 #include <algorithm>
 #include <cmath> // std::pow
 
+// additional includes for 'saveScreenshot()' function
+#include <date/date.h>
+#include <chrono>
+#if defined(WITH_PNG)
+#include <libpng16/png.h>
+#endif
+
 /*********************
  *      DEFINES
  *********************/
@@ -64,6 +71,98 @@
 /**********************
  *      TYPEDEFS
  **********************/
+// copied from lv_drivers/display/monitor.c to get the SDL_Window for the InfiniTime screen
+extern "C"
+{
+typedef struct {
+  SDL_Window * window;
+  SDL_Renderer * renderer;
+  SDL_Texture * texture;
+  volatile bool sdl_refr_qry;
+#if MONITOR_DOUBLE_BUFFERED
+  uint32_t * tft_fb_act;
+#else
+  uint32_t tft_fb[LV_HOR_RES_MAX * LV_VER_RES_MAX];
+#endif
+}monitor_t;
+extern monitor_t monitor;
+}
+
+void saveScreenshot()
+{
+  auto now = std::chrono::system_clock::now();
+  // TODO: timestamped png filename
+  std::string screenshot_filename_base = date::format("InfiniSim_%F_%H%M%S", date::floor<std::chrono::seconds>(now));
+  //std::string screenshot_filename_base = "InfiniSim";
+
+  const int width = 240;
+  const int height = 240;
+  auto renderer = monitor.renderer;
+
+
+#if defined(WITH_PNG)
+  std::string screenshot_filename = screenshot_filename_base + ".png";
+
+  FILE * fp2 = fopen(screenshot_filename.c_str(), "wb");
+  if (!fp2) {
+    // dealing with error
+    return;
+  }
+  // 1. Create png struct pointer
+  png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  if (!png_ptr){
+      // dealing with error
+  }
+  png_infop info_ptr = png_create_info_struct(png_ptr);
+  if (!info_ptr) {
+      png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
+      // dealing with error
+  }
+  int bit_depth = 8;
+  png_init_io(png_ptr, fp2);
+  png_set_IHDR(png_ptr, info_ptr, width, height, bit_depth, \
+      PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE, \
+      PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+
+  // 3. Convert 1d array to 2d array to be suitable for png struct
+  //    I assumed the original array is 1d
+  std::array<png_bytep, 240> row_pointers;
+  //png_bytepp row_pointers = (png_bytepp)png_malloc(png_ptr, sizeof(png_bytep) * height);
+  for (int i = 0; i < height; i++) {
+      row_pointers[i] = (png_bytep)png_malloc(png_ptr, width*4);
+  }
+  const Uint32 format = SDL_PIXELFORMAT_RGBA8888;
+  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, format);
+  SDL_RenderReadPixels(renderer, NULL, format, surface->pixels, surface->pitch);
+  png_bytep pixels = (png_bytep)surface->pixels;
+  for (int hi = 0; hi < height; hi++) {
+    for (int wi = 0; wi < width; wi++) {
+      int c = wi * 4;
+      row_pointers.at(hi)[wi*4+0] = pixels[hi*surface->pitch + wi*4 + 3]; // red
+      row_pointers.at(hi)[wi*4+1] = pixels[hi*surface->pitch + wi*4 + 2]; // greeen
+      row_pointers.at(hi)[wi*4+2] = pixels[hi*surface->pitch + wi*4 + 1]; // blue
+      row_pointers.at(hi)[wi*4+3] = 255; // alpha
+    }
+  }
+
+  // 4. Write png file
+  png_write_info(png_ptr, info_ptr);
+  png_write_image(png_ptr, row_pointers.data());
+  png_write_end(png_ptr, info_ptr);
+  png_destroy_write_struct(&png_ptr, &info_ptr);
+  fclose(fp2);
+
+  SDL_FreeSurface(surface);
+#else
+  std::string screenshot_filename = screenshot_filename_base + ".bmp";
+  const Uint32 format = SDL_PIXELFORMAT_RGB888;
+  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 24, format);
+  SDL_RenderReadPixels(renderer, NULL, format, surface->pixels, surface->pitch);
+  SDL_SaveBMP(surface, screenshot_filename.c_str());
+  SDL_FreeSurface(surface);
+#endif
+  std::cout << "InfiniSim: Screenshot created: " << screenshot_filename << std::endl;
+}
 
 /**********************
  *  STATIC PROTOTYPES
@@ -450,6 +549,7 @@ public:
       debounce('p', 'P', state[SDL_SCANCODE_P], key_handled_p);
       debounce('s', 'S', state[SDL_SCANCODE_S], key_handled_s);
       debounce('h', 'H', state[SDL_SCANCODE_H], key_handled_h);
+      debounce('i', 'I', state[SDL_SCANCODE_I], key_handled_i);
       // screen switcher buttons
       debounce('1', '!'+1, state[SDL_SCANCODE_1], key_handled_1);
       debounce('2', '!'+2, state[SDL_SCANCODE_2], key_handled_2);
@@ -525,6 +625,8 @@ public:
         }
       } else if (key == 'H') {
         heartRateController.Stop();
+      } else if (key == 'i') {
+        saveScreenshot();
       } else if (key >= '0' && key <= '9') {
         this->switch_to_screen(key-'0');
       } else if (key >= '!'+0 && key <= '!'+9) {
@@ -679,6 +781,7 @@ private:
     bool key_handled_p = false; // p ... enable print memory usage, P ... disable print memory usage
     bool key_handled_s = false; // s ... increase step count, S ... decrease step count
     bool key_handled_h = false; // h ... set heartrate running, H ... stop heartrate
+    bool key_handled_i = false; // i ... take screenshot, I ... not assigned
     // numbers from 0 to 9 to switch between screens
     bool key_handled_1 = false;
     bool key_handled_2 = false;
