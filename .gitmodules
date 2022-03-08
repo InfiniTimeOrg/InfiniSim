@@ -1,6 +1,6 @@
 [submodule "InfiniTime"]
 	path = InfiniTime
-	url = ../../NeroBurner/InfiniTime.git
+	url = ../../InfiniTimeOrg/InfiniTime.git
 [submodule "lv_drivers"]
 	path = lv_drivers
 	url = ../../lvgl/lv_drivers.git

@@ -183,6 +183,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.cpp
   ${InfiniTime_DIR}/src/systemtask/SystemTask.h
   ${InfiniTime_DIR}/src/systemtask/SystemTask.cpp
+  ${InfiniTime_DIR}/src/systemtask/SystemMonitor.h
+  ${InfiniTime_DIR}/src/systemtask/SystemMonitor.cpp
 )
 
 
