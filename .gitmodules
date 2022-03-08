@@ -6,4 +6,4 @@
 	url = ../../lvgl/lv_drivers.git
 [submodule "libpng"]
 	path = libpng
-	url = git@github.com:glennrp/libpng.git
+	url = ../../glennrp/libpng.git
