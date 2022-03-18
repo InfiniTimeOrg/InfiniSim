@@ -230,3 +230,5 @@ if(WITH_PNG)
   add_subdirectory(libpng EXCLUDE_FROM_ALL)
   target_link_libraries(infinisim PRIVATE png_static)
 endif()
+
+install(TARGETS infinisim DESTINATION bin)
