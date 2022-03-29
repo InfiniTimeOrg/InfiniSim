@@ -8,7 +8,7 @@ uint32_t timer_callback_wrapper(uint32_t interval, void *param) {
   }
   xTimer->pxCallbackFunction(*xTimer);
   if (xTimer->auto_reload) {
-    return xTimer->xTimerPeriodInTicks;
+    return xTimer->timer_period_in_ms;
   }
   xTimer->running = false;
   return 0; // cancel timer
@@ -28,7 +28,7 @@ TimerHandle_t xTimerCreate(const char * const pcTimerName, /*lint !e971 Unqualif
   TimerCallbackFunction_t pxCallbackFunction)
 {
   TimerHandle_t xTimer;
-  xTimer.xTimerPeriodInTicks = xTimerPeriodInTicks;
+  xTimer.timer_period_in_ms = pdTICKS_TO_MS(xTimerPeriodInTicks);
   xTimer.auto_reload = uxAutoReload == pdTRUE;
   xTimer.timer_name = pcTimerName;
   xTimer.pvTimerID = pvTimerID;
@@ -38,7 +38,8 @@ TimerHandle_t xTimerCreate(const char * const pcTimerName, /*lint !e971 Unqualif
 
 bool xTimerStart(TimerHandle_t &xTimer, TickType_t xTicksToWait) {
   xTimer.running = true;
-  xTimer.timer_id = SDL_AddTimer(xTimer.xTimerPeriodInTicks, timer_callback_wrapper, &xTimer);
+  xTimer.expiry_time = xTaskGetTickCount() + pdMS_TO_TICKS(xTimer.timer_period_in_ms);
+  xTimer.timer_id = SDL_AddTimer(xTimer.timer_period_in_ms, timer_callback_wrapper, &xTimer);
   if (xTimer.pxCallbackFunction == nullptr) {
     throw std::runtime_error("xTimerStart called before xTimerCreate");
   }
@@ -48,10 +49,10 @@ bool xTimerStart(TimerHandle_t &xTimer, TickType_t xTicksToWait) {
 bool xTimerChangePeriod(TimerHandle_t &xTimer, TickType_t xNewPeriod, TickType_t xTicksToWait) {
   if (xTimer.running) {
     xTimerStop(xTimer, xTicksToWait);
-    xTimer.xTimerPeriodInTicks = xNewPeriod;
+    xTimer.timer_period_in_ms = pdTICKS_TO_MS(xNewPeriod);
     xTimerStart(xTimer, xTicksToWait);
   } else {
-    xTimer.xTimerPeriodInTicks = xNewPeriod;
+    xTimer.timer_period_in_ms = pdTICKS_TO_MS(xNewPeriod);
   }
   return true;
 }
@@ -66,4 +67,13 @@ bool xTimerReset(TimerHandle_t &xTimer,  TickType_t xTicksToWait) {
 bool xTimerStop(TimerHandle_t &xTimer,  TickType_t xTicksToWait) {
   xTimer.running = false;
   return SDL_RemoveTimer(xTimer.timer_id);
+}
+
+TickType_t xTimerGetExpiryTime( TimerHandle_t xTimer )
+{
+  return xTimer.expiry_time;
+}
+
+BaseType_t xTimerIsTimerActive( TimerHandle_t xTimer ) {
+  return xTimer.running;
 }

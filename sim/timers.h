@@ -29,6 +29,7 @@
 #pragma once
 
 #include "portmacro_cmsis.h" // TickType_t
+#include "task.h" // configTICK_RATE_HZ
 
 #include <SDL2/SDL.h>
 
@@ -46,15 +47,20 @@ struct TimerHandle_t {
   bool running = false;
   bool auto_reload = false;
   SDL_TimerID timer_id = 0;
-  TickType_t xTimerPeriodInTicks;
+  TickType_t timer_period_in_ms;
+  TickType_t expiry_time;
   std::string timer_name;
   void * pvTimerID;
   TimerCallbackFunction_t pxCallbackFunction;
 };
 
 
-constexpr uint32_t pdMS_TO_TICKS(uint32_t ticks) {
-  return ticks;
+constexpr uint32_t pdMS_TO_TICKS(uint32_t pdMS) {
+  return pdMS * configTICK_RATE_HZ / 1000;
+}
+// function only available in Simulator
+constexpr uint32_t pdTICKS_TO_MS(uint32_t ticks) {
+  return ticks * 1000 / configTICK_RATE_HZ;
 }
 
 /**
@@ -148,3 +154,55 @@ bool xTimerChangePeriod(TimerHandle_t &xTimer, TickType_t xNewPeriod, TickType_t
 bool xTimerReset(TimerHandle_t &xTimer,  TickType_t xTicksToWait);
 
 bool xTimerStop(TimerHandle_t &xTimer,  TickType_t xTicksToWait);
+
+/**
+* TickType_t xTimerGetExpiryTime( TimerHandle_t xTimer );
+*
+* Returns the time in ticks at which the timer will expire.  If this is less
+* than the current tick count then the expiry time has overflowed from the
+* current time.
+*
+* @param xTimer The handle of the timer being queried.
+*
+* @return If the timer is running then the time in ticks at which the timer
+* will next expire is returned.  If the timer is not running then the return
+* value is undefined.
+*/
+TickType_t xTimerGetExpiryTime( TimerHandle_t xTimer );
+
+/**
+ * BaseType_t xTimerIsTimerActive( TimerHandle_t xTimer );
+ *
+ * Queries a timer to see if it is active or dormant.
+ *
+ * A timer will be dormant if:
+ *     1) It has been created but not started, or
+ *     2) It is an expired one-shot timer that has not been restarted.
+ *
+ * Timers are created in the dormant state.  The xTimerStart(), xTimerReset(),
+ * xTimerStartFromISR(), xTimerResetFromISR(), xTimerChangePeriod() and
+ * xTimerChangePeriodFromISR() API functions can all be used to transition a timer into the
+ * active state.
+ *
+ * @param xTimer The timer being queried.
+ *
+ * @return pdFALSE will be returned if the timer is dormant.  A value other than
+ * pdFALSE will be returned if the timer is active.
+ *
+ * Example usage:
+ * @verbatim
+ * // This function assumes xTimer has already been created.
+ * void vAFunction( TimerHandle_t xTimer )
+ * {
+ *     if( xTimerIsTimerActive( xTimer ) != pdFALSE ) // or more simply and equivalently "if( xTimerIsTimerActive( xTimer ) )"
+ *     {
+ *         // xTimer is active, do something.
+ *     }
+ *     else
+ *     {
+ *         // xTimer is not active, do something else.
+ *     }
+ * }
+ * @endverbatim
+ */
+BaseType_t xTimerIsTimerActive( TimerHandle_t xTimer );
