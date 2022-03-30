@@ -102,7 +102,6 @@
 #ifndef MONITOR_ZOOM
 #  define MONITOR_ZOOM        1
 #endif
-static_assert(MONITOR_ZOOM > 0);
 
 /* Used to test true double buffering with only address changing.
  * Set LV_draw_buf_SIZE = (LV_HOR_RES * LV_VER_RES) and  LV_draw_buf_DOUBLE = 1 and LV_COLOR_DEPTH = 32" */
