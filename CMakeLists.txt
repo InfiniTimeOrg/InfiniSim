@@ -57,6 +57,7 @@ add_executable(infinisim main.cpp ${SOURCES} ${INCLUDES})
 
 set(MONITOR_ZOOM 1 CACHE STRING "Scale simulator window by this factor")
 if(MONITOR_ZOOM MATCHES "^[0-9]\.?[0-9]*")
+  message(STATUS "Using MONITOR_ZOOM=${MONITOR_ZOOM}")
   target_compile_definitions(infinisim PRIVATE MONITOR_ZOOM=${MONITOR_ZOOM})
 else()
   message(FATAL_ERROR "variable MONITOR_ZOOM=${MONITOR_ZOOM} must be a positive number")
