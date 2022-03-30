@@ -55,6 +55,7 @@ The following configuration settings can be added to the first `cmake -S . -B bu
 - `-DInfiniTime_DIR=InfiniTime`: a full path to an existing InfiniTime repository checked out.
   Inside that directory the `src/libs/lvgl` submodule must be checked out as well.
   The default value points to the InfiniTime submodule in this repository.
+- `-DMONITOR_ZOOM=1`: scale simulator window by this factor
 
 ## Run Simulator
 

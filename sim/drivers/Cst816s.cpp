@@ -1,4 +1,5 @@
 #include "drivers/Cst816s.h"
+#include "lv_drv_conf.h" // MONITOR_ZOOM
 #include <SDL2/SDL.h>
 #include <libraries/log/nrf_log.h>
 #include <cmath>
@@ -25,6 +26,10 @@ bool Cst816S::Init() {
 Cst816S::TouchInfos Cst816S::GetTouchInfo() {
   int x, y;
   uint32_t buttons = SDL_GetMouseState(&x, &y);
+  // scale down real mouse coordinates to InfiniTime scale to make zoom work
+  // the MONITOR_ZOOM-factor is defined in lv_drv_conf.h
+  x /= MONITOR_ZOOM;
+  y /= MONITOR_ZOOM;
 
   Cst816S::TouchInfos info;
   info.x = x;
