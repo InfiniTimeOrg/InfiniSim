@@ -1,0 +1,84 @@
+name: Emscripten build InfiniSim LVGL Simulator
+
+# When to run this Workflow...
+on:
+  # Run on all branches
+  push:
+    branches: []
+
+  # Also run this Workflow when a Pull Request is created or updated in the "main" and "develop" Branch
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  emscripten:
+    runs-on: ubuntu-latest
+    steps:
+
+      #########################################################################################
+      # Checkout
+
+      - name: Checkout source files
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      #########################################################################################
+      # Download and Install Dependencies
+
+      - name: Setup emsdk
+        uses: mymindstorm/setup-emsdk@v11
+        with:
+          # Make sure to set a version number!
+          version: 3.1.8
+          # This is the name of the cache folder.
+          # The cache folder will be placed in the build directory,
+          #  so make sure it doesn't conflict with anything!
+          actions-cache-folder: 'emsdk-cache'
+        
+      - name: Tell emsdk to use SDL with pthread proxy fix
+        run: sed -i -e "s/^TAG =.*/TAG = 'ea7d5307acfb1daf9af6104b60b75114b15bcd27'/" -e "s/HASH =.*/HASH = 'b7d58124f0d1145f23338abfdb6aa07855ac74ed80b3a5b613d23b4930c84d04d1794a62aab2ca2680ba369128ee2028ea51236fab4aaf70556036172fa59e6a'/" ${EMSDK}/upstream/emscripten/tools/ports/sdl2.py
+
+      - name: Verify
+        run: emcc -v
+
+      - name: Install cmake
+        uses: lukka/get-cmake@v3.18.3
+
+      #########################################################################################
+      # CMake
+
+      - name: CMake
+        run:  |
+          emcmake cmake -S . -B build_em -DCMAKE_BUILD_TYPE=Release
+
+      #########################################################################################
+      # Build and Upload simulator wasm files
+
+      - name: Build simulator executable
+        run:  |
+          cmake --build build_em
+
+      - name: Upload simulator executable
+        uses: actions/upload-artifact@v3
+        with:
+          name: infinisim_emscripten
+          path: |
+            build_em/infinisim.html
+            build_em/infinisim.js
+            build_em/infinisim.wasm
+
+      - name: Prepare Github Page
+        shell: bash
+        run: |
+          mkdir emscripten
+          mv build_em/infinisim.html \
+            build_em/infinisim.js \
+            build_em/infinisim.wasm \
+            emscripten/.
+
+      - name: Deploy Github Page
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: gh-pages
+          folder: emscripten
