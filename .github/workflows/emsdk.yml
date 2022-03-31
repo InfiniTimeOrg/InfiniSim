@@ -76,7 +76,7 @@ jobs:
         run: |
           mkdir emscripten
           curl -o emscripten/coi-serviceworker.js https://raw.githubusercontent.com/gzuidhof/coi-serviceworker/ed2fbe98a222b8e0991a839f504137408d56d2e6/coi-serviceworker.js
-          sed -i -e 's#</body>#<script src="coi-serviceworker.js"></script></body>#' build_em/infinisim.html
+          sed -i -e 's#</title>#</title><script src="coi-serviceworker.js"></script>#' build_em/infinisim.html
           mv build_em/infinisim.html \
             build_em/infinisim.js \
             build_em/infinisim.wasm \
