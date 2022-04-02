@@ -27,6 +27,12 @@ On Arch Linux the following packages are needed:
 sudo pacman -S cmake sdl2 gcc
 ```
 
+On Fedora the following packages are needed:
+
+```sh
+sudo dnf install cmake SDL2-devel gcc
+```
+
 ## Get the Sources
 
 Clone this repository and tell `git` to recursively download the submodules as well
