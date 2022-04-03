@@ -61,7 +61,7 @@
 #include <date/date.h>
 #include <chrono>
 #if defined(WITH_PNG)
-#include <libpng16/png.h>
+#include <libpng/png.h>
 #endif
 
 /*********************
