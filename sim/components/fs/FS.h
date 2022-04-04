@@ -49,7 +49,30 @@ enum lfs_whence_flags {
     LFS_SEEK_END = 2,   // Seek relative to the end of the file
 };
 
+typedef uint32_t lfs_size_t;
 typedef int32_t  lfs_ssize_t;
+
+// Maximum name size in bytes, may be redefined to reduce the size of the
+// info struct. Limited to <= 1022. Stored in superblock and must be
+// respected by other littlefs drivers.
+//#ifndef LFS_NAME_MAX
+//#define LFS_NAME_MAX 255
+//#endif
+
+// File info structure
+struct lfs_info {
+//    // Type of the file, either LFS_TYPE_REG or LFS_TYPE_DIR
+//    uint8_t type;
+
+    // Size of the file, only valid for REG files. Limited to 32-bits.
+    lfs_size_t size;
+
+//    // Name of the file stored as a null-terminated string. Limited to
+//    // LFS_NAME_MAX+1, which can be changed by redefining LFS_NAME_MAX to
+//    // reduce RAM. LFS_NAME_MAX is stored in superblock and must be
+//    // respected by other littlefs drivers.
+//    char name[LFS_NAME_MAX+1];
+};
 
 namespace Pinetime {
   namespace Controllers {
@@ -77,7 +100,7 @@ namespace Pinetime {
 
       lfs_ssize_t GetFSSize();
       int Rename(const char* oldPath, const char* newPath);
-      //int Stat(const char* path, lfs_info* info);
+      int Stat(const char* path, lfs_info* info);
       void VerifyResource();
 
       static size_t getSize() {
