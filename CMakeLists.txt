@@ -213,6 +213,31 @@ target_sources(infinisim PUBLIC
 )
 
 
+# QCBOR
+add_library(QCBOR STATIC
+  ${InfiniTime_DIR}/src/libs/QCBOR/src/ieee754.c
+  ${InfiniTime_DIR}/src/libs/QCBOR/src/qcbor_decode.c
+  ${InfiniTime_DIR}/src/libs/QCBOR/src/qcbor_encode.c
+  ${InfiniTime_DIR}/src/libs/QCBOR/src/qcbor_err_to_str.c
+  ${InfiniTime_DIR}/src/libs/QCBOR/src/UsefulBuf.c)
+target_include_directories(QCBOR SYSTEM PUBLIC ${InfiniTime_DIR}/src/libs/QCBOR/inc)
+# This is required with the current configuration
+target_compile_definitions(QCBOR PUBLIC QCBOR_DISABLE_FLOAT_HW_USE)
+# These are for space-saving
+target_compile_definitions(QCBOR PUBLIC QCBOR_DISABLE_PREFERRED_FLOAT)
+target_compile_definitions(QCBOR PUBLIC QCBOR_DISABLE_EXP_AND_MANTISSA)
+target_compile_definitions(QCBOR PUBLIC QCBOR_DISABLE_INDEFINITE_LENGTH_STRINGS)
+#target_compile_definitions(QCBOR PUBLIC QCBOR_DISABLE_INDEFINITE_LENGTH_ARRAYS)
+target_compile_definitions(QCBOR PUBLIC QCBOR_DISABLE_UNCOMMON_TAGS)
+target_compile_definitions(QCBOR PUBLIC USEFULBUF_CONFIG_LITTLE_ENDIAN)
+set_target_properties(QCBOR PROPERTIES LINKER_LANGUAGE C)
+#target_compile_options(QCBOR PRIVATE
+#        $<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:DEBUG>>: ${COMMON_FLAGS} -O0 -g3>
+#        $<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:RELEASE>>: ${COMMON_FLAGS} -O3>
+#        $<$<COMPILE_LANGUAGE:ASM>: -MP -MD -x assembler-with-cpp>
+#        )
+target_link_libraries(infinisim PRIVATE QCBOR)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # Special case for SDL2 dependency, goal is to find a config that exports SDL2::SDL2 target
 # libsdl2-dev has a `sdl2-config.cmake` that doesn't export this, but vcpkg does..
