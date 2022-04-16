@@ -165,11 +165,12 @@ int FS::DirDelete(const char* path) {
 
 // check if file exists, if so write file-size into info object
 int FS::Stat(const char* path, lfs_info* info) {
-  if (!std::filesystem::exists(path))
+  const char *local_filename = path[0]=='/' ? &path[1] : path;
+  if (!std::filesystem::exists(local_filename))
   {
     return LFS_ERR_NOENT; // No directory entry
   }
-  info->size = std::filesystem::file_size(path);
+  info->size = std::filesystem::file_size(local_filename);
   return LFS_ERR_OK;
 }
 
