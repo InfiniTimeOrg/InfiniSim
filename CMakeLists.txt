@@ -163,9 +163,9 @@ file(GLOB InfiniTime_SCREENS
   "${InfiniTime_DIR}/src/displayapp/screens/settings/*.h"
   "${InfiniTime_DIR}/src/displayapp/screens/settings/*.cpp"
 )
-file(GLOB InfiniTime_FONTS
-  "${InfiniTime_DIR}/src/displayapp/fonts/*.c"
-)
+include(${InfiniTime_DIR}/src/displayapp/fonts/CMakeLists.txt)
+list(TRANSFORM FONTS APPEND ".c" OUTPUT_VARIABLE InfiniTime_FONTS)
+list(TRANSFORM InfiniTime_FONTS PREPEND "displayapp/fonts/")
 file(GLOB InfiniTime_ICONS
   "${InfiniTime_DIR}/src/displayapp/icons/*.c"
 )
