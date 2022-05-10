@@ -14,23 +14,30 @@ For a history on how this simulator started and the challenges on its way visit 
 - CMake
 - SDL2 (provides the simulator window, handles mouse and keyboard input)
 - Compiler (g++ or clang++)
+- [lv_font_conv](https://github.com/lvgl/lv_font_conv#install-the-script) (for `font.c` generation since [InfiniTime#1097](https://github.com/InfiniTimeOrg/InfiniTime/pull/1097))
 
 On Ubuntu/Debian install the following packages:
 
 ```sh
-sudo apt install -y cmake libsdl2-dev g++
+sudo apt install -y cmake libsdl2-dev g++ npm
 ```
 
 On Arch Linux the following packages are needed:
 
 ```sh
-sudo pacman -S cmake sdl2 gcc
+sudo pacman -S cmake sdl2 gcc npm
 ```
 
 On Fedora the following packages are needed:
 
 ```sh
 sudo dnf install cmake SDL2-devel gcc
+```
+
+Then install the `lv_font_conv` executable to the source directory (will be installed at `node_modules/.bin/lv_font_conv`)
+
+```sh
+npm install lv_font_conv@1.5.2
 ```
 
 ## Get the Sources
