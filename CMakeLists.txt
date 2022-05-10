@@ -238,6 +238,13 @@ set_target_properties(QCBOR PROPERTIES LINKER_LANGUAGE C)
 #        )
 target_link_libraries(infinisim PRIVATE QCBOR)
 
+if(EXISTS ${InfiniTime_DIR}/src/displayapp/fonts/CMakeLists.txt)
+  # available since https://github.com/InfiniTimeOrg/InfiniTime/pull/1097
+  message(STATUS "add subdirectory ${InfiniTime_DIR}/src/displayapp/fonts for 'infinitime_fonts' target")
+  add_subdirectory(${InfiniTime_DIR}/src/displayapp/fonts fonts)
+  target_link_libraries(infinisim PRIVATE infinitime_fonts)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # Special case for SDL2 dependency, goal is to find a config that exports SDL2::SDL2 target
 # libsdl2-dev has a `sdl2-config.cmake` that doesn't export this, but vcpkg does..
