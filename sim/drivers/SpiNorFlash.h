@@ -1,13 +1,14 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
+#include <fstream>
 
 namespace Pinetime {
   namespace Drivers {
     class Spi;
     class SpiNorFlash {
     public:
-      explicit SpiNorFlash(Spi& spi);
+      explicit SpiNorFlash(const std::string& memoryFilePath);
       SpiNorFlash(const SpiNorFlash&) = delete;
       SpiNorFlash& operator=(const SpiNorFlash&) = delete;
       SpiNorFlash(SpiNorFlash&&) = delete;
@@ -53,8 +54,12 @@ namespace Pinetime {
       };
       static constexpr uint16_t pageSize = 256;
 
-      Spi& spi;
+      static constexpr size_t memorySize {0x400000};
+      const std::string& memoryFilePath;
+
+
       Identification device_id;
+      std::fstream memoryFile;
     };
   }
 }

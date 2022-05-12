@@ -173,13 +173,21 @@ file(GLOB InfiniTime_WIDGETS
   "${InfiniTime_DIR}/src/displayapp/widgets/*.cpp"
   "${InfiniTime_DIR}/src/displayapp/widgets/*.h"
 )
+set(LITTLEFS_SRC
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.h
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs.h
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.c
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs.c
+)
 target_sources(infinisim PUBLIC ${InfiniTime_SCREENS})
 target_sources(infinisim PUBLIC ${InfiniTime_FONTS})
 target_sources(infinisim PUBLIC ${InfiniTime_ICONS})
 target_sources(infinisim PUBLIC ${InfiniTime_WIDGETS})
+target_sources(infinisim PUBLIC ${LITTLEFS_SRC})
 
 # add files directly from InfiniTime sources
 target_include_directories(infinisim PRIVATE "${InfiniTime_DIR}/src")
+target_include_directories(infinisim PRIVATE "${InfiniTime_DIR}/src/libs/littlefs")
 target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/BootloaderVersion.h
   ${InfiniTime_DIR}/src/BootloaderVersion.cpp

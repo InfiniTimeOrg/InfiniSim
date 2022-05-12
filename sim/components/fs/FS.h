@@ -2,8 +2,8 @@
 
 #include <cstdio>
 #include <cstdint>
-//#include "drivers/SpiNorFlash.h"
-//#include <littlefs/lfs.h>
+#include <littlefs/lfs.h>
+#include "drivers/SpiNorFlash.h"
 #include <lvgl/lvgl.h>
 
 using lfs_file_t = FILE*;
@@ -78,7 +78,7 @@ namespace Pinetime {
   namespace Controllers {
     class FS {
     public:
-      //FS(Pinetime::Drivers::SpiNorFlash&);
+      FS(Pinetime::Drivers::SpiNorFlash&);
 
       void Init();
       void LVGLFileSystemInit();
@@ -112,7 +112,7 @@ namespace Pinetime {
 
     private:
 
-      //Pinetime::Drivers::SpiNorFlash& flashDriver;
+      Pinetime::Drivers::SpiNorFlash& flashDriver;
 
       /*
       * External Flash MAP (4 MBytes)
@@ -143,14 +143,14 @@ namespace Pinetime {
       lv_fs_drv_t fs_drv;
       
       bool resourcesValid = false;
-      //const struct lfs_config lfsConfig;
+      const struct lfs_config lfsConfig;
 
-      //lfs_t lfs;
+      lfs_t lfs;
 
-      //static int SectorSync(const struct lfs_config* c);
-      //static int SectorErase(const struct lfs_config* c, lfs_block_t block);
-      //static int SectorProg(const struct lfs_config* c, lfs_block_t block, lfs_off_t off, const void* buffer, lfs_size_t size);
-      //static int SectorRead(const struct lfs_config* c, lfs_block_t block, lfs_off_t off, void* buffer, lfs_size_t size);
+      static int SectorSync(const struct lfs_config* c);
+      static int SectorErase(const struct lfs_config* c, lfs_block_t block);
+      static int SectorProg(const struct lfs_config* c, lfs_block_t block, lfs_off_t off, const void* buffer, lfs_size_t size);
+      static int SectorRead(const struct lfs_config* c, lfs_block_t block, lfs_off_t off, void* buffer, lfs_size_t size);
 
     };
   }
