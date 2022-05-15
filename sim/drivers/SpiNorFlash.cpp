@@ -57,6 +57,7 @@ uint8_t SpiNorFlash::ReadConfigurationRegister() {
 }
 
 void SpiNorFlash::Read(uint32_t address, uint8_t* buffer, size_t size) {
+  static_assert(sizeof(uint8_t) == sizeof(char));
   memoryFile.seekp(address);
   memoryFile.read(reinterpret_cast<char *>(buffer), size);
 }
