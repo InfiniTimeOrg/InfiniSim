@@ -4,6 +4,7 @@
 #include "drivers/Spi.h"
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 
 using namespace Pinetime::Drivers;
 
@@ -63,6 +64,9 @@ uint8_t SpiNorFlash::ReadConfigurationRegister() {
 
 void SpiNorFlash::Read(uint32_t address, uint8_t* buffer, size_t size) {
   static_assert(sizeof(uint8_t) == sizeof(char));
+  if (address + size * sizeof(uint8_t) > memorySize) {
+    throw std::runtime_error("SpiNorFlash::Read out of bounds");
+  }
   memoryFile.seekp(address);
   memoryFile.read(reinterpret_cast<char *>(buffer), size);
 }
@@ -88,6 +92,9 @@ bool SpiNorFlash::EraseFailed() {
 }
 
 void SpiNorFlash::Write(uint32_t address, const uint8_t* buffer, size_t size) {
+  if (address + size * sizeof(uint8_t) > memorySize) {
+    throw std::runtime_error("SpiNorFlash::Write out of bounds");
+  }
   memoryFile.seekp(address);
   memoryFile.write(reinterpret_cast<const char *>(buffer), size);
   memoryFile.flush();
