@@ -88,8 +88,6 @@ target_sources(infinisim PUBLIC
   sim/components/brightness/BrightnessController.cpp
   sim/components/firmwarevalidator/FirmwareValidator.h
   sim/components/firmwarevalidator/FirmwareValidator.cpp
-  sim/components/fs/FS.h
-  sim/components/fs/FS.cpp
   sim/components/heartrate/HeartRateController.h
   sim/components/heartrate/HeartRateController.cpp
   sim/components/motion/MotionController.h
@@ -173,13 +171,21 @@ file(GLOB InfiniTime_WIDGETS
   "${InfiniTime_DIR}/src/displayapp/widgets/*.cpp"
   "${InfiniTime_DIR}/src/displayapp/widgets/*.h"
 )
+set(LITTLEFS_SRC
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.h
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs.h
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.c
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs.c
+)
 target_sources(infinisim PUBLIC ${InfiniTime_SCREENS})
 target_sources(infinisim PUBLIC ${InfiniTime_FONTS})
 target_sources(infinisim PUBLIC ${InfiniTime_ICONS})
 target_sources(infinisim PUBLIC ${InfiniTime_WIDGETS})
+target_sources(infinisim PUBLIC ${LITTLEFS_SRC})
 
 # add files directly from InfiniTime sources
 target_include_directories(infinisim PRIVATE "${InfiniTime_DIR}/src")
+target_include_directories(infinisim PRIVATE "${InfiniTime_DIR}/src/libs/littlefs")
 target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/BootloaderVersion.h
   ${InfiniTime_DIR}/src/BootloaderVersion.cpp
@@ -202,6 +208,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.h
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.cpp
+  ${InfiniTime_DIR}/src/components/fs/FS.h
+  ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/timer/TimerController.h
   ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h

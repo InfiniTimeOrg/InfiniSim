@@ -224,7 +224,7 @@ Pinetime::Drivers::Spi lcdSpi {spi, Pinetime::PinMap::SpiLcdCsn};
 Pinetime::Drivers::St7789 lcd {lcdSpi, Pinetime::PinMap::LcdDataCommand};
 
 Pinetime::Drivers::Spi flashSpi {spi, Pinetime::PinMap::SpiFlashCsn};
-Pinetime::Drivers::SpiNorFlash spiNorFlash {flashSpi};
+Pinetime::Drivers::SpiNorFlash spiNorFlash {"spiNorFlash.raw"};
 
 // The TWI device should work @ up to 400Khz but there is a HW bug which prevent it from
 // respecting correct timings. According to erratas heet, this magic value makes it run
@@ -252,7 +252,7 @@ Pinetime::Controllers::Ble bleController;
 Pinetime::Controllers::HeartRateController heartRateController;
 Pinetime::Applications::HeartRateTask heartRateApp(heartRateSensor, heartRateController);
 
-Pinetime::Controllers::FS fs; // {spiNorFlash};
+Pinetime::Controllers::FS fs {spiNorFlash};
 Pinetime::Controllers::Settings settingsController {fs};
 Pinetime::Controllers::MotorController motorController {};
 
@@ -836,6 +836,8 @@ int main(int argc, char **argv)
 
   /*Initialize the HAL (display, input devices, tick) for LVGL*/
   hal_init();
+
+  fs.Init();
 
   // initialize the core of our Simulator
   Framework fw(fw_status_window_visible, 240,240);
