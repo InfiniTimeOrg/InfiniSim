@@ -18,6 +18,11 @@ SpiNorFlash::SpiNorFlash(const std::string& memoryFilePath) : memoryFilePath{mem
     memoryFile.write("", 1);
   }
 }
+SpiNorFlash::~SpiNorFlash() {
+  if (memoryFile.is_open()) {
+    memoryFile.close();
+  }
+}
 
 void SpiNorFlash::Init() {
   device_id = ReadIdentificaion();

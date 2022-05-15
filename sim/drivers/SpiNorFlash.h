@@ -9,6 +9,7 @@ namespace Pinetime {
     class SpiNorFlash {
     public:
       explicit SpiNorFlash(const std::string& memoryFilePath);
+      ~SpiNorFlash();
       SpiNorFlash(const SpiNorFlash&) = delete;
       SpiNorFlash& operator=(const SpiNorFlash&) = delete;
       SpiNorFlash(SpiNorFlash&&) = delete;
