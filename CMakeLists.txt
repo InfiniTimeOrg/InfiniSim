@@ -88,8 +88,6 @@ target_sources(infinisim PUBLIC
   sim/components/brightness/BrightnessController.cpp
   sim/components/firmwarevalidator/FirmwareValidator.h
   sim/components/firmwarevalidator/FirmwareValidator.cpp
-  sim/components/fs/FS.h
-  sim/components/fs/FS.cpp
   sim/components/heartrate/HeartRateController.h
   sim/components/heartrate/HeartRateController.cpp
   sim/components/motion/MotionController.h
@@ -210,6 +208,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.h
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.cpp
+  ${InfiniTime_DIR}/src/components/fs/FS.h
+  ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/timer/TimerController.h
   ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h
