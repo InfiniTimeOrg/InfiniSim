@@ -171,6 +171,7 @@ file(GLOB InfiniTime_ICONS
 )
 file(GLOB InfiniTime_WIDGETS
   "${InfiniTime_DIR}/src/displayapp/widgets/*.cpp"
+  "${InfiniTime_DIR}/src/displayapp/widgets/*.h"
 )
 target_sources(infinisim PUBLIC ${InfiniTime_SCREENS})
 target_sources(infinisim PUBLIC ${InfiniTime_FONTS})
