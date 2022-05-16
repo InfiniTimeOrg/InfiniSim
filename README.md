@@ -96,7 +96,7 @@ Using the keyboard the following events can be triggered:
 - `m` ... let motor run for 100 ms
 - `M` ... let motor run for 255 ms
 - `n` ... send notification
-- `N` ... clear all notifications
+- `N` ... clear new notification flag
 - `b` ... connect Bluetooth
 - `B` ... disconnect Bluetooth
 - `v` ... increase battery voltage and percentage

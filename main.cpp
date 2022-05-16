@@ -773,7 +773,7 @@ public:
 private:
     bool key_handled_r = false; // r ... enable ringing, R ... disable ringing
     bool key_handled_m = false; // m ... let motor run, M ... stop motor
-    bool key_handled_n = false; // n ... send notification, N ... clear all notifications
+    bool key_handled_n = false; // n ... send notification, N ... clear new notification flag
     bool key_handled_b = false; // b ... connect Bluetooth, B ... disconnect Bluetooth
     bool key_handled_v = false; // battery Voltage and percentage, v ... increase, V ... decrease
     bool key_handled_c = false; // c ... charging, C ... not charging
