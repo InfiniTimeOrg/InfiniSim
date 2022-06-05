@@ -515,7 +515,7 @@ public:
       notificationManager.Push(std::move(notif));
       // send next message the next time
       notification_idx++;
-      if (notification_idx >= notification_messages.size()) {
+      if (notification_idx >= notification_messages.size()/2) {
         notification_idx = 0;
       }
     }
