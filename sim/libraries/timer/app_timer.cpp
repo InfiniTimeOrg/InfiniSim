@@ -57,8 +57,12 @@ ret_code_t app_timer_init(void) {
 ret_code_t app_timer_create(app_timer_t *p_timer_id,
                             app_timer_mode_t            mode,
                             app_timer_timeout_handler_t timeout_handler) {
-    if (mode != APP_TIMER_MODE_SINGLE_SHOT) {
-        throw std::runtime_error("only mode 'APP_TIMER_MODE_SINGLE_SHOT' implemented");
+    if (mode == APP_TIMER_MODE_SINGLE_SHOT) {
+        p_timer_id->repeating = false;
+    } else if (mode == APP_TIMER_MODE_REPEATED) {
+        p_timer_id->repeating = true;
+    } else {
+        throw std::runtime_error("only mode 'APP_TIMER_MODE_SINGLE_SHOT' or 'APP_TIMER_MODE_REPEATED' implemented");
     }
     p_timer_id->handler = timeout_handler;
     return 0;
@@ -67,10 +71,15 @@ Uint32 timeout_callback_wrapper(Uint32 interval, void *param)
 {
   auto* timer_id = static_cast<app_timer_t*>(param);
   timer_id->handler(timer_id->p_context);
-  return 0; // cancel timer
+  if (timer_id->repeating) {
+    return timer_id->repeat_period;
+  } else {
+    return 0; // cancel timer
+  }
 }
 ret_code_t app_timer_start(app_timer_t &timer_id, uint32_t timeout_ticks, void * p_context) {
     timer_id.p_context = p_context;
+    timer_id.repeat_period = timeout_ticks;
     timer_id.sdl_timer_id = SDL_AddTimer(timeout_ticks, timeout_callback_wrapper, (void*)(&timer_id));
     return 0;
 }

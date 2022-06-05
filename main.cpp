@@ -51,6 +51,7 @@
 #include "displayapp/LittleVgl.h"
 
 #include <nrfx_gpiote.h>
+#include <hal/nrf_gpio.h>
 
 #include <iostream>
 #include <typeinfo>
@@ -402,19 +403,11 @@ public:
       }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
-        { // motorController.is_ringing
-          constexpr const int center_x = 15;
-          constexpr const int center_y = 15;
-          if (motorController.is_ringing) {
-              draw_circle_red(center_x, center_y, 15);
-          } else {
-              draw_circle_grey(center_x, center_y, 15);
-          }
-        }
         { // motorController.motor_is_running
           constexpr const int center_x = 45;
           constexpr const int center_y = 15;
-          if (motorController.motor_is_running) {
+          bool motor_is_running = nrf_gpio_pin_read(Pinetime::PinMap::Motor);
+          if (motor_is_running) {
               draw_circle_red(center_x, center_y, 15);
           } else {
               draw_circle_grey(center_x, center_y, 15);

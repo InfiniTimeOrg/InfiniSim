@@ -92,8 +92,6 @@ target_sources(infinisim PUBLIC
   sim/components/heartrate/HeartRateController.cpp
   sim/components/motion/MotionController.h
   sim/components/motion/MotionController.cpp
-  sim/components/motor/MotorController.h
-  sim/components/motor/MotorController.cpp
   sim/drivers/Watchdog.h
   sim/drivers/Watchdog.cpp
   sim/drivers/Bma421.h
@@ -210,6 +208,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.cpp
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
+  ${InfiniTime_DIR}/src/components/motor/MotorController.h
+  ${InfiniTime_DIR}/src/components/motor/MotorController.cpp
   ${InfiniTime_DIR}/src/components/timer/TimerController.h
   ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h

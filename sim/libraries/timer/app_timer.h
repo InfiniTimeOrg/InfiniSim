@@ -88,6 +88,13 @@ typedef uint32_t ret_code_t;
 /**@brief Application time-out handler type. */
 typedef void (*app_timer_timeout_handler_t)(void * p_context);
 
+/**@brief Timer modes. */
+typedef enum
+{
+    APP_TIMER_MODE_SINGLE_SHOT,                 /**< The timer will expire only once. */
+    APP_TIMER_MODE_REPEATED                     /**< The timer will restart each time it expires. */
+} app_timer_mode_t;
+
 struct app_timer_t
 {
     //nrf_sortlist_item_t         list_item;     /**< Token used by sortlist. */
@@ -96,6 +103,7 @@ struct app_timer_t
     uint32_t                    repeat_period; /**< Repeat period (0 if single shot mode). */
     app_timer_timeout_handler_t handler;       /**< User handler. */
     void *                      p_context;     /**< User context. */
+    bool                        repeating;
     //NRF_LOG_INSTANCE_PTR_DECLARE(p_log)        /**< Pointer to instance of the logger object (Conditionally compiled). */
     //volatile bool               active;        /**< Flag indicating that timer is active. */
 };
@@ -126,13 +134,6 @@ uint32_t constexpr APP_TIMER_TICKS(uint32_t ms) {
         static_cast<uint64_t>(ms) * configTICK_RATE_HZ / 1000
     );
 }
-
-/**@brief Timer modes. */
-typedef enum
-{
-    APP_TIMER_MODE_SINGLE_SHOT,                 /**< The timer will expire only once. */
-    APP_TIMER_MODE_REPEATED                     /**< The timer will restart each time it expires. */
-} app_timer_mode_t;
 
 /**@brief Function for initializing the timer module.
  *
