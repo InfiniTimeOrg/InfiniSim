@@ -25,27 +25,30 @@ namespace Pinetime {
       bool GetTouchPadInfo(lv_indev_data_t* ptr);
       void SetFullRefresh(FullRefreshDirections direction);
       void SetNewTouchPoint(uint16_t x, uint16_t y, bool contact);
-//
-//    private:
-//      void InitDisplay();
+
+      bool GetFullRefresh() {
+        bool returnValue = fullRefresh;
+        if (fullRefresh) {
+          fullRefresh = false;
+        }
+        return returnValue;
+      }
+
+    private:
+      void InitDisplay();
       void InitTouchpad();
-//      void InitTheme();
-//  
-//      void FlushDisplayManually();
-//      void DisplayDownScroll();
-//      void DisplayHorizAnim();
+      void InitTheme();
 
       Pinetime::Drivers::St7789& lcd;
       Pinetime::Drivers::Cst816S& touchPanel;
 
-//      lv_disp_draw_buf_t disp_buf_2;
-//      lv_color_t buf2_1[LV_HOR_RES_MAX * 4];
-//      lv_color_t buf2_2[LV_HOR_RES_MAX * 4];
-//
-      lv_disp_drv_t disp_drv;
-      lv_point_t previousClick;
+      lv_disp_buf_t disp_buf_2;
+      lv_color_t buf2_1[LV_HOR_RES_MAX * 4];
+      lv_color_t buf2_2[LV_HOR_RES_MAX * 4];
 
-      bool firstTouch = true;
+      lv_disp_drv_t disp_drv;
+
+      bool fullRefresh = false;
       static constexpr uint8_t nbWriteLines = 4;
       static constexpr uint16_t totalNbLines = 320;
       static constexpr uint16_t visibleNbLines = 240;
