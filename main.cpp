@@ -863,21 +863,21 @@ static void hal_init(void)
   SDL_CreateThread(tick_thread, "tick", NULL);
 
   // use pinetime_theme
-  lv_theme_t* th = lv_pinetime_theme_init(
-    LV_COLOR_WHITE, LV_COLOR_SILVER, 0, &jetbrains_mono_bold_20, &jetbrains_mono_bold_20, &jetbrains_mono_bold_20, &jetbrains_mono_bold_20);
-  lv_theme_set_act(th);
+  //lv_theme_t* th = lv_pinetime_theme_init(
+  //  LV_COLOR_WHITE, LV_COLOR_SILVER, 0, &jetbrains_mono_bold_20, &jetbrains_mono_bold_20, &jetbrains_mono_bold_20, &jetbrains_mono_bold_20);
+  //lv_theme_set_act(th);
 
-  /*Create a display buffer*/
-  static lv_disp_buf_t disp_buf1;
-  static lv_color_t buf1_1[LV_HOR_RES_MAX * 120];
-  lv_disp_buf_init(&disp_buf1, buf1_1, NULL, LV_HOR_RES_MAX * 120);
+  ///*Create a display buffer*/
+  //static lv_disp_buf_t disp_buf1;
+  //static lv_color_t buf1_1[LV_HOR_RES_MAX * 120];
+  //lv_disp_buf_init(&disp_buf1, buf1_1, NULL, LV_HOR_RES_MAX * 120);
 
-  /*Create a display*/
-  lv_disp_drv_t disp_drv;
-  lv_disp_drv_init(&disp_drv); /*Basic initialization*/
-  disp_drv.buffer = &disp_buf1;
-  disp_drv.flush_cb = monitor_flush;
-  lv_disp_drv_register(&disp_drv);
+  ///*Create a display*/
+  //lv_disp_drv_t disp_drv;
+  //lv_disp_drv_init(&disp_drv); /*Basic initialization*/
+  //disp_drv.buffer = &disp_buf1;
+  //disp_drv.flush_cb = monitor_flush;
+  //lv_disp_drv_register(&disp_drv);
 
   /* Add the mouse as input device
    * Use the 'mouse' driver which reads the PC's mouse*/
