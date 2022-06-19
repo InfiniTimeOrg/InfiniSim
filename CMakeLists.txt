@@ -286,4 +286,6 @@ if(WITH_PNG)
   target_link_libraries(infinisim PRIVATE png_static)
 endif()
 
+target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/gif-h")
+
 install(TARGETS infinisim DESTINATION bin)
