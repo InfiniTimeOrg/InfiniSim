@@ -64,6 +64,7 @@
 #if defined(WITH_PNG)
 #include <libpng/png.h>
 #endif
+#include <gif.h>
 
 /*********************
  *      DEFINES
@@ -164,6 +165,78 @@ void saveScreenshot()
 #endif
   std::cout << "InfiniSim: Screenshot created: " << screenshot_filename << std::endl;
 }
+
+class GifManager
+{
+private:
+  GifWriter writer = {};
+  std::chrono::system_clock::time_point last_frame;
+  bool in_progress = false;
+  static constexpr uint32_t delay_ds = 100/20; // in 1/100 s, so 1 ds = 10 ms
+  static constexpr int sdl_width = 240;
+  static constexpr int sdl_height = 240;
+
+public:
+  GifManager()
+  {}
+  ~GifManager()
+  {
+    if (in_progress) {
+      close();
+    }
+  }
+
+  bool is_in_progress() const
+  {
+    return in_progress;
+  }
+  void create_new()
+  {
+    assert(!in_progress);
+    auto now = std::chrono::system_clock::now();
+    std::string screenshot_filename_base = date::format("InfiniSim_%F_%H%M%S", date::floor<std::chrono::seconds>(now));
+    std::string screenshot_filename = screenshot_filename_base + ".gif";
+    std::cout << "InfiniSim: Screen-capture started: " << screenshot_filename << std::endl;
+    GifBegin( &writer, screenshot_filename.c_str(), sdl_width, sdl_height, delay_ds, 8, true );
+    in_progress = true;
+    write_frame(true);
+  }
+  void write_frame(bool force = false)
+  {
+    assert(in_progress);
+    auto now = std::chrono::system_clock::now();
+    if (force || ((now - last_frame) > std::chrono::milliseconds(delay_ds*10)) )
+    {
+      last_frame = std::chrono::system_clock::now();
+      auto renderer = monitor.renderer;
+      const Uint32 format = SDL_PIXELFORMAT_RGBA8888;
+      SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, sdl_width, sdl_height, 32, format);
+      SDL_RenderReadPixels(renderer, NULL, format, surface->pixels, surface->pitch);
+      uint8_t *pixels = (uint8_t*) surface->pixels;
+
+      std::array<uint8_t, 240*240*4> image;
+      for (int hi = 0; hi < sdl_height; hi++) {
+        for (int wi = 0; wi < sdl_width; wi++) {
+          auto red   = pixels[hi*surface->pitch + wi*4 + 3]; // red
+          auto green = pixels[hi*surface->pitch + wi*4 + 2]; // green
+          auto blue  = pixels[hi*surface->pitch + wi*4 + 1]; // blue
+          image[(hi * sdl_width + wi)*4 + 0] = red;
+          image[(hi * sdl_width + wi)*4 + 1] = green;
+          image[(hi * sdl_width + wi)*4 + 2] = blue;
+          image[(hi * sdl_width + wi)*4 + 3] = 255; // no alpha
+        }
+      }
+      GifWriteFrame(&writer, image.data(), sdl_width, sdl_height, delay_ds, 8, true);
+    }
+  }
+  void close()
+  {
+    assert(in_progress);
+    in_progress = false;
+    GifEnd(&writer);
+    std::cout << "InfiniSim: Screen-capture finished" << std::endl;
+  }
+};
 
 /**********************
  *  STATIC PROTOTYPES
@@ -620,6 +693,13 @@ public:
         heartRateController.Stop();
       } else if (key == 'i') {
         saveScreenshot();
+      } else if (key == 'I') {
+        if (!gif_manager.is_in_progress())
+        {
+          gif_manager.create_new();
+        } else {
+          gif_manager.close();
+        }
       } else if (key >= '0' && key <= '9') {
         this->switch_to_screen(key-'0');
       } else if (key >= '!'+0 && key <= '!'+9) {
@@ -753,6 +833,10 @@ public:
         lv_mem_monitor(&mem_mon);
         printf("actual free_size = %d\n", int64_t(mem_mon.free_size) - (LV_MEM_SIZE - 14U*1024U));
       }
+      if (gif_manager.is_in_progress())
+      {
+        gif_manager.write_frame();
+      }
     }
 
     bool print_memory_usage = false;
@@ -774,7 +858,7 @@ private:
     bool key_handled_p = false; // p ... enable print memory usage, P ... disable print memory usage
     bool key_handled_s = false; // s ... increase step count, S ... decrease step count
     bool key_handled_h = false; // h ... set heartrate running, H ... stop heartrate
-    bool key_handled_i = false; // i ... take screenshot, I ... not assigned
+    bool key_handled_i = false; // i ... take screenshot, I ... start/stop Gif screen capture
     // numbers from 0 to 9 to switch between screens
     bool key_handled_1 = false;
     bool key_handled_2 = false;
@@ -794,6 +878,8 @@ private:
 
     bool left_release_sent = true; // make sure to send one mouse button release event
     bool right_last_state = false; // varable used to send message only on changing state
+
+    GifManager gif_manager;
 };
 
 int main(int argc, char **argv)
