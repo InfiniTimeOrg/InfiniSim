@@ -50,22 +50,64 @@ configure_file(
   "${CMAKE_CURRENT_BINARY_DIR}/lv_conf.h"
   COPYONLY)
 
-file(GLOB_RECURSE INCLUDES "lv_drivers/*.h" "${InfiniTime_DIR}/src/libs/lvgl/src/*.h"  "./*.h" )
-file(GLOB_RECURSE SOURCES  "lv_drivers/*.c" "${InfiniTime_DIR}/src/libs/lvgl/src/*.c" )
+file(GLOB_RECURSE LVGL_INCLUDES "lv_drivers/*.h" "${InfiniTime_DIR}/src/libs/lvgl/src/*.h"  "./*.h" )
+file(GLOB_RECURSE LVGL_SOURCES  "lv_drivers/*.c" "${InfiniTime_DIR}/src/libs/lvgl/src/*.c" )
 
-add_executable(infinisim main.cpp ${SOURCES} ${INCLUDES})
+add_library(sim-base STATIC
+  # LVGL sources
+  ${LVGL_SOURCES} ${LVGL_INCLUDES}
+  # FreeRTOS
+  sim/FreeRTOS.h
+  sim/FreeRTOS.cpp
+  sim/task.h
+  sim/task.cpp
+  sim/timers.h
+  sim/timers.cpp
+  sim/queue.h
+  sim/queue.cpp
+  # src/FreeRTOS
+  sim/portmacro_cmsis.h
+  sim/portmacro_cmsis.cpp
+  # nrf
+  sim/libraries/log/nrf_log.h
+  sim/libraries/delay/nrf_delay.h
+  sim/libraries/delay/nrf_delay.cpp
+  sim/nrfx/nrfx_log.h
+  sim/nrfx/drivers/include/nrfx_twi.h
+  sim/nrfx/hal/nrf_gpio.h
+  sim/nrfx/hal/nrf_gpio.cpp
+  sim/nrfx/hal/nrfx_gpiote.h # includes hal/nrf_gpio.h
+  sim/nrfx/hal/nrf_rtc.h
+  sim/nrfx/hal/nrf_rtc.cpp
+  # nrf/components/libraries/timer
+  sim/libraries/timer/app_timer.h
+  sim/libraries/timer/app_timer.cpp
+  sim/libraries/gpiote/app_gpiote.h # includes hal/nrf_gpio.h
+)
+# include the generated lv_conf.h file before anything else
+target_include_directories(sim-base PUBLIC "${CMAKE_CURRENT_BINARY_DIR}") # lv_conf.h
+target_include_directories(sim-base PUBLIC "sim")
+target_include_directories(sim-base PUBLIC "sim/libraries/log") # for nrf_log.h
+target_include_directories(sim-base PUBLIC "sim/libraries/timer") # for app_timer.h
+target_include_directories(sim-base PUBLIC "sim/nrfx") # for nrfx_log.h and others
+target_include_directories(sim-base PUBLIC "sim/nrfx/hal") # for nrfx_log.h
+
+target_include_directories(sim-base PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}") # lv_drv_conf.h
+target_include_directories(sim-base PUBLIC "${InfiniTime_DIR}/src/libs")
+target_include_directories(sim-base PUBLIC "lv_drivers")
+
+target_include_directories(sim-base PUBLIC "${InfiniTime_DIR}/src") # InfiniTime drivers, components and all
+
 
 set(MONITOR_ZOOM 1 CACHE STRING "Scale simulator window by this factor")
 if(MONITOR_ZOOM MATCHES "^[0-9]\.?[0-9]*")
   message(STATUS "Using MONITOR_ZOOM=${MONITOR_ZOOM}")
-  target_compile_definitions(infinisim PRIVATE MONITOR_ZOOM=${MONITOR_ZOOM})
+  target_compile_definitions(sim-base PUBLIC MONITOR_ZOOM=${MONITOR_ZOOM})
 else()
   message(FATAL_ERROR "variable MONITOR_ZOOM=${MONITOR_ZOOM} must be a positive number")
 endif()
 
-# include the generated lv_conf.h file before anything else
-target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
-
+add_executable(infinisim main.cpp)
 # add simulator files
 target_sources(infinisim PUBLIC
   sim/displayapp/LittleVgl.h
@@ -108,45 +150,8 @@ target_sources(infinisim PUBLIC
   sim/drivers/SpiNorFlash.cpp
   sim/heartratetask/HeartRateTask.h
   sim/heartratetask/HeartRateTask.cpp
-  # FreeRTOS
-  sim/FreeRTOS.h
-  sim/FreeRTOS.cpp
-  sim/task.h
-  sim/task.cpp
-  sim/timers.h
-  sim/timers.cpp
-  sim/queue.h
-  sim/queue.cpp
-  # src/FreeRTOS
-  sim/portmacro_cmsis.h
-  sim/portmacro_cmsis.cpp
-  # nrf
-  sim/libraries/log/nrf_log.h
-  sim/libraries/delay/nrf_delay.h
-  sim/libraries/delay/nrf_delay.cpp
-  sim/nrfx/nrfx_log.h
-  sim/nrfx/drivers/include/nrfx_twi.h
-  sim/nrfx/hal/nrf_gpio.h
-  sim/nrfx/hal/nrf_gpio.cpp
-  sim/nrfx/hal/nrfx_gpiote.h # includes hal/nrf_gpio.h
-  sim/nrfx/hal/nrf_rtc.h
-  sim/nrfx/hal/nrf_rtc.cpp
-  # nrf/components/libraries/timer
-  sim/libraries/timer/app_timer.h
-  sim/libraries/timer/app_timer.cpp
-  sim/libraries/gpiote/app_gpiote.h # includes hal/nrf_gpio.h
-  )
-target_include_directories(infinisim PRIVATE "sim")
-target_include_directories(infinisim PRIVATE "sim/libraries/log") # for nrf_log.h
-target_include_directories(infinisim PRIVATE "sim/libraries/timer") # for app_timer.h
-target_include_directories(infinisim PRIVATE "sim/nrfx") # for nrfx_log.h and others
-target_include_directories(infinisim PRIVATE "sim/nrfx/hal") # for nrfx_log.h
-
-target_compile_definitions(infinisim PRIVATE LV_CONF_INCLUDE_SIMPLE)
-
-target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_include_directories(infinisim PRIVATE "${InfiniTime_DIR}/src/libs")
-target_include_directories(infinisim PRIVATE "lv_drivers")
+)
+target_link_libraries(infinisim PUBLIC sim-base)
 
 # add dates library
 if(EXISTS "${InfiniTime_DIR}/src/libs/date/includes")
@@ -175,21 +180,12 @@ file(GLOB InfiniTime_WIDGETS
   "${InfiniTime_DIR}/src/displayapp/widgets/*.cpp"
   "${InfiniTime_DIR}/src/displayapp/widgets/*.h"
 )
-set(LITTLEFS_SRC
-  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.h
-  ${InfiniTime_DIR}/src/libs/littlefs/lfs.h
-  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.c
-  ${InfiniTime_DIR}/src/libs/littlefs/lfs.c
-)
 target_sources(infinisim PUBLIC ${InfiniTime_SCREENS})
 target_sources(infinisim PUBLIC ${InfiniTime_FONTS})
 target_sources(infinisim PUBLIC ${InfiniTime_ICONS})
 target_sources(infinisim PUBLIC ${InfiniTime_WIDGETS})
-target_sources(infinisim PUBLIC ${LITTLEFS_SRC})
 
 # add files directly from InfiniTime sources
-target_include_directories(infinisim PRIVATE "${InfiniTime_DIR}/src")
-target_include_directories(infinisim PRIVATE "${InfiniTime_DIR}/src/libs/littlefs")
 target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/BootloaderVersion.h
   ${InfiniTime_DIR}/src/BootloaderVersion.cpp
@@ -241,6 +237,16 @@ else()
     ${InfiniTime_DIR}/src/displayapp/lv_pinetime_theme.c
   )
 endif()
+
+# littlefs
+add_library(littlefs STATIC
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.h
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs.h
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.c
+  ${InfiniTime_DIR}/src/libs/littlefs/lfs.c
+)
+target_include_directories(littlefs PUBLIC "${InfiniTime_DIR}/src/libs/littlefs")
+target_link_libraries(infinisim PRIVATE littlefs)
 
 # QCBOR
 add_library(QCBOR STATIC
@@ -305,3 +311,28 @@ endif()
 target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/gif-h")
 
 install(TARGETS infinisim DESTINATION bin)
+
+# helper library to manipulate littlefs raw image
+add_executable(littlefs-do
+  littlefs-do-main.cpp
+  # want to use FS.h
+  ${InfiniTime_DIR}/src/components/fs/FS.h
+  ${InfiniTime_DIR}/src/components/fs/FS.cpp
+  # dependencies for FS.h
+  sim/drivers/SpiNorFlash.h
+  sim/drivers/SpiNorFlash.cpp
+  # dependencies for SpiNorFlash.h
+  ${InfiniTime_DIR}/src/drivers/Spi.h
+  ${InfiniTime_DIR}/src/drivers/Spi.cpp
+  sim/drivers/SpiMaster.h
+  sim/drivers/SpiMaster.cpp
+
+  ${InfiniTime_DIR}/src/components/settings/Settings.h
+  ${InfiniTime_DIR}/src/components/settings/Settings.cpp
+)
+
+target_link_libraries(littlefs-do PUBLIC sim-base)
+target_link_libraries(littlefs-do PUBLIC littlefs)
+
+target_link_libraries(littlefs-do PRIVATE SDL2::SDL2)
+target_link_libraries(littlefs-do PRIVATE infinitime_fonts)
