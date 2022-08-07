@@ -15,6 +15,7 @@ For a history on how this simulator started and the challenges on its way visit 
 - SDL2 (provides the simulator window, handles mouse and keyboard input)
 - Compiler (g++ or clang++)
 - [lv_font_conv](https://github.com/lvgl/lv_font_conv#install-the-script) (for `font.c` generation since [InfiniTime#1097](https://github.com/InfiniTimeOrg/InfiniTime/pull/1097))
+  - Note: requires Node.js v12.0.0 or later
 
 On Ubuntu/Debian install the following packages:
 
