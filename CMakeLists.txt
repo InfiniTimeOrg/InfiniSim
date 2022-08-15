@@ -197,8 +197,6 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/displayapp/Colors.cpp
   ${InfiniTime_DIR}/src/displayapp/DisplayApp.h
   ${InfiniTime_DIR}/src/displayapp/DisplayApp.cpp
-  ${InfiniTime_DIR}/src/displayapp/lv_pinetime_theme.h
-  ${InfiniTime_DIR}/src/displayapp/lv_pinetime_theme.c
   ${InfiniTime_DIR}/src/displayapp/icons/bg_clock.c # used by WatchFaceAnalog.cpp
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.h
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.cpp
@@ -231,6 +229,18 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/systemtask/SystemMonitor.cpp
 )
 
+if(EXISTS ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.cpp)
+  target_compile_definitions(infinisim PUBLIC INFINITIME_THEME_CPP)
+  target_sources(infinisim PUBLIC
+    ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.cpp
+    ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.h
+)
+else()
+  target_sources(infinisim PUBLIC
+    ${InfiniTime_DIR}/src/displayapp/lv_pinetime_theme.h
+    ${InfiniTime_DIR}/src/displayapp/lv_pinetime_theme.c
+  )
+endif()
 
 # QCBOR
 add_library(QCBOR STATIC

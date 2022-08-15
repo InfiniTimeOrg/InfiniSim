@@ -21,7 +21,11 @@
 #include "lv_drivers/indev/mousewheel.h"
 
 // get PineTime header
+#if defined(INFINITIME_THEME_CPP)
+#include "displayapp/InfiniTimeTheme.h"
+#else
 #include "displayapp/lv_pinetime_theme.h"
+#endif
 #include <drivers/Hrs3300.h>
 #include <drivers/Bma421.h>
 
