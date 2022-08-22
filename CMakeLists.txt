@@ -336,3 +336,8 @@ target_link_libraries(littlefs-do PUBLIC littlefs)
 
 target_link_libraries(littlefs-do PRIVATE SDL2::SDL2)
 target_link_libraries(littlefs-do PRIVATE infinitime_fonts)
+
+add_subdirectory(external/miniz)
+add_subdirectory(external/nlohmann_json)
+target_link_libraries(littlefs-do PRIVATE miniz)
+target_link_libraries(littlefs-do PRIVATE nlohmann_json::nlohmann_json)

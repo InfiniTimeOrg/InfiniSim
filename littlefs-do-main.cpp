@@ -13,6 +13,7 @@
 
 #include <array>
 #include <iostream>
+#include <iomanip> // std::left, std::setw
 #include <typeinfo>
 #include <algorithm>
 #include <filesystem>
@@ -22,6 +23,9 @@
 #include "components/fs/FS.h"
 #include "components/settings/Settings.h"
 #include "drivers/SpiNorFlash.h"
+
+#include "nlohmann/json.hpp"
+#include "miniz.h"
 
 /*********************
  *      DEFINES
@@ -104,6 +108,7 @@ void print_help_generic(const std::string &program_name)
   std::cout << "  rm                   remove directory or file" << std::endl;
   std::cout << "  cp                   copy files into or out of flash file" << std::endl;
   std::cout << "  settings             list settings from 'settings.h'" << std::endl;
+  std::cout << "  res                  resource.zip handling" << std::endl;
 }
 void print_help_stat(const std::string &program_name)
 {
@@ -153,6 +158,14 @@ void print_help_cp(const std::string &program_name)
 void print_help_settings(const std::string &program_name)
 {
   std::cout << "Usage: " << program_name << " settings [options]" << std::endl;
+  std::cout << "Options:" << std::endl;
+  std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
+}
+void print_help_res(const std::string &program_name)
+{
+  std::cout << "Usage: " << program_name << " res <action> [options]" << std::endl;
+  std::cout << "actions:" << std::endl;
+  std::cout << "  load res.zip         load zip file into SPI memory" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
 }
@@ -602,6 +615,156 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   return 0;
 }
 
+void mkdir_path(const std::filesystem::path &path) {
+  if (!path.is_absolute()) {
+    // for absolute paths parent path converges at '/', then parent_path == path
+    mkdir_path(std::filesystem::path{"/"} / path);
+    return;
+  }
+  std::filesystem::path parent = path.parent_path();
+  if (path == parent) {
+    return;
+  }
+  lfs_info info;
+  int ret = fs.Stat(path.generic_string().c_str(), &info);
+  if (ret == 0) {
+    // directory exists, nothing to do
+    return;
+  }
+  // try to create parent dir first
+  mkdir_path(parent);
+  // then create current dir
+  ret = fs.DirCreate(path.generic_string().c_str());
+  if (ret < 0) {
+    std::cout << "mkdir_path: fs.DirCreate returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+    assert(false);
+    return;
+  }
+}
+int command_res(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
+{
+  if (verbose) {
+    std::cout << "running 'res'" << std::endl;
+  }
+  for (const std::string &arg : args)
+  {
+    if (arg == "-h" || arg == "--help")
+    {
+      print_help_res(program_name);
+      return 0;
+    }
+  }
+  if (args.size() < 1) {
+    std::cout << "error: no action specified" << std::endl;
+    print_help_res(program_name);
+    return 1;
+  }
+  if (args.at(0) == "load") {
+    if (verbose) {
+      std::cout << "running 'res load'" << std::endl;
+    }
+    if (args.size() < 2) {
+      std::cout << "error: res load needs at least one path to a ressource bundle to load" << std::endl;
+      print_help_res(program_name);
+      return 1;
+    }
+    for (size_t i=1; i<args.size(); i++) {
+      const std::filesystem::path path = args.at(i);
+      if (verbose) {
+        std::cout << "loading resource file: " << path << std::endl;
+      }
+      if (path.extension() == ".zip") {
+        const std::string &zip_filename = args.at(i);
+        const size_t f_size = std::filesystem::file_size(path);
+        std::vector<uint8_t> buffer_compressed(f_size);
+        std::ifstream ifs(path, std::ios::binary);
+        ifs.read((char*)(buffer_compressed.data()), f_size);
+
+        mz_zip_archive zip_archive {};
+        int mz_status = mz_zip_reader_init_file(&zip_archive, zip_filename.c_str(), 0);
+        if (!mz_status) {
+          std::cout << "error: mz_zip_reader_init_file() failed!" << std::endl;
+          return 1;
+        }
+
+        mz_uint zip_num_files = mz_zip_reader_get_num_files(&zip_archive);
+        if (verbose) {
+          std::cout << "zip: num of files in zip: " << zip_num_files << std::endl;
+        }
+
+        size_t uncomp_size = 0;
+        void *p = nullptr;
+        // extract resources.json file to heap, create a string and parse it
+        p = mz_zip_reader_extract_file_to_heap(&zip_archive, "resources.json", &uncomp_size, 0);
+        if (!p)
+        {
+          std::cout << "mz_zip_reader_extract_file_to_heap() failed to extract resources.json file" << std::endl;
+          mz_zip_reader_end(&zip_archive);
+          return 1;
+        }
+        std::string_view json_data(static_cast<const char *>(p), uncomp_size);
+        nlohmann::json doc = nlohmann::json::parse(json_data);
+        mz_free(p); // free json data, already converted into json document
+        if (!doc.contains("resources")) {
+          std::cout << "resources.json is missing 'resources' entry" << std::endl;
+          mz_zip_reader_end(&zip_archive);
+          return 1;
+        }
+        // copy all listed resources to SPI raw file
+        for (const auto &res : doc["resources"]) {
+          const auto filename = res["filename"].get<std::string>();
+          const auto dest_path = res["path"].get<std::string>();
+          if (verbose) {
+            std::cout << "copy file " << std::left << std::setw(25) << filename
+              << " from zip to SPI path '" << dest_path << "'" << std::endl;
+          }
+          // make sure destination directory exists before copy
+          const std::filesystem::path dest_dir = std::filesystem::path{dest_path}.parent_path();
+          mkdir_path(dest_dir);
+          // extract from zip to heap to then copy to SPI raw file
+          void *p = mz_zip_reader_extract_file_to_heap(&zip_archive, filename.c_str(), &uncomp_size, 0);
+          if (!p) {
+            std::cout << "mz_zip_reader_extract_file_to_heap() failed to extract file: " << filename << std::endl;
+            mz_zip_reader_end(&zip_archive);
+            return 1;
+          }
+          lfs_file_t file_p;
+          int ret = fs.FileOpen(&file_p, dest_path.c_str(), LFS_O_WRONLY | LFS_O_CREAT);
+          if (ret) {
+            std::cout << "fs.FileOpen returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+            return ret;
+          }
+          ret = fs.FileWrite(&file_p, static_cast<uint8_t *>(p), uncomp_size);
+          if (ret < 0) {
+            std::cout << "fs.FileWrite returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+            fs.FileClose(&file_p);
+            return ret;
+          }
+          // file copy complete, close destination file and free data
+          fs.FileClose(&file_p);
+          mz_free(p);
+        }
+        // all done, close archive
+        mz_zip_reader_end(&zip_archive);
+        if (verbose) {
+          std::cout << "finished: zip file fully loaded into SPI memory: " << zip_filename << std::endl;
+        }
+
+      } else {
+        std::cout << "error: resource has unknown extension: " << args.at(i) << std::endl;
+        print_help_res(program_name);
+        return 1;
+      }
+    }
+  } else {
+    std::cout << "error: unknown res action '" << args.at(0) << "'" << std::endl;
+    print_help_res(program_name);
+    return 1;
+  }
+  return 0;
+}
+
+
 int main(int argc, char **argv)
 {
   // parse arguments
@@ -649,6 +812,8 @@ int main(int argc, char **argv)
     return command_cp(argv[0], args, verbose);
   } else if (command == "settings") {
     return command_settings(argv[0], args, verbose);
+  } else if (command == "res") {
+    return command_res(argv[0], args, verbose);
   } else
   {
     std::cout << "unknown argument '" << command << "'" << std::endl;
