@@ -115,6 +115,25 @@ Using the keyboard the following events can be triggered:
 - `i` ... take screenshot
 - `I` ... start/stop Gif scren capture
 
+## Littlefs-do helper
+
+To help working with the SPI-raw file the tool `littlefs-do` is provided.
+The SPI-raw file emulates the persistent 4MB storage available over the SPI bus on the PineTime.
+
+```sh
+$ ./littlefs-do --help
+Usage: littlefs-do <command> [options]
+Commands:
+  -h, --help           show this help message for the selected command and exit
+  stat                 show information of specified file or directory
+  ls                   list available files in 'spiNorFlash.raw' file
+  mkdir                create directory
+  rmdir                remove directory
+  rm                   remove directory or file
+  cp                   copy files into or out of flash file
+  settings             list settings from 'settings.h'
+```
+
 ## Licenses
 
 This project is released under the GNU General Public License version 3 or, at your option, any later version.
