@@ -122,9 +122,10 @@ The SPI-raw file emulates the persistent 4MB storage available over the SPI bus 
 
 ```sh
 $ ./littlefs-do --help
-Usage: littlefs-do <command> [options]
+Usage: ./littlefs-do <command> [options]
 Commands:
   -h, --help           show this help message for the selected command and exit
+  -v, --verbose        print status messages to the console
   stat                 show information of specified file or directory
   ls                   list available files in 'spiNorFlash.raw' file
   mkdir                create directory
