@@ -64,7 +64,13 @@ jobs:
           cmake --build build_lv_sim
 
       - name: Upload simulator executable
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: infinisim
           path: build_lv_sim/infinisim
+
+      - name: Upload littlefs-do executable
+        uses: actions/upload-artifact@v3
+        with:
+          name: littlefs-do
+          path: build_lv_sim/littlefs-do
