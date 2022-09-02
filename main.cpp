@@ -832,14 +832,18 @@ public:
           lv_obj_del(screen_off_label);
         }
       }
+
       if (print_memory_usage) {
-        // print free memory with the knowledge that 14KiB RAM is the actual PineTime-Memory
         lv_mem_monitor(&mem_mon);
         if (mem_mon.free_size != mem_mon_last_free_size) {
-          printf("actual free_size = %d\n", int64_t(mem_mon.free_size) - (LV_MEM_SIZE - 14U*1024U));
+          uint32_t pinetime_lvgl_memory = 14U*1024U; // 14KiB is the LVGL memory size used in InfiniTime
+          uint32_t mem_used = LV_MEM_SIZE - int64_t(mem_mon.free_size);
+          int32_t mem_free = pinetime_lvgl_memory - mem_used;
+          printf("Mem: %u used (%+4d) %d free\n", mem_used, mem_mon_last_free_size - mem_mon.free_size, mem_free);
           mem_mon_last_free_size = mem_mon.free_size;
         }
       }
+
       if (gif_manager.is_in_progress())
       {
         gif_manager.write_frame();
