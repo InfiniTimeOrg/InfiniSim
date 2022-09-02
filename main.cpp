@@ -835,7 +835,10 @@ public:
       if (print_memory_usage) {
         // print free memory with the knowledge that 14KiB RAM is the actual PineTime-Memory
         lv_mem_monitor(&mem_mon);
-        printf("actual free_size = %d\n", int64_t(mem_mon.free_size) - (LV_MEM_SIZE - 14U*1024U));
+        if (mem_mon.free_size != mem_mon_last_free_size) {
+          printf("actual free_size = %d\n", int64_t(mem_mon.free_size) - (LV_MEM_SIZE - 14U*1024U));
+          mem_mon_last_free_size = mem_mon.free_size;
+        }
       }
       if (gif_manager.is_in_progress())
       {
@@ -882,6 +885,8 @@ private:
 
     bool left_release_sent = true; // make sure to send one mouse button release event
     bool right_last_state = false; // varable used to send message only on changing state
+
+    uint32_t mem_mon_last_free_size = LV_MEM_SIZE;
 
     GifManager gif_manager;
 };
