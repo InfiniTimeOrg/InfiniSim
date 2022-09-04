@@ -336,3 +336,6 @@ target_link_libraries(littlefs-do PUBLIC littlefs)
 
 target_link_libraries(littlefs-do PRIVATE SDL2::SDL2)
 target_link_libraries(littlefs-do PRIVATE infinitime_fonts)
+
+find_package(Filesystem REQUIRED)
+target_link_libraries(littlefs-do PRIVATE std::filesystem)
