@@ -570,8 +570,9 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   {
     auto notif = settingsController.GetNotificationStatus();
     auto notif_str = [](auto val) {
-      if (val == Settings::Notification::ON) return "ON";
-      if (val == Settings::Notification::OFF) return "OFF";
+      if (val == Settings::Notification::On) return "On";
+      if (val == Settings::Notification::Off) return "Off";
+      if (val == Settings::Notification::Sleep) return "Sleep";
       return "unknown";
     }(notif);
     std::cout << "NotificationStatus: " << static_cast<int>(notif) << " " << notif_str << std::endl;
