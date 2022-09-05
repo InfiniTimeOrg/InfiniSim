@@ -9,6 +9,20 @@ Or use it to develop new Watchfaces, new Screens, or quickly iterate on the user
 
 For a history on how this simulator started and the challenges on its way visit the [original PR](https://github.com/InfiniTimeOrg/InfiniTime/pull/743).
 
+## Get the Sources
+
+Clone this repository and tell `git` to recursively download the submodules as well
+
+```sh
+git clone --recursive https://github.com/InfiniTimeOrg/InfiniSim.git
+```
+
+If you've already cloned the repository without the submodules (or you want to update them to the latest checked in version) run the following command:
+
+```sh
+git submodule update --init --recursive
+```
+
 ## Build dependencies
 
 - CMake
@@ -35,24 +49,10 @@ On Fedora the following packages are needed:
 sudo dnf install cmake SDL2-devel gcc
 ```
 
-Then install the `lv_font_conv` executable to the source directory (will be installed at `node_modules/.bin/lv_font_conv`)
+Then install the `lv_font_conv` executable to the InfiniSim source directory (will be installed at `node_modules/.bin/lv_font_conv`)
 
 ```sh
 npm install lv_font_conv@1.5.2
-```
-
-## Get the Sources
-
-Clone this repository and tell `git` to recursively download the submodules as well
-
-```sh
-git clone --recursive https://github.com/InfiniTimeOrg/InfiniSim.git
-```
-
-If you've already cloned the repository without the submodules (or you want to update them to the latest checked in version) run the following command:
-
-```sh
-git submodule update --init --recursive
 ```
 
 ## Configure and Build
