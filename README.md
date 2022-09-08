@@ -133,6 +133,20 @@ Commands:
   rm                   remove directory or file
   cp                   copy files into or out of flash file
   settings             list settings from 'settings.h'
+  res                  resource.zip handling
+```
+
+### Resource loading
+
+To load resource zip files into the SPI raw file for the simulator to use the `res load` command can be used.
+
+```sh
+$ ./littlefs-do res --help
+Usage: ./littlefs-do res <action> [options]
+actions:
+  load res.zip         load zip file into SPI memory
+Options:
+  -h, --help           show this help message for the selected command and exit
 ```
 
 ## Licenses
