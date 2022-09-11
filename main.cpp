@@ -832,11 +832,22 @@ public:
           lv_obj_del(screen_off_label);
         }
       }
+
       if (print_memory_usage) {
-        // print free memory with the knowledge that 14KiB RAM is the actual PineTime-Memory
         lv_mem_monitor(&mem_mon);
-        printf("actual free_size = %d\n", int64_t(mem_mon.free_size) - (LV_MEM_SIZE - 14U*1024U));
+        if (mem_mon.free_size != mem_mon_last_free_size) {
+          // 14KiB is the LVGL memory size used in InfiniTime
+          constexpr uint32_t pinetime_lvgl_memory = 14U*1024U;
+          uint32_t mem_used = LV_MEM_SIZE - mem_mon.free_size;
+          // The "budget" value shows how much free lvgl memory the PineTime
+          // would have free and will go negative when more memory is used
+          // in the simulator than is available on the real hardware.
+          int32_t budget = pinetime_lvgl_memory - mem_used;
+          printf("Mem: %5u used (change: %+5d, peak: %5u) %d budget left\n", mem_used, mem_mon_last_free_size - mem_mon.free_size, mem_mon.max_used, budget);
+          mem_mon_last_free_size = mem_mon.free_size;
+        }
       }
+
       if (gif_manager.is_in_progress())
       {
         gif_manager.write_frame();
@@ -882,6 +893,8 @@ private:
 
     bool left_release_sent = true; // make sure to send one mouse button release event
     bool right_last_state = false; // varable used to send message only on changing state
+
+    uint32_t mem_mon_last_free_size = LV_MEM_SIZE;
 
     GifManager gif_manager;
 };
