@@ -836,10 +836,14 @@ public:
       if (print_memory_usage) {
         lv_mem_monitor(&mem_mon);
         if (mem_mon.free_size != mem_mon_last_free_size) {
-          uint32_t pinetime_lvgl_memory = 14U*1024U; // 14KiB is the LVGL memory size used in InfiniTime
-          uint32_t mem_used = LV_MEM_SIZE - int64_t(mem_mon.free_size);
-          int32_t mem_free = pinetime_lvgl_memory - mem_used;
-          printf("Mem: %u used (%+4d) %d free\n", mem_used, mem_mon_last_free_size - mem_mon.free_size, mem_free);
+          // 14KiB is the LVGL memory size used in InfiniTime
+          constexpr uint32_t pinetime_lvgl_memory = 14U*1024U;
+          uint32_t mem_used = LV_MEM_SIZE - mem_mon.free_size;
+          // The "budget" value shows how much free lvgl memory the PineTime
+          // would have free and will go negative when more memory is used
+          // in the simulator than is available on the real hardware.
+          int32_t budget = pinetime_lvgl_memory - mem_used;
+          printf("Mem: %5u used (change: %+5d, peak: %5u) %d budget left\n", mem_used, mem_mon_last_free_size - mem_mon.free_size, mem_mon.max_used, budget);
           mem_mon_last_free_size = mem_mon.free_size;
         }
       }
