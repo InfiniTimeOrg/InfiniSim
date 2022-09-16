@@ -46,7 +46,7 @@ sudo pacman -S cmake sdl2 gcc npm
 On Fedora the following packages are needed:
 
 ```sh
-sudo dnf install cmake SDL2-devel gcc
+sudo dnf install cmake SDL2-devel gcc zlib-devel
 ```
 
 Then install the `lv_font_conv` executable to the InfiniSim source directory (will be installed at `node_modules/.bin/lv_font_conv`)
