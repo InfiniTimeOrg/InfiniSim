@@ -668,9 +668,9 @@ public:
       } else if (key == 'C') {
         batteryController.isCharging = false;
         batteryController.isPowerPresent = false;
-      } else if (key == 'l') {
+      } else if (key == 'l' && !screen_off_created) {
         brightnessController.Higher();
-      } else if (key == 'L') {
+      } else if (key == 'L' && !screen_off_created) {
         brightnessController.Lower();
       } else if (key == 'p') {
         this->print_memory_usage = true;
