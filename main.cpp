@@ -588,6 +588,10 @@ public:
       if (notification_idx >= notification_messages.size()/2) {
         notification_idx = 0;
       }
+      if (settingsController.GetNotificationStatus() == Pinetime::Controllers::Settings::Notification::On)
+      {
+        displayApp.PushMessage(Pinetime::Applications::Display::Messages::NewNotification);
+      }
     }
 
     // can't use SDL_PollEvent, as those are fed to lvgl
