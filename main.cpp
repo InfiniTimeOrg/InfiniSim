@@ -589,6 +589,14 @@ public:
       if (notification_idx >= notification_messages.size()/2) {
         notification_idx = 0;
       }
+      if (settingsController.GetNotificationStatus() == Pinetime::Controllers::Settings::Notification::On)
+      {
+        if (screen_off_created) {
+          // wake up! (deletes screen_off label)
+          systemTask.PushMessage(Pinetime::System::Messages::GoToRunning);
+        }
+        displayApp.PushMessage(Pinetime::Applications::Display::Messages::NewNotification);
+      }
     }
 
     // can't use SDL_PollEvent, as those are fed to lvgl
