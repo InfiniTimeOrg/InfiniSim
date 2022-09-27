@@ -591,6 +591,10 @@ public:
       }
       if (settingsController.GetNotificationStatus() == Pinetime::Controllers::Settings::Notification::On)
       {
+        if (screen_off_created) {
+          // wake up! (deletes screen_off label)
+          systemTask.PushMessage(Pinetime::System::Messages::GoToRunning);
+        }
         displayApp.PushMessage(Pinetime::Applications::Display::Messages::NewNotification);
       }
     }
