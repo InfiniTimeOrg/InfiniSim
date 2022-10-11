@@ -280,6 +280,22 @@ if(EXISTS ${InfiniTime_DIR}/src/displayapp/fonts/CMakeLists.txt)
   target_link_libraries(infinisim PRIVATE infinitime_fonts)
 endif()
 
+option(BUILD_RESOURCES "Generate a resource.zip file to install to spi.raw file" ON)
+if(BUILD_RESOURCES)
+  if(EXISTS ${InfiniTime_DIR}/src/resources/CMakeLists.txt)
+    # set verison variables as used in resources/CMakeLists.txt
+    set(pinetime_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+    set(pinetime_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+    set(pinetime_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+    # available since https://github.com/InfiniTimeOrg/InfiniTime/pull/1097
+    message(STATUS "add subdirectory ${InfiniTime_DIR}/src/resources for 'GenerateResources' target")
+    add_subdirectory(${InfiniTime_DIR}/src/resources resources)
+    add_dependencies(infinisim GenerateResources)
+  else()
+    message(FATAL_ERROR "BUILD_RESOURCES is enabled, but InfiniTime subdirectory has no resources/CMakeLists.txt file")
+  endif()
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # Special case for SDL2 dependency, goal is to find a config that exports SDL2::SDL2 target
 # libsdl2-dev has a `sdl2-config.cmake` that doesn't export this, but vcpkg does..

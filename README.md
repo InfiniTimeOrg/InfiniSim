@@ -30,6 +30,7 @@ git submodule update --init --recursive
 - Compiler (g++ or clang++)
 - [lv_font_conv](https://github.com/lvgl/lv_font_conv#install-the-script) (for `font.c` generation since [InfiniTime#1097](https://github.com/InfiniTimeOrg/InfiniTime/pull/1097))
   - Note: requires Node.js v12.0.0 or later
+- [lv_img_conv](https://github.com/lvgl/lv_img_conv) (for `resource.zip` generation when `BUILD_RESOURCES=ON`, which is the default)
 
 On Ubuntu/Debian install the following packages:
 
@@ -55,6 +56,12 @@ Then install the `lv_font_conv` executable to the InfiniSim source directory (wi
 npm install lv_font_conv@1.5.2
 ```
 
+When you want to create a `resource.zip` file then install the `lv_img_conv` executable to the InfiniSim source directory (will be installed at `node_modules/.bin/lv_img_conv`)
+
+```sh
+npm install ts-node@10.9.1 @swc/core lv_img_conv@0.3.0
+```
+
 ## Configure and Build
 
 In the most basic configuration tell cmake to configure the project and build it with the following two commands:
@@ -70,6 +77,7 @@ The following configuration settings can be added to the first `cmake -S . -B bu
   Inside that directory the `src/libs/lvgl` submodule must be checked out as well.
   The default value points to the InfiniTime submodule in this repository.
 - `-DMONITOR_ZOOM=1`: scale simulator window by this factor
+- `-DBUILD_RESOURCES=ON`: enable/disable `resource.zip` creation, will be created in the `<build-dir>/resources` folder
 
 ## Run Simulator
 
