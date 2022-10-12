@@ -21,6 +21,10 @@ namespace Pinetime {
         return voltage;
       }
 
+      bool BatteryIsLow() const {
+        return false;
+      }
+
       bool IsCharging() const {
         // isCharging will go up and down when fully charged
         // isFull makes sure this returns false while fully charged.
