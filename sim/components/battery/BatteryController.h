@@ -22,7 +22,7 @@ namespace Pinetime {
       }
 
       bool BatteryIsLow() const {
-        return false;
+        return percentRemaining <= lowBatteryThreshold;
       }
 
       bool IsCharging() const {
@@ -52,6 +52,8 @@ namespace Pinetime {
 
       //void SaadcEventHandler(nrfx_saadc_evt_t const* p_event);
       //static void AdcCallbackStatic(nrfx_saadc_evt_t const* event);
+
+      static constexpr uint8_t lowBatteryThreshold {20};
 
       bool isReading = false;
 
