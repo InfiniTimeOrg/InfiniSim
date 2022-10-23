@@ -20,7 +20,7 @@ project(InfiniSim VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 string(COMPARE EQUAL "${CMAKE_CXX_STANDARD}" "" no_cmake_cxx_standard_set)
 if(no_cmake_cxx_standard_set)
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
   message(STATUS "Using default C++ standard ${CMAKE_CXX_STANDARD}")
@@ -142,12 +142,13 @@ target_sources(infinisim PUBLIC
   sim/drivers/Cst816s.cpp
   sim/drivers/Hrs3300.h
   sim/drivers/Hrs3300.cpp
-  sim/drivers/SpiMaster.h
-  sim/drivers/SpiMaster.cpp
+  sim/drivers/infinisim/SpiMaster.h
+  sim/drivers/infinisim/Spi.h
+  sim/drivers/infinisim/Spi.cpp
   sim/drivers/TwiMaster.h
   sim/drivers/TwiMaster.cpp
-  sim/drivers/SpiNorFlash.h
-  sim/drivers/SpiNorFlash.cpp
+  sim/drivers/infinisim/SpiNorFlash.h
+  sim/drivers/infinisim/SpiNorFlash.cpp
   sim/heartratetask/HeartRateTask.h
   sim/heartratetask/HeartRateTask.cpp
 )
@@ -214,7 +215,6 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h
   ${InfiniTime_DIR}/src/drivers/Spi.h
-  ${InfiniTime_DIR}/src/drivers/Spi.cpp
   ${InfiniTime_DIR}/src/drivers/St7789.h
   ${InfiniTime_DIR}/src/drivers/St7789.cpp
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.h
@@ -335,13 +335,13 @@ add_executable(littlefs-do
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   # dependencies for FS.h
-  sim/drivers/SpiNorFlash.h
-  sim/drivers/SpiNorFlash.cpp
+  sim/drivers/infinisim/SpiNorFlash.h
+  sim/drivers/infinisim/SpiNorFlash.cpp
   # dependencies for SpiNorFlash.h
   ${InfiniTime_DIR}/src/drivers/Spi.h
-  ${InfiniTime_DIR}/src/drivers/Spi.cpp
-  sim/drivers/SpiMaster.h
-  sim/drivers/SpiMaster.cpp
+  sim/drivers/infinisim/SpiMaster.h
+  sim/drivers/infinisim/Spi.h
+  sim/drivers/infinisim/Spi.cpp
 
   ${InfiniTime_DIR}/src/components/settings/Settings.h
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp

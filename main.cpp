@@ -30,25 +30,24 @@
 #include <drivers/Bma421.h>
 
 #include "BootloaderVersion.h"
+#include "buttonhandler/ButtonHandler.h"
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
 #include "components/ble/NotificationManager.h"
 #include "components/brightness/BrightnessController.h"
-#include "components/motor/MotorController.h"
 #include "components/datetime/DateTimeController.h"
-#include "components/heartrate/HeartRateController.h"
 #include "components/fs/FS.h"
-#include "drivers/Spi.h"
-#include "drivers/SpiMaster.h"
-#include "drivers/SpiNorFlash.h"
-#include "drivers/St7789.h"
-#include "drivers/TwiMaster.h"
+#include "components/heartrate/HeartRateController.h"
+#include "components/motor/MotorController.h"
 #include "drivers/Cst816s.h"
 #include "drivers/PinMap.h"
+#include "drivers/Spi.h"
+#include "drivers/St7789.h"
+#include "drivers/TwiMaster.h"
+#include "sim/drivers/infinisim/SpiMaster.h"
+#include "sim/drivers/infinisim/SpiNorFlash.h"
 #include "systemtask/SystemTask.h"
-#include "drivers/PinMap.h"
 #include "touchhandler/TouchHandler.h"
-#include "buttonhandler/ButtonHandler.h"
 
 // get the simulator-headers
 #include "displayapp/DisplayApp.h"
@@ -69,6 +68,8 @@
 #include <libpng/png.h>
 #endif
 #include <gif.h>
+
+#include "port/infinitime.h"
 
 /*********************
  *      DEFINES
@@ -290,19 +291,19 @@ static constexpr uint8_t touchPanelTwiAddress = 0x15;
 static constexpr uint8_t motionSensorTwiAddress = 0x18;
 static constexpr uint8_t heartRateSensorTwiAddress = 0x44;
 
-Pinetime::Drivers::SpiMaster spi {Pinetime::Drivers::SpiMaster::SpiModule::SPI0,
-                                  {Pinetime::Drivers::SpiMaster::BitOrder::Msb_Lsb,
-                                   Pinetime::Drivers::SpiMaster::Modes::Mode3,
-                                   Pinetime::Drivers::SpiMaster::Frequencies::Freq8Mhz,
-                                   Pinetime::PinMap::SpiSck,
-                                   Pinetime::PinMap::SpiMosi,
-                                   Pinetime::PinMap::SpiMiso}};
+Pinetime::Drivers::Infinisim::SpiMaster spiImpl {};
+Pinetime::Drivers::SpiMaster spi {spiImpl};
 
-Pinetime::Drivers::Spi lcdSpi {spi, Pinetime::PinMap::SpiLcdCsn};
+
+Pinetime::Drivers::Infinisim::Spi lcdSpiImpl {spiImpl, Pinetime::PinMap::SpiLcdCsn};
+Pinetime::Drivers::Spi lcdSpi {lcdSpiImpl};
 Pinetime::Drivers::St7789 lcd {lcdSpi, Pinetime::PinMap::LcdDataCommand};
 
-Pinetime::Drivers::Spi flashSpi {spi, Pinetime::PinMap::SpiFlashCsn};
-Pinetime::Drivers::SpiNorFlash spiNorFlash {"spiNorFlash.raw"};
+Pinetime::Drivers::Infinisim::Spi flashSpiImpl {spiImpl, Pinetime::PinMap::SpiFlashCsn};
+Pinetime::Drivers::Spi flashSpi {flashSpiImpl};
+
+Pinetime::Drivers::Infinisim::SpiNorFlash spiNorFlashImpl {"spiNorFlash.raw"};
+Pinetime::Drivers::SpiNorFlash spiNorFlash {spiNorFlashImpl};
 
 // The TWI device should work @ up to 400Khz but there is a HW bug which prevent it from
 // respecting correct timings. According to erratas heet, this magic value makes it run

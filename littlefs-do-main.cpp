@@ -22,7 +22,7 @@
 
 #include "components/fs/FS.h"
 #include "components/settings/Settings.h"
-#include "drivers/SpiNorFlash.h"
+#include "drivers/infinisim/SpiNorFlash.h"
 
 #include "nlohmann/json.hpp"
 #include "miniz.h"

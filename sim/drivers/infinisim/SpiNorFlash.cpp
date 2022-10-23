@@ -1,12 +1,12 @@
-#include "drivers/SpiNorFlash.h"
-#include <hal/nrf_gpio.h>
-#include <libraries/log/nrf_log.h>
+#include "SpiNorFlash.h"
 #include "drivers/Spi.h"
+#include "sim/libraries/log/nrf_log.h"
+#include "sim/nrfx/hal/nrf_gpio.h"
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
-using namespace Pinetime::Drivers;
+using namespace Pinetime::Drivers::Infinisim;
 
 SpiNorFlash::SpiNorFlash(const std::string& memoryFilePath) : memoryFilePath{memoryFilePath} {
   namespace fs = std::filesystem;
@@ -26,7 +26,7 @@ SpiNorFlash::~SpiNorFlash() {
 }
 
 void SpiNorFlash::Init() {
-  device_id = ReadIdentificaion();
+  device_id = ReadIdentification();
   NRF_LOG_INFO(
     "[SpiNorFlash] Manufacturer : %d, Memory type : %d, memory density : %d", device_id.manufacturer, device_id.type, device_id.density);
 }
@@ -42,7 +42,7 @@ void SpiNorFlash::Wakeup() {
   NRF_LOG_INFO("[SpiNorFlash] Wakeup")
 }
 
-SpiNorFlash::Identification SpiNorFlash::ReadIdentificaion() {
+SpiNorFlash::Identification SpiNorFlash::ReadIdentification() {
   return {};
 }
 
