@@ -170,6 +170,14 @@ file(GLOB InfiniTime_SCREENS
   "${InfiniTime_DIR}/src/displayapp/screens/settings/*.h"
   "${InfiniTime_DIR}/src/displayapp/screens/settings/*.cpp"
 )
+
+# skip files, which currently cause problems when turning on CMake untiy build
+set_source_files_properties(
+  main.cpp
+  ${LVGL_SOURCES}
+  ${InfiniTime_SCREENS}
+  PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+
 file(GLOB InfiniTime_FONTS
   "${InfiniTime_DIR}/src/displayapp/fonts/*.c"
 )
