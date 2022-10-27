@@ -57,7 +57,7 @@ jobs:
 
       - name: CMake
         run:  |
-          cmake -G Ninja -S . -B build_lv_sim
+          cmake -G Ninja -S . -B build_lv_sim -DCMAKE_UNITY_BUILD=ON
 
       #########################################################################################
       # Build and Upload simulator
