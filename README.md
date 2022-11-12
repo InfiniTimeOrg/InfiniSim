@@ -121,7 +121,7 @@ Using the keyboard the following events can be triggered:
 - `h` ... set heartrate running, and on further presses increase by 10 bpm
 - `H` ... stop heartrate
 - `i` ... take screenshot
-- `I` ... start/stop Gif scren capture
+- `I` ... start/stop Gif screen capture
 
 ## Littlefs-do helper
 
