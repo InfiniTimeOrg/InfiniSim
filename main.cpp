@@ -230,7 +230,7 @@ public:
           image[(hi * sdl_width + wi)*4 + 3] = 255; // no alpha
         }
       }
-      GifWriteFrame(&writer, image.data(), sdl_width, sdl_height, delay_ds, 8, true);
+      GifWriteFrame(&writer, image.data(), sdl_width, sdl_height, delay_ds, 8, false);
     }
   }
   void close()
