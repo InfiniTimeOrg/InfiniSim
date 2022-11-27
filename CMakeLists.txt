@@ -210,6 +210,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/motor/MotorController.h
   ${InfiniTime_DIR}/src/components/motor/MotorController.cpp
+  ${InfiniTime_DIR}/src/components/stopwatch/StopWatchController.h
+  ${InfiniTime_DIR}/src/components/stopwatch/StopWatchController.cpp
   ${InfiniTime_DIR}/src/components/timer/TimerController.h
   ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h
