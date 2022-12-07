@@ -755,15 +755,15 @@ public:
     void switch_to_screen(uint8_t screen_idx)
     {
       if (screen_idx == 1) {
-        settingsController.SetClockFace(0);
+        settingsController.SetWatchFace(Pinetime::Applications::WatchFace::Digital);
         displayApp.StartApp(Pinetime::Applications::Apps::Clock, Pinetime::Applications::DisplayApp::FullRefreshDirections::None);
       }
       else if (screen_idx == 2) {
-        settingsController.SetClockFace(1);
+        settingsController.SetWatchFace(Pinetime::Applications::WatchFace::Analog);
         displayApp.StartApp(Pinetime::Applications::Apps::Clock, Pinetime::Applications::DisplayApp::FullRefreshDirections::None);
       }
       else if (screen_idx == 3) {
-        settingsController.SetClockFace(2);
+        settingsController.SetWatchFace(Pinetime::Applications::WatchFace::PineTimeStyle);
         displayApp.StartApp(Pinetime::Applications::Apps::Clock, Pinetime::Applications::DisplayApp::FullRefreshDirections::None);
       }
       else if (screen_idx == 4) {
