@@ -204,8 +204,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/datetime/DateTimeController.cpp
   ${InfiniTime_DIR}/src/components/settings/Settings.h
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp
-  ${InfiniTime_DIR}/src/components/ble/NotificationManager.h
-  ${InfiniTime_DIR}/src/components/ble/NotificationManager.cpp
+  ${InfiniTime_DIR}/src/components/notifications/NotificationManager.h
+  ${InfiniTime_DIR}/src/components/notifications/NotificationManager.cpp
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/motor/MotorController.h
