@@ -1,4 +1,4 @@
-#include "SpiNorFlash.h"
+#include "drivers/infinisim/SpiNorFlash.h"
 #include "drivers/Spi.h"
 #include "sim/libraries/log/nrf_log.h"
 #include "sim/nrfx/hal/nrf_gpio.h"

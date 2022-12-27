@@ -1,4 +1,4 @@
-#include "Spi.h"
+#include "drivers/infinisim/Spi.h"
 
 using namespace Pinetime::Drivers::Infinisim;
 
