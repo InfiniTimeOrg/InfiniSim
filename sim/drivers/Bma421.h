@@ -3,10 +3,10 @@
 #include <cstdint>
 #include <cstddef>
 #include <memory>
+#include "port/infinitime.h"
 
 namespace Pinetime {
   namespace Drivers {
-    class TwiMaster;
     class Bma421 {
     public:
       enum class DeviceTypes : uint8_t {

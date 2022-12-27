@@ -145,8 +145,8 @@ target_sources(infinisim PUBLIC
   sim/drivers/infinisim/SpiMaster.h
   sim/drivers/infinisim/Spi.h
   sim/drivers/infinisim/Spi.cpp
-  sim/drivers/TwiMaster.h
-  sim/drivers/TwiMaster.cpp
+  sim/drivers/infinisim/TwiMaster.h
+  sim/drivers/infinisim/TwiMaster.cpp
   sim/drivers/infinisim/SpiNorFlash.h
   sim/drivers/infinisim/SpiNorFlash.cpp
   sim/heartratetask/HeartRateTask.h
