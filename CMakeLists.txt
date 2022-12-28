@@ -136,8 +136,8 @@ target_sources(infinisim PUBLIC
   sim/components/motion/MotionController.cpp
   sim/drivers/Watchdog.h
   sim/drivers/Watchdog.cpp
-  sim/drivers/Bma421.h
-  sim/drivers/Bma421.cpp
+  sim/drivers/infinisim/Bma421.h
+  sim/drivers/infinisim/Bma421.cpp
   sim/drivers/infinisim/SdlTouchPanel.h
   sim/drivers/infinisim/SdlTouchPanel.cpp
   sim/drivers/Hrs3300.h

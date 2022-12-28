@@ -26,8 +26,8 @@
 #else
 #include "displayapp/lv_pinetime_theme.h"
 #endif
+#include "sim/drivers/infinisim/Bma421.h"
 #include <drivers/Hrs3300.h>
-#include <drivers/Bma421.h>
 
 #include "BootloaderVersion.h"
 #include "buttonhandler/ButtonHandler.h"
@@ -321,7 +321,8 @@ Pinetime::Drivers::TouchPanel touchPanel {touchPanelImpl};
 //#endif
 Pinetime::Components::LittleVgl lvgl {lcd, touchPanel};
 
-Pinetime::Drivers::Bma421 motionSensor {twiMaster, motionSensorTwiAddress};
+Pinetime::Drivers::Infinisim::MotionSensors::Bma421 motionSensorImpl{};
+Pinetime::Drivers::MotionSensor motionSensor{motionSensorImpl};
 Pinetime::Drivers::Hrs3300 heartRateSensor {twiMaster, heartRateSensorTwiAddress};
 
 TimerHandle_t debounceTimer;
@@ -688,12 +689,12 @@ public:
       } else if (key == 'P') {
         this->print_memory_usage = false;
       } else if (key == 's') {
-        motionSensor.steps += 500;
+        motionSensorImpl.steps += 500;
       } else if (key == 'S') {
-        if (motionSensor.steps > 500) {
-          motionSensor.steps -= 500;
+        if (motionSensorImpl.steps > 500) {
+          motionSensorImpl.steps -= 500;
         } else {
-          motionSensor.steps = 0;
+          motionSensorImpl.steps = 0;
         }
       } else if (key == 'h') {
         if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::Stopped) {
