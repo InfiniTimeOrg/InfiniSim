@@ -149,6 +149,8 @@ target_sources(infinisim PUBLIC
   sim/drivers/infinisim/TwiMaster.cpp
   sim/drivers/infinisim/SpiNorFlash.h
   sim/drivers/infinisim/SpiNorFlash.cpp
+  sim/drivers/infinisim/St7789.cpp
+  sim/drivers/infinisim/St7789.h
   sim/heartratetask/HeartRateTask.h
   sim/heartratetask/HeartRateTask.cpp
 )
@@ -215,8 +217,6 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h
   ${InfiniTime_DIR}/src/drivers/Spi.h
-  ${InfiniTime_DIR}/src/drivers/St7789.h
-  ${InfiniTime_DIR}/src/drivers/St7789.cpp
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.h
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.cpp
   ${InfiniTime_DIR}/src/systemtask/SystemTask.h

@@ -41,7 +41,7 @@
 #include "components/motor/MotorController.h"
 #include "drivers/PinMap.h"
 #include "drivers/Spi.h"
-#include "drivers/St7789.h"
+#include "drivers/Display.h"
 #include "drivers/Watchdog.h"
 #include "drivers/WatchdogView.h"
 #include "sim/drivers/infinisim/SdlTouchPanel.h"
@@ -78,6 +78,7 @@
 #include "port/TwiMaster.h"
 #include "port/TouchPanel.h"
 #include "port/Watchdog.h"
+#include "port/Display.h"
 
 /*********************
  *      DEFINES
@@ -292,20 +293,12 @@ void nrfx_gpiote_evt_handler(nrfx_gpiote_pin_t pin, nrf_gpiote_polarity_t action
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
-static constexpr uint8_t touchPanelTwiAddress = 0x15;
-static constexpr uint8_t motionSensorTwiAddress = 0x18;
-static constexpr uint8_t heartRateSensorTwiAddress = 0x44;
 
 Pinetime::Drivers::Infinisim::SpiMaster spiImpl {};
 Pinetime::Drivers::SpiMaster spi {spiImpl};
 
-
-Pinetime::Drivers::Infinisim::Spi lcdSpiImpl {spiImpl, Pinetime::PinMap::SpiLcdCsn};
-Pinetime::Drivers::Spi lcdSpi {lcdSpiImpl};
-Pinetime::Drivers::St7789 lcd {lcdSpi, Pinetime::PinMap::LcdDataCommand};
-
-Pinetime::Drivers::Infinisim::Spi flashSpiImpl {spiImpl, Pinetime::PinMap::SpiFlashCsn};
-Pinetime::Drivers::Spi flashSpi {flashSpiImpl};
+Pinetime::Drivers::Infinisim::Displays::St7789 lcdImpl;
+Pinetime::Drivers::Display lcd {lcdImpl};
 
 Pinetime::Drivers::Infinisim::SpiNorFlash spiNorFlashImpl {"spiNorFlash.raw"};
 Pinetime::Drivers::SpiNorFlash spiNorFlash {spiNorFlashImpl};
@@ -316,13 +309,6 @@ Pinetime::Drivers::TwiMaster twiMaster{twiMasterImpl};
 Pinetime::Drivers::Infinisim::TouchPanels::SdlTouchPanel touchPanelImpl;
 Pinetime::Drivers::TouchPanel touchPanel {touchPanelImpl};
 
-//#ifdef PINETIME_IS_RECOVERY
-//  #include "displayapp/DummyLittleVgl.h"
-//  #include "displayapp/DisplayAppRecovery.h"
-//#else
-//  #include "displayapp/LittleVgl.h"
-//  #include "displayapp/DisplayApp.h"
-//#endif
 Pinetime::Components::LittleVgl lvgl {lcd, touchPanel};
 
 Pinetime::Drivers::Infinisim::MotionSensors::Bma421 motionSensorImpl{};

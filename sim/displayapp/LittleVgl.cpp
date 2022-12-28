@@ -10,7 +10,9 @@
 #include <timers.h>
 ////#include <projdefs.h>
 #include "drivers/TouchPanel.h"
-#include "drivers/St7789.h"
+#include "drivers/Display.h"
+#include "port/Display.h"
+
 
 // lv-sim monitor display driver for monitor_flush() function
 #include "lv_drivers/display/monitor.h"
@@ -41,7 +43,7 @@ bool touchpad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
   return lvgl->GetTouchPadInfo(data);
 }
 
-LittleVgl::LittleVgl(Pinetime::Drivers::St7789& lcd, Pinetime::Drivers::TouchPanel& touchPanel)
+LittleVgl::LittleVgl(Pinetime::Drivers::Display& lcd, Pinetime::Drivers::TouchPanel& touchPanel)
   : lcd {lcd}, touchPanel {touchPanel} {
 }
 
