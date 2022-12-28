@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <memory>
-#include "port/infinitime.h"
+#include "port/TwiMaster.h"
 
 namespace Pinetime {
   namespace Drivers {

@@ -69,7 +69,9 @@
 #endif
 #include <gif.h>
 
-#include "port/infinitime.h"
+#include "port/Spi.h"
+#include "port/SpiMaster.h"
+#include "port/SpiNorFlash.h"
 #include "port/TwiMaster.h"
 #include "port/TouchPanel.h"
 

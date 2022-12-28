@@ -1,6 +1,6 @@
 #pragma once
 
-#include "port/infinitime.h"
+#include "port/TwiMaster.h"
 
 namespace Pinetime {
   namespace Drivers {
