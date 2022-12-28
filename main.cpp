@@ -39,10 +39,10 @@
 #include "components/fs/FS.h"
 #include "components/heartrate/HeartRateController.h"
 #include "components/motor/MotorController.h"
-#include "drivers/Cst816s.h"
 #include "drivers/PinMap.h"
 #include "drivers/Spi.h"
 #include "drivers/St7789.h"
+#include "sim/drivers/infinisim/SdlTouchPanel.h"
 #include "sim/drivers/infinisim/SpiMaster.h"
 #include "sim/drivers/infinisim/SpiNorFlash.h"
 #include "sim/drivers/infinisim/TwiMaster.h"
@@ -70,6 +70,8 @@
 #include <gif.h>
 
 #include "port/infinitime.h"
+#include "port/TwiMaster.h"
+#include "port/TouchPanel.h"
 
 /*********************
  *      DEFINES
@@ -304,7 +306,10 @@ Pinetime::Drivers::SpiNorFlash spiNorFlash {spiNorFlashImpl};
 
 Pinetime::Drivers::Infinisim::TwiMaster twiMasterImpl {};
 Pinetime::Drivers::TwiMaster twiMaster{twiMasterImpl};
-Pinetime::Drivers::Cst816S touchPanel; // {twiMaster, touchPanelTwiAddress};
+
+Pinetime::Drivers::Infinisim::TouchPanels::SdlTouchPanel touchPanelImpl;
+Pinetime::Drivers::TouchPanel touchPanel {touchPanelImpl};
+
 //#ifdef PINETIME_IS_RECOVERY
 //  #include "displayapp/DummyLittleVgl.h"
 //  #include "displayapp/DisplayAppRecovery.h"

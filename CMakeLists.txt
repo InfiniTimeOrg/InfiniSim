@@ -138,8 +138,8 @@ target_sources(infinisim PUBLIC
   sim/drivers/Watchdog.cpp
   sim/drivers/Bma421.h
   sim/drivers/Bma421.cpp
-  sim/drivers/Cst816s.h
-  sim/drivers/Cst816s.cpp
+  sim/drivers/infinisim/SdlTouchPanel.h
+  sim/drivers/infinisim/SdlTouchPanel.cpp
   sim/drivers/Hrs3300.h
   sim/drivers/Hrs3300.cpp
   sim/drivers/infinisim/SpiMaster.h

@@ -1,29 +1,19 @@
-#include "drivers/Cst816s.h"
+#include "SdlTouchPanel.h"
 #include "lv_drv_conf.h" // MONITOR_ZOOM
+#include "sim/libraries/log/nrf_log.h"
 #include <SDL2/SDL.h>
-#include <libraries/log/nrf_log.h>
 #include <cmath>
 
-using namespace Pinetime::Drivers;
+using namespace Pinetime::Drivers::Infinisim::TouchPanels;
 
-/* References :
- * This implementation is based on this article :
- * https://medium.com/@ly.lee/building-a-rust-driver-for-pinetimes-touch-controller-cbc1a5d5d3e9 Touch panel datasheet (weird chinese
- * translation) : https://wiki.pine64.org/images/5/51/CST816S%E6%95%B0%E6%8D%AE%E6%89%8B%E5%86%8CV1.1.en.pdf
- *
- * TODO : we need a complete datasheet and protocol reference!
- * */
-
-//Cst816S::Cst816S(TwiMaster& twiMaster, uint8_t twiAddress) : twiMaster {twiMaster}, twiAddress {twiAddress} {
-//}
-Cst816S::Cst816S() {
+SdlTouchPanel::SdlTouchPanel() {
 }
 
-bool Cst816S::Init() {
+bool SdlTouchPanel::Init() {
   return true;
 }
 
-Cst816S::TouchInfos Cst816S::GetTouchInfo() {
+Pinetime::Drivers::TouchPanels::TouchInfos SdlTouchPanel::GetTouchInfo() {
   int x, y;
   uint32_t buttons = SDL_GetMouseState(&x, &y);
   // scale down real mouse coordinates to InfiniTime scale to make zoom work
@@ -31,7 +21,7 @@ Cst816S::TouchInfos Cst816S::GetTouchInfo() {
   x /= MONITOR_ZOOM;
   y /= MONITOR_ZOOM;
 
-  Cst816S::TouchInfos info;
+  Pinetime::Drivers::TouchPanels::TouchInfos info;
   info.x = x;
   info.y = y;
   info.touching = (buttons & SDL_BUTTON_LMASK) != 0;
@@ -62,7 +52,7 @@ Cst816S::TouchInfos Cst816S::GetTouchInfo() {
         if(is_stationary && press_duration.count() > 1.0) {
           // longer than 1 second pressed, then it is long-press
           is_long_press = true;
-          info.gesture = Gestures::LongPress;
+          info.gesture = Pinetime::Drivers::TouchPanels::Gestures::LongPress;
         } else if(!is_stationary) {
           // moved mouse fast enough to not be a long-press
           is_swipe = true;
@@ -71,16 +61,16 @@ Cst816S::TouchInfos Cst816S::GetTouchInfo() {
           if (fabs(x_diff) > fabs(y_diff)) {
             // x-swipe
             if (x_diff < 0) {
-              info.gesture = Gestures::SlideLeft;
+              info.gesture = Pinetime::Drivers::TouchPanels::Gestures::SlideLeft;
             } else {
-              info.gesture = Gestures::SlideRight;
+              info.gesture = Pinetime::Drivers::TouchPanels::Gestures::SlideRight;
             }
           } else {
             // y-swipe
             if (y_diff < 0) {
-              info.gesture = Gestures::SlideUp;
+              info.gesture = Pinetime::Drivers::TouchPanels::Gestures::SlideUp;
             } else {
-              info.gesture = Gestures::SlideDown;
+              info.gesture = Pinetime::Drivers::TouchPanels::Gestures::SlideDown;
             }
           }
         }
@@ -95,7 +85,7 @@ Cst816S::TouchInfos Cst816S::GetTouchInfo() {
       if(norm < 20) {
         if(is_stationary && !is_long_press && !is_swipe) {
           // no swipe with less than 5 pixel mouse movement
-          info.gesture = Gestures::SingleTap;
+          info.gesture = Pinetime::Drivers::TouchPanels::Gestures::SingleTap;
         }
       }
     }
@@ -103,15 +93,15 @@ Cst816S::TouchInfos Cst816S::GetTouchInfo() {
   return info;
 }
 
-void Cst816S::Sleep() {
+void SdlTouchPanel::Sleep() {
   NRF_LOG_INFO("[TOUCHPANEL] Sleep");
 }
 
-void Cst816S::Wakeup() {
+void SdlTouchPanel::Wakeup() {
   Init();
   NRF_LOG_INFO("[TOUCHPANEL] Wakeup");
 }
 
-bool Cst816S::CheckDeviceIds() {
+bool SdlTouchPanel::CheckDeviceIds() {
   return chipId == 0xb4 && vendorId == 0 && fwVersion == 1;
 }
