@@ -27,7 +27,7 @@
 #include "displayapp/lv_pinetime_theme.h"
 #endif
 #include "sim/drivers/infinisim/Bma421.h"
-#include <drivers/Hrs3300.h>
+#include "sim/drivers/infinisim/Hrs3300.h"
 
 #include "BootloaderVersion.h"
 #include "buttonhandler/ButtonHandler.h"
@@ -42,10 +42,13 @@
 #include "drivers/PinMap.h"
 #include "drivers/Spi.h"
 #include "drivers/St7789.h"
+#include "drivers/Watchdog.h"
+#include "drivers/WatchdogView.h"
 #include "sim/drivers/infinisim/SdlTouchPanel.h"
 #include "sim/drivers/infinisim/SpiMaster.h"
 #include "sim/drivers/infinisim/SpiNorFlash.h"
 #include "sim/drivers/infinisim/TwiMaster.h"
+#include "sim/drivers/infinisim/Watchdog.h"
 #include "systemtask/SystemTask.h"
 #include "touchhandler/TouchHandler.h"
 
@@ -74,6 +77,7 @@
 #include "port/SpiNorFlash.h"
 #include "port/TwiMaster.h"
 #include "port/TouchPanel.h"
+#include "port/Watchdog.h"
 
 /*********************
  *      DEFINES
@@ -323,7 +327,8 @@ Pinetime::Components::LittleVgl lvgl {lcd, touchPanel};
 
 Pinetime::Drivers::Infinisim::MotionSensors::Bma421 motionSensorImpl{};
 Pinetime::Drivers::MotionSensor motionSensor{motionSensorImpl};
-Pinetime::Drivers::Hrs3300 heartRateSensor {twiMaster, heartRateSensorTwiAddress};
+Pinetime::Drivers::Infinisim::HeartRateSensors::Hrs3300 heartRateSensorImpl;
+Pinetime::Drivers::HeartRateSensor heartRateSensor{heartRateSensorImpl};
 
 TimerHandle_t debounceTimer;
 TimerHandle_t debounceChargeTimer;
@@ -338,7 +343,8 @@ Pinetime::Controllers::Settings settingsController {fs};
 Pinetime::Controllers::MotorController motorController {};
 
 Pinetime::Controllers::DateTime dateTimeController {settingsController};
-Pinetime::Drivers::Watchdog watchdog;
+Pinetime::Drivers::Infinisim::Watchdogs::Watchdog watchdogImpl;
+Pinetime::Drivers::Watchdog watchdog{watchdogImpl};
 Pinetime::Drivers::WatchdogView watchdogView(watchdog);
 Pinetime::Controllers::NotificationManager notificationManager;
 Pinetime::Controllers::MotionController motionController;

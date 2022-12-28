@@ -134,14 +134,14 @@ target_sources(infinisim PUBLIC
   sim/components/heartrate/HeartRateController.cpp
   sim/components/motion/MotionController.h
   sim/components/motion/MotionController.cpp
-  sim/drivers/Watchdog.h
-  sim/drivers/Watchdog.cpp
+  sim/drivers/infinisim/Watchdog.h
+  sim/drivers/infinisim/Watchdog.cpp
   sim/drivers/infinisim/Bma421.h
   sim/drivers/infinisim/Bma421.cpp
   sim/drivers/infinisim/SdlTouchPanel.h
   sim/drivers/infinisim/SdlTouchPanel.cpp
-  sim/drivers/Hrs3300.h
-  sim/drivers/Hrs3300.cpp
+  sim/drivers/infinisim/Hrs3300.h
+  sim/drivers/infinisim/Hrs3300.cpp
   sim/drivers/infinisim/SpiMaster.h
   sim/drivers/infinisim/Spi.h
   sim/drivers/infinisim/Spi.cpp
