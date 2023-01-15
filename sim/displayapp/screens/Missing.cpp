@@ -99,11 +99,8 @@ Missing::Missing(Pinetime::Applications::DisplayApp* app, Pinetime::Applications
     case Pinetime::Applications::Apps::SettingSteps:
       screen_lbl = "SettingSteps";
       break;
-    case Pinetime::Applications::Apps::SettingSetDate:
-      screen_lbl = "SettingSetDate";
-      break;
-    case Pinetime::Applications::Apps::SettingSetTime:
-      screen_lbl = "SettingSetTime";
+    case Pinetime::Applications::Apps::SettingSetDateTime:
+      screen_lbl = "SettingSetDateTime";
       break;
     case Pinetime::Applications::Apps::SettingChimes:
       screen_lbl = "SettingChimes";
