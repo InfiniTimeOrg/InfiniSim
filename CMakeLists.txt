@@ -305,6 +305,11 @@ if(NOT TARGET SDL2::SDL2)
 endif()
 target_link_libraries(infinisim PRIVATE SDL2::SDL2)
 
+# Some toolchains (e.g. g++-8) require to explicitly link with the standard filesystem library
+# See https://github.com/InfiniTimeOrg/InfiniSim/issues/57#issuecomment-1386889378
+find_package(Filesystem REQUIRED)
+target_link_libraries(infinisim PRIVATE std::filesystem)
+
 # Get the latest abbreviated commit hash of the working branch
 execute_process(
   COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
@@ -357,3 +362,4 @@ add_subdirectory(external/miniz)
 add_subdirectory(external/nlohmann_json)
 target_link_libraries(littlefs-do PRIVATE miniz)
 target_link_libraries(littlefs-do PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(littlefs-do PRIVATE std::filesystem)
