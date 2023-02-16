@@ -6,11 +6,11 @@ uint32_t timer_callback_wrapper(uint32_t interval, void *param) {
   if (!xTimer->running) {
     return 0;
   }
+  xTimer->running = false;
   xTimer->pxCallbackFunction(*xTimer);
   if (xTimer->auto_reload) {
     return xTimer->timer_period_in_ms;
   }
-  xTimer->running = false;
   return 0; // cancel timer
 }
 
