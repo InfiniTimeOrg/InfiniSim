@@ -1,7 +1,7 @@
 #pragma once
 
+#include "drivers/MotionSensor.h"
 #include <cstdint>
-#include <drivers/Bma421.h>
 //#include <components/ble/MotionService.h>
 
 namespace Pinetime {
@@ -48,7 +48,7 @@ namespace Pinetime {
         return deviceType;
       }
 
-      void Init(Pinetime::Drivers::Bma421::DeviceTypes types);
+      void Init(Pinetime::Drivers::MotionSensors::DeviceTypes types);
 //      void SetService(Pinetime::Controllers::MotionService* service);
 
     private:

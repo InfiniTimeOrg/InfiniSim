@@ -20,7 +20,7 @@ project(InfiniSim VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 string(COMPARE EQUAL "${CMAKE_CXX_STANDARD}" "" no_cmake_cxx_standard_set)
 if(no_cmake_cxx_standard_set)
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
   message(STATUS "Using default C++ standard ${CMAKE_CXX_STANDARD}")
@@ -134,20 +134,23 @@ target_sources(infinisim PUBLIC
   sim/components/heartrate/HeartRateController.cpp
   sim/components/motion/MotionController.h
   sim/components/motion/MotionController.cpp
-  sim/drivers/Watchdog.h
-  sim/drivers/Watchdog.cpp
-  sim/drivers/Bma421.h
-  sim/drivers/Bma421.cpp
-  sim/drivers/Cst816s.h
-  sim/drivers/Cst816s.cpp
-  sim/drivers/Hrs3300.h
-  sim/drivers/Hrs3300.cpp
-  sim/drivers/SpiMaster.h
-  sim/drivers/SpiMaster.cpp
-  sim/drivers/TwiMaster.h
-  sim/drivers/TwiMaster.cpp
-  sim/drivers/SpiNorFlash.h
-  sim/drivers/SpiNorFlash.cpp
+  sim/drivers/infinisim/Watchdog.h
+  sim/drivers/infinisim/Watchdog.cpp
+  sim/drivers/infinisim/Bma421.h
+  sim/drivers/infinisim/Bma421.cpp
+  sim/drivers/infinisim/SdlTouchPanel.h
+  sim/drivers/infinisim/SdlTouchPanel.cpp
+  sim/drivers/infinisim/Hrs3300.h
+  sim/drivers/infinisim/Hrs3300.cpp
+  sim/drivers/infinisim/SpiMaster.h
+  sim/drivers/infinisim/Spi.h
+  sim/drivers/infinisim/Spi.cpp
+  sim/drivers/infinisim/TwiMaster.h
+  sim/drivers/infinisim/TwiMaster.cpp
+  sim/drivers/infinisim/SpiNorFlash.h
+  sim/drivers/infinisim/SpiNorFlash.cpp
+  sim/drivers/infinisim/St7789.cpp
+  sim/drivers/infinisim/St7789.h
   sim/heartratetask/HeartRateTask.h
   sim/heartratetask/HeartRateTask.cpp
 )
@@ -214,9 +217,6 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h
   ${InfiniTime_DIR}/src/drivers/Spi.h
-  ${InfiniTime_DIR}/src/drivers/Spi.cpp
-  ${InfiniTime_DIR}/src/drivers/St7789.h
-  ${InfiniTime_DIR}/src/drivers/St7789.cpp
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.h
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.cpp
   ${InfiniTime_DIR}/src/systemtask/SystemTask.h
@@ -340,13 +340,13 @@ add_executable(littlefs-do
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   # dependencies for FS.h
-  sim/drivers/SpiNorFlash.h
-  sim/drivers/SpiNorFlash.cpp
+  sim/drivers/infinisim/SpiNorFlash.h
+  sim/drivers/infinisim/SpiNorFlash.cpp
   # dependencies for SpiNorFlash.h
   ${InfiniTime_DIR}/src/drivers/Spi.h
-  ${InfiniTime_DIR}/src/drivers/Spi.cpp
-  sim/drivers/SpiMaster.h
-  sim/drivers/SpiMaster.cpp
+  sim/drivers/infinisim/SpiMaster.h
+  sim/drivers/infinisim/Spi.h
+  sim/drivers/infinisim/Spi.cpp
 
   ${InfiniTime_DIR}/src/components/settings/Settings.h
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp

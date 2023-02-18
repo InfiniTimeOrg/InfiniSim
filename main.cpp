@@ -26,29 +26,31 @@
 #else
 #include "displayapp/lv_pinetime_theme.h"
 #endif
-#include <drivers/Hrs3300.h>
-#include <drivers/Bma421.h>
+#include "sim/drivers/infinisim/Bma421.h"
+#include "sim/drivers/infinisim/Hrs3300.h"
 
 #include "BootloaderVersion.h"
+#include "buttonhandler/ButtonHandler.h"
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
 #include "components/ble/NotificationManager.h"
 #include "components/brightness/BrightnessController.h"
-#include "components/motor/MotorController.h"
 #include "components/datetime/DateTimeController.h"
-#include "components/heartrate/HeartRateController.h"
 #include "components/fs/FS.h"
+#include "components/heartrate/HeartRateController.h"
+#include "components/motor/MotorController.h"
+#include "drivers/PinMap.h"
 #include "drivers/Spi.h"
-#include "drivers/SpiMaster.h"
-#include "drivers/SpiNorFlash.h"
-#include "drivers/St7789.h"
-#include "drivers/TwiMaster.h"
-#include "drivers/Cst816s.h"
-#include "drivers/PinMap.h"
+#include "drivers/Display.h"
+#include "drivers/Watchdog.h"
+#include "drivers/WatchdogView.h"
+#include "sim/drivers/infinisim/SdlTouchPanel.h"
+#include "sim/drivers/infinisim/SpiMaster.h"
+#include "sim/drivers/infinisim/SpiNorFlash.h"
+#include "sim/drivers/infinisim/TwiMaster.h"
+#include "sim/drivers/infinisim/Watchdog.h"
 #include "systemtask/SystemTask.h"
-#include "drivers/PinMap.h"
 #include "touchhandler/TouchHandler.h"
-#include "buttonhandler/ButtonHandler.h"
 
 // get the simulator-headers
 #include "displayapp/DisplayApp.h"
@@ -69,6 +71,14 @@
 #include <libpng/png.h>
 #endif
 #include <gif.h>
+
+#include "port/Spi.h"
+#include "port/SpiMaster.h"
+#include "port/SpiNorFlash.h"
+#include "port/TwiMaster.h"
+#include "port/TouchPanel.h"
+#include "port/Watchdog.h"
+#include "port/Display.h"
 
 /*********************
  *      DEFINES
@@ -283,44 +293,28 @@ void nrfx_gpiote_evt_handler(nrfx_gpiote_pin_t pin, nrf_gpiote_polarity_t action
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
-constexpr NRF_TWIM_Type *NRF_TWIM1 = nullptr;
 
+Pinetime::Drivers::Infinisim::SpiMaster spiImpl {};
+Pinetime::Drivers::SpiMaster spi {spiImpl};
 
-static constexpr uint8_t touchPanelTwiAddress = 0x15;
-static constexpr uint8_t motionSensorTwiAddress = 0x18;
-static constexpr uint8_t heartRateSensorTwiAddress = 0x44;
+Pinetime::Drivers::Infinisim::Displays::St7789 lcdImpl;
+Pinetime::Drivers::Display lcd {lcdImpl};
 
-Pinetime::Drivers::SpiMaster spi {Pinetime::Drivers::SpiMaster::SpiModule::SPI0,
-                                  {Pinetime::Drivers::SpiMaster::BitOrder::Msb_Lsb,
-                                   Pinetime::Drivers::SpiMaster::Modes::Mode3,
-                                   Pinetime::Drivers::SpiMaster::Frequencies::Freq8Mhz,
-                                   Pinetime::PinMap::SpiSck,
-                                   Pinetime::PinMap::SpiMosi,
-                                   Pinetime::PinMap::SpiMiso}};
+Pinetime::Drivers::Infinisim::SpiNorFlash spiNorFlashImpl {"spiNorFlash.raw"};
+Pinetime::Drivers::SpiNorFlash spiNorFlash {spiNorFlashImpl};
 
-Pinetime::Drivers::Spi lcdSpi {spi, Pinetime::PinMap::SpiLcdCsn};
-Pinetime::Drivers::St7789 lcd {lcdSpi, Pinetime::PinMap::LcdDataCommand};
+Pinetime::Drivers::Infinisim::TwiMaster twiMasterImpl {};
+Pinetime::Drivers::TwiMaster twiMaster{twiMasterImpl};
 
-Pinetime::Drivers::Spi flashSpi {spi, Pinetime::PinMap::SpiFlashCsn};
-Pinetime::Drivers::SpiNorFlash spiNorFlash {"spiNorFlash.raw"};
+Pinetime::Drivers::Infinisim::TouchPanels::SdlTouchPanel touchPanelImpl;
+Pinetime::Drivers::TouchPanel touchPanel {touchPanelImpl};
 
-// The TWI device should work @ up to 400Khz but there is a HW bug which prevent it from
-// respecting correct timings. According to erratas heet, this magic value makes it run
-// at ~390Khz with correct timings.
-static constexpr uint32_t MaxTwiFrequencyWithoutHardwareBug {0x06200000};
-Pinetime::Drivers::TwiMaster twiMaster {NRF_TWIM1, MaxTwiFrequencyWithoutHardwareBug, Pinetime::PinMap::TwiSda, Pinetime::PinMap::TwiScl};
-Pinetime::Drivers::Cst816S touchPanel; // {twiMaster, touchPanelTwiAddress};
-//#ifdef PINETIME_IS_RECOVERY
-//  #include "displayapp/DummyLittleVgl.h"
-//  #include "displayapp/DisplayAppRecovery.h"
-//#else
-//  #include "displayapp/LittleVgl.h"
-//  #include "displayapp/DisplayApp.h"
-//#endif
 Pinetime::Components::LittleVgl lvgl {lcd, touchPanel};
 
-Pinetime::Drivers::Bma421 motionSensor {twiMaster, motionSensorTwiAddress};
-Pinetime::Drivers::Hrs3300 heartRateSensor {twiMaster, heartRateSensorTwiAddress};
+Pinetime::Drivers::Infinisim::MotionSensors::Bma421 motionSensorImpl{};
+Pinetime::Drivers::MotionSensor motionSensor{motionSensorImpl};
+Pinetime::Drivers::Infinisim::HeartRateSensors::Hrs3300 heartRateSensorImpl;
+Pinetime::Drivers::HeartRateSensor heartRateSensor{heartRateSensorImpl};
 
 TimerHandle_t debounceTimer;
 TimerHandle_t debounceChargeTimer;
@@ -335,7 +329,8 @@ Pinetime::Controllers::Settings settingsController {fs};
 Pinetime::Controllers::MotorController motorController {};
 
 Pinetime::Controllers::DateTime dateTimeController {settingsController};
-Pinetime::Drivers::Watchdog watchdog;
+Pinetime::Drivers::Infinisim::Watchdogs::Watchdog watchdogImpl;
+Pinetime::Drivers::Watchdog watchdog{watchdogImpl};
 Pinetime::Drivers::WatchdogView watchdogView(watchdog);
 Pinetime::Controllers::NotificationManager notificationManager;
 Pinetime::Controllers::MotionController motionController;
@@ -686,12 +681,12 @@ public:
       } else if (key == 'P') {
         this->print_memory_usage = false;
       } else if (key == 's') {
-        motionSensor.steps += 500;
+        motionSensorImpl.steps += 500;
       } else if (key == 'S') {
-        if (motionSensor.steps > 500) {
-          motionSensor.steps -= 500;
+        if (motionSensorImpl.steps > 500) {
+          motionSensorImpl.steps -= 500;
         } else {
-          motionSensor.steps = 0;
+          motionSensorImpl.steps = 0;
         }
       } else if (key == 'h') {
         if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::Stopped) {
