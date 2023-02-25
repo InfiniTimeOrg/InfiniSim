@@ -80,15 +80,12 @@ add_library(sim-base STATIC
   sim/nrfx/hal/nrf_rtc.h
   sim/nrfx/hal/nrf_rtc.cpp
   # nrf/components/libraries/timer
-  sim/libraries/timer/app_timer.h
-  sim/libraries/timer/app_timer.cpp
   sim/libraries/gpiote/app_gpiote.h # includes hal/nrf_gpio.h
 )
 # include the generated lv_conf.h file before anything else
 target_include_directories(sim-base PUBLIC "${CMAKE_CURRENT_BINARY_DIR}") # lv_conf.h
 target_include_directories(sim-base PUBLIC "sim")
 target_include_directories(sim-base PUBLIC "sim/libraries/log") # for nrf_log.h
-target_include_directories(sim-base PUBLIC "sim/libraries/timer") # for app_timer.h
 target_include_directories(sim-base PUBLIC "sim/nrfx") # for nrfx_log.h and others
 target_include_directories(sim-base PUBLIC "sim/nrfx/hal") # for nrfx_log.h
 
