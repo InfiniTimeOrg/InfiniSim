@@ -112,8 +112,6 @@ add_executable(infinisim main.cpp)
 target_sources(infinisim PUBLIC
   sim/displayapp/LittleVgl.h
   sim/displayapp/LittleVgl.cpp
-  sim/displayapp/screens/Missing.h
-  sim/displayapp/screens/Missing.cpp
   sim/components/battery/BatteryController.h
   sim/components/battery/BatteryController.cpp
   sim/components/ble/AlertNotificationService.h
