@@ -349,7 +349,6 @@ Pinetime::Controllers::MotorController motorController {};
 
 Pinetime::Controllers::DateTime dateTimeController {settingsController};
 Pinetime::Drivers::Watchdog watchdog;
-Pinetime::Drivers::WatchdogView watchdogView(watchdog);
 Pinetime::Controllers::NotificationManager notificationManager;
 Pinetime::Controllers::MotionController motionController;
 Pinetime::Controllers::TimerController timerController;
@@ -359,12 +358,11 @@ Pinetime::Controllers::ButtonHandler buttonHandler;
 Pinetime::Controllers::BrightnessController brightnessController {};
 
 Pinetime::Applications::DisplayApp displayApp(lcd,
-                                              lvgl,
                                               touchPanel,
                                               batteryController,
                                               bleController,
                                               dateTimeController,
-                                              watchdogView,
+                                              watchdog,
                                               notificationManager,
                                               heartRateController,
                                               settingsController,
@@ -377,11 +375,9 @@ Pinetime::Applications::DisplayApp displayApp(lcd,
                                               fs);
 
 Pinetime::System::SystemTask systemTask(spi,
-                                        lcd,
                                         spiNorFlash,
                                         twiMaster,
                                         touchPanel,
-                                        lvgl,
                                         batteryController,
                                         bleController,
                                         dateTimeController,
