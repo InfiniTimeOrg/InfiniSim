@@ -21,11 +21,7 @@
 #include "lv_drivers/indev/mousewheel.h"
 
 // get PineTime header
-#if defined(INFINITIME_THEME_CPP)
 #include "displayapp/InfiniTimeTheme.h"
-#else
-#include "displayapp/lv_pinetime_theme.h"
-#endif
 #include <drivers/Hrs3300.h>
 #include <drivers/Bma421.h>
 
@@ -330,8 +326,6 @@ Pinetime::Drivers::Cst816S touchPanel; // {twiMaster, touchPanelTwiAddress};
 //  #include "displayapp/LittleVgl.h"
 //  #include "displayapp/DisplayApp.h"
 //#endif
-Pinetime::Components::LittleVgl lvgl {lcd};
-
 Pinetime::Drivers::Bma421 motionSensor {twiMaster, motionSensorTwiAddress};
 Pinetime::Drivers::Hrs3300 heartRateSensor {twiMaster, heartRateSensorTwiAddress};
 
@@ -346,6 +340,8 @@ Pinetime::Applications::HeartRateTask heartRateApp(heartRateSensor, heartRateCon
 Pinetime::Controllers::FS fs {spiNorFlash};
 Pinetime::Controllers::Settings settingsController {fs};
 Pinetime::Controllers::MotorController motorController {};
+
+Pinetime::Components::LittleVgl lvgl {lcd, fs};
 
 Pinetime::Controllers::DateTime dateTimeController {settingsController};
 Pinetime::Drivers::Watchdog watchdog;

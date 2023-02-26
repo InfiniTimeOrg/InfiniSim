@@ -211,18 +211,10 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/systemtask/SystemMonitor.cpp
 )
 
-if(EXISTS ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.cpp)
-  target_compile_definitions(infinisim PUBLIC INFINITIME_THEME_CPP)
-  target_sources(infinisim PUBLIC
-    ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.cpp
-    ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.h
+target_sources(infinisim PUBLIC
+  ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.cpp
+  ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.h
 )
-else()
-  target_sources(infinisim PUBLIC
-    ${InfiniTime_DIR}/src/displayapp/lv_pinetime_theme.h
-    ${InfiniTime_DIR}/src/displayapp/lv_pinetime_theme.c
-  )
-endif()
 
 # littlefs
 add_library(littlefs STATIC
