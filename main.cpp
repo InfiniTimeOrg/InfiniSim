@@ -63,8 +63,10 @@
 #include <cmath> // std::pow
 
 // additional includes for 'saveScreenshot()' function
-#include <date/date.h>
+#include <iomanip> // put_time
+#include <sstream>
 #include <chrono>
+#include <ctime>   // localtime
 #if defined(WITH_PNG)
 #include <libpng/png.h>
 #endif
@@ -97,8 +99,13 @@ extern monitor_t monitor;
 void saveScreenshot()
 {
   auto now = std::chrono::system_clock::now();
-  // TODO: timestamped png filename
-  std::string screenshot_filename_base = date::format("InfiniSim_%F_%H%M%S", date::floor<std::chrono::seconds>(now));
+  auto in_time_t = std::chrono::system_clock::to_time_t(now);
+  // timestamped png filename
+  std::stringstream ss;
+  ss << "InfiniSim_" << std::put_time(std::localtime(&in_time_t), "%F_%H%M%S");
+  std::string screenshot_filename_base = ss.str();
+  // TODO: use std::format once we have C++20 and new enough GCC 13
+  //std::string screenshot_filename_base = std::format("InfiniSim_%F_%H%M%S", std::chrono::floor<std::chrono::seconds>(now));
   //std::string screenshot_filename_base = "InfiniSim";
 
   const int width = 240;
@@ -198,7 +205,13 @@ public:
   {
     assert(!in_progress);
     auto now = std::chrono::system_clock::now();
-    std::string screenshot_filename_base = date::format("InfiniSim_%F_%H%M%S", date::floor<std::chrono::seconds>(now));
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+    // timestamped png filename
+    std::stringstream ss;
+    ss << "InfiniSim_" << std::put_time(std::localtime(&in_time_t), "%F_%H%M%S");
+    std::string screenshot_filename_base = ss.str();
+    // TODO: use std::format once we have C++20 and new enough GCC 13
+    //std::string screenshot_filename_base = std::format("InfiniSim_%F_%H%M%S", std::chrono::floor<std::chrono::seconds>(now));
     std::string screenshot_filename = screenshot_filename_base + ".gif";
     std::cout << "InfiniSim: Screen-capture started: " << screenshot_filename << std::endl;
     GifBegin( &writer, screenshot_filename.c_str(), sdl_width, sdl_height, delay_ds, 8, true );

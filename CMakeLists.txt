@@ -148,15 +148,6 @@ target_sources(infinisim PUBLIC
 )
 target_link_libraries(infinisim PUBLIC sim-base)
 
-# add dates library
-if(EXISTS "${InfiniTime_DIR}/src/libs/date/includes")
-  target_include_directories(infinisim SYSTEM PRIVATE "${InfiniTime_DIR}/src/libs/date/includes")
-elseif(EXISTS "${InfiniTime_DIR}/src/libs/date/include")
-  target_include_directories(infinisim SYSTEM PRIVATE "${InfiniTime_DIR}/src/libs/date/include")
-else()
-  message(FATAL_ERROR "can't find date includes/include directory, is the submodule checked out?")
-endif()
-
 # add Screens, fonts and icons with a globbing expression,
 # to enable easier CI test-runs for PRs adding new Screens/Fonts/Icons
 file(GLOB InfiniTime_SCREENS
