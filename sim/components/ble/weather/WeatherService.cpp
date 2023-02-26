@@ -19,6 +19,7 @@
 #include "components/ble/weather/WeatherService.h"
 //#include "libs/QCBOR/inc/qcbor/qcbor.h"
 #include "systemtask/SystemTask.h"
+#include <algorithm>
 
 using namespace Pinetime::Controllers;
 
