@@ -4,7 +4,6 @@
 
 namespace Pinetime {
   namespace Drivers {
-    class Cst816S;
     class St7789;
   }
 
@@ -12,7 +11,7 @@ namespace Pinetime {
     class LittleVgl {
     public:
       enum class FullRefreshDirections { None, Up, Down, Left, Right, LeftAnim, RightAnim };
-      LittleVgl(Pinetime::Drivers::St7789& lcd, Pinetime::Drivers::Cst816S& touchPanel);
+      LittleVgl(Pinetime::Drivers::St7789& lcd);
 
       LittleVgl(const LittleVgl&) = delete;
       LittleVgl& operator=(const LittleVgl&) = delete;
@@ -38,10 +37,8 @@ namespace Pinetime {
     private:
       void InitDisplay();
       void InitTouchpad();
-      void InitTheme();
 
       Pinetime::Drivers::St7789& lcd;
-      Pinetime::Drivers::Cst816S& touchPanel;
 
       lv_disp_buf_t disp_buf_2;
       lv_color_t buf2_1[LV_HOR_RES_MAX * 4];
@@ -53,9 +50,11 @@ namespace Pinetime {
       static constexpr uint8_t nbWriteLines = 4;
       static constexpr uint16_t totalNbLines = 320;
       static constexpr uint16_t visibleNbLines = 240;
+
       static constexpr uint8_t MaxScrollOffset() {
         return LV_VER_RES_MAX - nbWriteLines;
       }
+
       FullRefreshDirections scrollDirection = FullRefreshDirections::None;
       uint16_t writeOffset = 0;
       uint16_t scrollOffset = 0;

@@ -19,6 +19,12 @@
 
 using namespace Pinetime::Components;
 
+namespace {
+  void InitTheme() {
+    lv_theme_t* theme = lv_pinetime_theme_init();
+    lv_theme_set_act(theme);
+  }
+}
 lv_style_t* LabelBigStyle = nullptr;
 
 static void disp_flush(lv_disp_drv_t* disp_drv, const lv_area_t* area, lv_color_t* color_p) {
@@ -41,8 +47,7 @@ bool touchpad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data) {
   return lvgl->GetTouchPadInfo(data);
 }
 
-LittleVgl::LittleVgl(Pinetime::Drivers::St7789& lcd, Pinetime::Drivers::Cst816S& touchPanel)
-  : lcd {lcd}, touchPanel {touchPanel} {
+LittleVgl::LittleVgl(Pinetime::Drivers::St7789& lcd) : lcd {lcd} {
 }
 
 void LittleVgl::Init() {
@@ -303,11 +308,4 @@ bool LittleVgl::GetTouchPadInfo(lv_indev_data_t* ptr) {
     ptr->state = LV_INDEV_STATE_REL;
   }
   return false;
-}
-
-void LittleVgl::InitTheme() {
-
-  lv_theme_t* th = lv_pinetime_theme_init();
-
-  lv_theme_set_act(th);
 }
