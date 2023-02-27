@@ -196,8 +196,6 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/motor/MotorController.h
   ${InfiniTime_DIR}/src/components/motor/MotorController.cpp
-  ${InfiniTime_DIR}/src/components/timer/TimerController.h
-  ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h
   ${InfiniTime_DIR}/src/drivers/Spi.h
   ${InfiniTime_DIR}/src/drivers/Spi.cpp
@@ -215,6 +213,19 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.cpp
   ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.h
 )
+
+if(EXISTS ${InfiniTime_DIR}/src/wrappers/FreeRTOS/Timer.h)
+  target_sources(infinisim PUBLIC
+    ${InfiniTime_DIR}/src/wrappers/FreeRTOS/Timer.h
+    ${InfiniTime_DIR}/src/wrappers/FreeRTOS/Timer.cpp
+  )
+else()
+  target_compile_definitions(infinisim PUBLIC INFINITIME_TIMERCONTROLLER)
+  target_sources(infinisim PUBLIC
+    ${InfiniTime_DIR}/src/components/timer/TimerController.h
+    ${InfiniTime_DIR}/src/components/timer/TimerController.cpp
+  )
+endif()
 
 # littlefs
 add_library(littlefs STATIC

@@ -345,7 +345,10 @@ Pinetime::Controllers::DateTime dateTimeController {settingsController};
 Pinetime::Drivers::Watchdog watchdog;
 Pinetime::Controllers::NotificationManager notificationManager;
 Pinetime::Controllers::MotionController motionController;
+#if defined(INFINITIME_TIMERCONTROLLER)
 Pinetime::Controllers::TimerController timerController;
+#endif
+
 Pinetime::Controllers::AlarmController alarmController {dateTimeController};
 Pinetime::Controllers::TouchHandler touchHandler;
 Pinetime::Controllers::ButtonHandler buttonHandler;
@@ -362,7 +365,9 @@ Pinetime::Applications::DisplayApp displayApp(lcd,
                                               settingsController,
                                               motorController,
                                               motionController,
+                                              #if defined(INFINITIME_TIMERCONTROLLER)
                                               timerController,
+                                              #endif
                                               alarmController,
                                               brightnessController,
                                               touchHandler,
@@ -375,7 +380,9 @@ Pinetime::System::SystemTask systemTask(spi,
                                         batteryController,
                                         bleController,
                                         dateTimeController,
+                                        #if defined(INFINITIME_TIMERCONTROLLER)
                                         timerController,
+                                        #endif
                                         alarmController,
                                         watchdog,
                                         notificationManager,
