@@ -341,8 +341,6 @@ Pinetime::Controllers::FS fs {spiNorFlash};
 Pinetime::Controllers::Settings settingsController {fs};
 Pinetime::Controllers::MotorController motorController {};
 
-Pinetime::Components::LittleVgl lvgl {lcd, fs};
-
 Pinetime::Controllers::DateTime dateTimeController {settingsController};
 Pinetime::Drivers::Watchdog watchdog;
 Pinetime::Controllers::NotificationManager notificationManager;
@@ -417,8 +415,6 @@ public:
         }
         motorController.Init();
         settingsController.Init();
-
-        lvgl.Init();
 
         lv_mem_monitor(&mem_mon);
         printf("initial free_size = %u\n", mem_mon.free_size);
