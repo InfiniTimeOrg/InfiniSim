@@ -347,6 +347,28 @@ target_link_libraries(littlefs-do PUBLIC littlefs)
 target_link_libraries(littlefs-do PRIVATE SDL2::SDL2)
 target_link_libraries(littlefs-do PRIVATE infinitime_fonts)
 
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
+   # FindPython3 module introduces with CMake 3.12
+   # https://cmake.org/cmake/help/latest/module/FindPython3.html
+   find_package(Python3 REQUIRED)
+else()
+   set(Python3_EXECUTABLE "python")
+endif()
+message(STATUS "calling ${CMAKE_CURRENT_SOURCE_DIR}/parse_infinitime_settings.py generating ${CMAKE_CURRENT_BINARY_DIR}/list_settings.cpp")
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/list_settings.cpp
+  COMMAND "${Python3_EXECUTABLE}" ${CMAKE_CURRENT_SOURCE_DIR}/parse_infinitime_settings.py
+  "${InfiniTime_DIR}/src/components/settings/Settings.h"
+  --output "${CMAKE_CURRENT_BINARY_DIR}/list_settings.cpp"
+  DEPENDS "${InfiniTime_DIR}/src/components/settings/Settings.h"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+add_custom_target(list_settings
+  DEPENDS "${InfiniTime_DIR}/src/components/settings/Settings.h"
+)
+target_sources(littlefs-do PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/list_settings.cpp")
+add_dependencies(littlefs-do list_settings)
+
 add_subdirectory(external/miniz)
 add_subdirectory(external/nlohmann_json)
 target_link_libraries(littlefs-do PRIVATE miniz)

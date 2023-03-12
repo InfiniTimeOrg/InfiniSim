@@ -515,6 +515,9 @@ int command_cp(const std::string &program_name, const std::vector<std::string> &
   return 0;
 }
 
+// generated into ${CMAKE_BUILD_DIR}/list_settings.cpp
+void list_settings(const Pinetime::Controllers::Settings &settingsController);
+
 int command_settings(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
 {
   if (verbose) {
@@ -533,85 +536,7 @@ int command_settings(const std::string &program_name, const std::vector<std::str
     std::cout << "calling Settings::Init()" << std::endl;
   }
   settingsController.Init();
-  using namespace Pinetime::Controllers;
-  {
-    auto clockface = settingsController.GetClockFace();
-    auto clockface_str = [](auto val) {
-      if (val == 0) return "Digital";
-      if (val == 1) return "Analog";
-      if (val == 2) return "PineTimeStyle";
-      if (val == 3) return "Terminal";
-      return "unknown";
-    }(clockface);
-    std::cout << "ClockFace: " << static_cast<int>(clockface) << " " << clockface_str << std::endl;
-  }
-  {
-    auto chimes = settingsController.GetChimeOption();
-    auto chimes_str = [](auto val) {
-      if (val == Settings::ChimesOption::None) return "None";
-      if (val == Settings::ChimesOption::Hours) return "Hours";
-      if (val == Settings::ChimesOption::HalfHours) return "HalfHours";
-      return "unknown";
-    }(chimes);
-    std::cout << "Chimes: " << static_cast<int>(chimes) << " " << chimes_str << std::endl;
-  }
-  auto color_str = [](auto c) {
-    if (c == Settings::Colors::White) return "White";
-    if (c == Settings::Colors::Silver) return "Silver";
-    if (c == Settings::Colors::Gray) return "Gray";
-    if (c == Settings::Colors::Black) return "Black";
-    if (c == Settings::Colors::Red) return "Red";
-    if (c == Settings::Colors::Maroon) return "Maroon";
-    if (c == Settings::Colors::Yellow) return "Yellow";
-    if (c == Settings::Colors::Olive) return "Olive";
-    if (c == Settings::Colors::Lime) return "Lime";
-    if (c == Settings::Colors::Green) return "Cyan";
-    if (c == Settings::Colors::Teal) return "Teal";
-    if (c == Settings::Colors::Blue) return "Blue";
-    if (c == Settings::Colors::Navy) return "Navy";
-    if (c == Settings::Colors::Magenta) return "Magenta";
-    if (c == Settings::Colors::Purple) return "Purple";
-    if (c == Settings::Colors::Orange) return "Orange";
-    return "unknown";
-  };
-  std::cout << "PTSColorTime: " << color_str(settingsController.GetPTSColorTime()) << std::endl;
-  std::cout << "PTSColorBar: " << color_str(settingsController.GetPTSColorBar()) << std::endl;
-  std::cout << "PTSColorBG: " << color_str(settingsController.GetPTSColorBG()) << std::endl;
-  std::cout << "AppMenu: " << static_cast<int>(settingsController.GetAppMenu()) << std::endl;
-  std::cout << "SettingsMenu: " << static_cast<int>(settingsController.GetSettingsMenu()) << std::endl;
-  std::cout << "ClockType: " << (settingsController.GetClockType() == Settings::ClockType::H24 ? "H24" : "H12") << std::endl;
-  {
-    auto notif = settingsController.GetNotificationStatus();
-    auto notif_str = [](auto val) {
-      if (val == Settings::Notification::On) return "On";
-      if (val == Settings::Notification::Off) return "Off";
-      if (val == Settings::Notification::Sleep) return "Sleep";
-      return "unknown";
-    }(notif);
-    std::cout << "NotificationStatus: " << static_cast<int>(notif) << " " << notif_str << std::endl;
-  }
-  std::cout << "ScreenTimeOut: " << settingsController.GetScreenTimeOut() << " ms" << std::endl;
-  std::cout << "ShakeThreshold: " << settingsController.GetShakeThreshold() << std::endl;
-  {
-    std::cout << "WakeUpModes: " << std::endl;
-    std::cout << "- SingleTap:  " << (settingsController.isWakeUpModeOn(Settings::WakeUpMode::SingleTap) ? "ON" : "OFF") << std::endl;
-    std::cout << "- DoubleTap:  " << (settingsController.isWakeUpModeOn(Settings::WakeUpMode::DoubleTap) ? "ON" : "OFF") << std::endl;
-    std::cout << "- RaiseWrist: " << (settingsController.isWakeUpModeOn(Settings::WakeUpMode::RaiseWrist) ? "ON" : "OFF") << std::endl;
-    std::cout << "- Shake:      " << (settingsController.isWakeUpModeOn(Settings::WakeUpMode::Shake) ? "ON" : "OFF") << std::endl;
-  }
-  {
-    auto brightness = settingsController.GetBrightness();
-    auto brightness_str = [](auto val) {
-      if (val == BrightnessController::Levels::Off) return "Off";
-      if (val == BrightnessController::Levels::Low) return "Low";
-      if (val == BrightnessController::Levels::Medium) return "Medium";
-      if (val == BrightnessController::Levels::High) return "High";
-      return "unknown";
-    }(brightness);
-    std::cout << "Brightness: " << static_cast<int>(brightness) << " " << brightness_str << std::endl;
-  }
-  std::cout << "StepsGoal: " << settingsController.GetStepsGoal() << std::endl;
-  std::cout << "BleRadioEnabled: " << (settingsController.GetBleRadioEnabled() ? "true" : "false") << std::endl;
+  list_settings(settingsController);
   return 0;
 }
 
