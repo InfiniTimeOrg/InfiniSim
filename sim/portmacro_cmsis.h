@@ -29,7 +29,7 @@
 #ifndef PORTMACRO_CMSIS_H
 #define PORTMACRO_CMSIS_H
 
-#include <cstdint>
+#include <stdint.h>
 
 typedef uint32_t TickType_t;
 #define portMAX_DELAY ( TickType_t ) 0xffffffffUL
@@ -41,8 +41,8 @@ typedef unsigned long UBaseType_t;
 #define pdPASS pdTRUE
 
 /* RTC register */
-using NRF_RTC_Type = uint32_t;
-constexpr NRF_RTC_Type portNRF_RTC_REG = 1;
+typedef uint32_t NRF_RTC_Type;
+const NRF_RTC_Type portNRF_RTC_REG = 1;
 
 void portYIELD_FROM_ISR(BaseType_t);
 
