@@ -535,15 +535,15 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   settingsController.Init();
   using namespace Pinetime::Controllers;
   {
-    auto clockface = settingsController.GetClockFace();
+    auto clockface = settingsController.GetWatchFace();
     auto clockface_str = [](auto val) {
-      if (val == 0) return "Digital";
-      if (val == 1) return "Analog";
-      if (val == 2) return "PineTimeStyle";
-      if (val == 3) return "Terminal";
+      if (val == Pinetime::Applications::WatchFace::Digital) return "Digital";
+      if (val == Pinetime::Applications::WatchFace::Analog) return "Analog";
+      if (val == Pinetime::Applications::WatchFace::PineTimeStyle) return "PineTimeStyle";
+      if (val == Pinetime::Applications::WatchFace::Terminal) return "Terminal";
       return "unknown";
     }(clockface);
-    std::cout << "ClockFace: " << static_cast<int>(clockface) << " " << clockface_str << std::endl;
+    std::cout << "ClockFace: " << static_cast<uint32_t>(clockface) << " " << clockface_str << std::endl;
   }
   {
     auto chimes = settingsController.GetChimeOption();
