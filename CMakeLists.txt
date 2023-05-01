@@ -214,10 +214,10 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/displayapp/InfiniTimeTheme.h
 )
 
-if(EXISTS ${InfiniTime_DIR}/src/wrappers/FreeRTOS/Timer.h)
+if(EXISTS ${InfiniTime_DIR}/src/components/timer/Timer.h)
   target_sources(infinisim PUBLIC
-    ${InfiniTime_DIR}/src/wrappers/FreeRTOS/Timer.h
-    ${InfiniTime_DIR}/src/wrappers/FreeRTOS/Timer.cpp
+    ${InfiniTime_DIR}/src/components/timer/Timer.h
+    ${InfiniTime_DIR}/src/components/timer/Timer.cpp
   )
 else()
   target_compile_definitions(infinisim PUBLIC INFINITIME_TIMERCONTROLLER)
