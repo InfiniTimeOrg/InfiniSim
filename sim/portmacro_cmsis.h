@@ -29,6 +29,10 @@
 #ifndef PORTMACRO_CMSIS_H
 #define PORTMACRO_CMSIS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 typedef uint32_t TickType_t;
@@ -45,5 +49,9 @@ typedef uint32_t NRF_RTC_Type;
 const NRF_RTC_Type portNRF_RTC_REG = 1;
 
 void portYIELD_FROM_ISR(BaseType_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PORTMACRO_CMSIS_H */

@@ -30,6 +30,10 @@
 #ifndef INC_TASK_H
 #define INC_TASK_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "portmacro_cmsis.h"
 
 #include <stdint.h>
@@ -323,5 +327,9 @@ TaskHandle_t xTaskGetCurrentTaskHandle();
  * taskSCHEDULER_NOT_STARTED or taskSCHEDULER_SUSPENDED.
  */
 BaseType_t xTaskGetSchedulerState();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_TASK_H */

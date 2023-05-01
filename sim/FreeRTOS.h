@@ -29,8 +29,13 @@
 #ifndef INC_FREERTOS_H
 #define INC_FREERTOS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "portmacro_cmsis.h"
 //#include "app_error.h"
+#include <stddef.h>
 
 // from nrf_error.h
 /** @defgroup NRF_ERRORS_BASE Error Codes Base number definitions
@@ -78,21 +83,16 @@ const unsigned SCB_ICSR_VECTACTIVE_Msk = 0x01;
 // copied from nRF5_SDK_15.3.0_59ac345/components/toolchain/cmsis/include/core_cm4.h
 void NVIC_SystemReset(void);
 
-#include <stddef.h>
 #define configTOTAL_HEAP_SIZE                   (1024 * 40)
 
 size_t xPortGetFreeHeapSize(void);
 size_t xPortGetMinimumEverFreeHeapSize(void);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 void *pvPortMalloc(size_t xWantedSize);
 void vPortFree(void *pv);
+
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #endif /* INC_FREERTOS_H */
