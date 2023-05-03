@@ -1,5 +1,5 @@
 #include "FreeRTOS.h"
-#include <algorithm>
+#include <numeric>
 #include <unordered_map>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,9 +20,10 @@ void *pvPortMalloc( size_t xWantedSize ) {
   void* ptr = malloc(xWantedSize);
   allocatedMemory[ptr] = xWantedSize;
 
-  size_t currentSize = 0;
-  std::for_each(allocatedMemory.begin(), allocatedMemory.end(), [&currentSize](const std::pair<void*, size_t>& item){
-    currentSize += item.second;
+  const size_t currentSize = std::accumulate(
+    allocatedMemory.begin(), allocatedMemory.end(), 0,
+    [](const size_t lhs, const std::pair<void*, size_t>& item){
+      return lhs + item.second;
   });
 
   currentFreeHeap = configTOTAL_HEAP_SIZE - currentSize;
