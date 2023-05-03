@@ -138,8 +138,6 @@ target_sources(infinisim PUBLIC
   sim/drivers/Bma421.cpp
   sim/drivers/Cst816s.h
   sim/drivers/Cst816s.cpp
-  sim/drivers/Hrs3300.h
-  sim/drivers/Hrs3300.cpp
   sim/drivers/SpiMaster.h
   sim/drivers/SpiMaster.cpp
   sim/drivers/TwiMaster.h
@@ -199,6 +197,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/motor/MotorController.h
   ${InfiniTime_DIR}/src/components/motor/MotorController.cpp
+  ${InfiniTime_DIR}/src/drivers/Hrs3300.h
+  ${InfiniTime_DIR}/src/drivers/Hrs3300.cpp
   ${InfiniTime_DIR}/src/drivers/PinMap.h
   ${InfiniTime_DIR}/src/drivers/Spi.h
   ${InfiniTime_DIR}/src/drivers/Spi.cpp
