@@ -882,8 +882,8 @@ public:
 
       if (print_memory_usage) {
         auto currentFreeHeap = xPortGetFreeHeapSize();
-        auto minimumEverFreeHeap = xPortGetMinimumEverFreeHeapSize();
         if (currentFreeHeap != lastFreeHeapSize) {
+          auto minimumEverFreeHeap = xPortGetMinimumEverFreeHeapSize();
           // 14KiB is the LVGL memory size used in InfiniTime
           constexpr uint32_t pinetime_heap_memory = configTOTAL_HEAP_SIZE;
           uint32_t mem_used = pinetime_heap_memory - currentFreeHeap;
