@@ -194,17 +194,18 @@ void MoveScreen(lv_disp_drv_t *disp_drv, int16_t height) {
   const int sdl_height = 240;
   auto renderer = monitor.renderer;
 
+  constexpr size_t zoom = MONITOR_ZOOM;
   const Uint32 format = SDL_PIXELFORMAT_RGBA8888;
-  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, sdl_width, sdl_height, 32, format);
+  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, sdl_width*zoom, sdl_height*zoom, 32, format);
   SDL_RenderReadPixels(renderer, NULL, format, surface->pixels, surface->pitch);
   uint8_t *pixels = (uint8_t*) surface->pixels;
 
   std::array<lv_color16_t, 240*240> color_p;
   for (int hi = 0; hi < sdl_height; hi++) {
     for (int wi = 0; wi < sdl_width; wi++) {
-      auto red   = pixels[hi*surface->pitch + wi*4 + 3]; // red
-      auto green = pixels[hi*surface->pitch + wi*4 + 2]; // greeen
-      auto blue  = pixels[hi*surface->pitch + wi*4 + 1]; // blue
+      auto red   = pixels[hi*surface->pitch*zoom + wi*4*zoom + 3]; // red
+      auto green = pixels[hi*surface->pitch*zoom + wi*4*zoom + 2]; // greeen
+      auto blue  = pixels[hi*surface->pitch*zoom + wi*4*zoom + 1]; // blue
       color_p.at(hi * sdl_width + wi) = LV_COLOR_MAKE(red, green, blue);
     }
   }
