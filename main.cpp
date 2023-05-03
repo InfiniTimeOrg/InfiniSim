@@ -651,6 +651,24 @@ public:
       debounce('8', '!'+8, state[SDL_SCANCODE_8], key_handled_8);
       debounce('9', '!'+9, state[SDL_SCANCODE_9], key_handled_9);
       debounce('0', '!'+0, state[SDL_SCANCODE_0], key_handled_0);
+      // direction keys
+      debounce(':', ':', state[SDL_SCANCODE_UP], key_handled_up);
+      debounce(';', ';', state[SDL_SCANCODE_DOWN], key_handled_down);
+      debounce('<', '<', state[SDL_SCANCODE_LEFT], key_handled_left);
+      debounce('>', '>', state[SDL_SCANCODE_RIGHT], key_handled_right);
+    }
+    // inject a swipe gesture to the touch handler and notify displayapp to notice it
+    void send_gesture(Pinetime::Drivers::Cst816S::Gestures gesture)
+    {
+      Pinetime::Drivers::Cst816S::TouchInfos info;
+      info.isValid = true;
+      info.touching = true;
+      info.gesture = gesture;
+      touchHandler.ProcessTouchInfo(info);
+      displayApp.PushMessage(Pinetime::Applications::Display::Messages::TouchEvent);
+      info.touching = false;
+      info.gesture = Pinetime::Drivers::Cst816S::Gestures::None;
+      touchHandler.ProcessTouchInfo(info);
     }
     // modify the simulated controller depending on the pressed key
     void handle_key(SDL_Keycode key) {
@@ -728,6 +746,14 @@ public:
         this->switch_to_screen(key-'0');
       } else if (key >= '!'+0 && key <= '!'+9) {
         this->switch_to_screen(key-'!'+10);
+      } else if (key == ':') { // up
+        send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideUp);
+      } else if (key == ';') { // down
+        send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideDown);
+      } else if (key == '<') { // left
+        send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideLeft);
+      } else if (key == '>') { // up
+        send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideRight);
       }
       batteryController.voltage = batteryController.percentRemaining * 50;
     }
@@ -905,6 +931,11 @@ private:
     bool key_handled_8 = false;
     bool key_handled_9 = false;
     bool key_handled_0 = false;
+    // direction arrows
+    bool key_handled_up = false;     // inject swipe up
+    bool key_handled_down = false;   // inject swipe down
+    bool key_handled_left = false;   // inject swipe left
+    bool key_handled_right = false;  // inject swipe right
     bool visible;   // show Simulator window
     int height;     // Height of the window
     int width;      // Width of the window

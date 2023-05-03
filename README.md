@@ -123,6 +123,9 @@ Using the keyboard the following events can be triggered:
 - `i` ... take screenshot
 - `I` ... start/stop Gif screen capture
 
+Additionally using the arrow keys the respective swipe gesture can be triggered.
+For example pressing the UP key triggers a `SwipeUp` gesture.
+
 ## Littlefs-do helper
 
 To help working with the SPI-raw file the tool `littlefs-do` is provided.
