@@ -52,6 +52,7 @@
 
 #include <nrfx_gpiote.h>
 #include <hal/nrf_gpio.h>
+#include <mdk/nrf52.h> // initialize NRF_WDT and NRF_POWER
 
 #include <iostream>
 #include <typeinfo>
@@ -420,6 +421,9 @@ public:
           SDL_RenderPresent(renderer);    // Reflects the changes done in the
                                           //  window.
         }
+        init_NRF_WDT();
+        init_NRF_POWER();
+
         motorController.Init();
         settingsController.Init();
 
