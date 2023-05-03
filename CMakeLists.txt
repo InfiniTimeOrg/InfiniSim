@@ -79,6 +79,10 @@ add_library(sim-base STATIC
   sim/nrfx/hal/nrfx_gpiote.h # includes hal/nrf_gpio.h
   sim/nrfx/hal/nrf_rtc.h
   sim/nrfx/hal/nrf_rtc.cpp
+  sim/nrfx/mdk/nrf.h
+  sim/nrfx/mdk/nrf52.h
+  sim/nrfx/mdk/nrf52.cpp
+  sim/nrfx/mdk/nrf52_bitfields.h
   # nrf/components/libraries/timer
   sim/libraries/gpiote/app_gpiote.h # includes hal/nrf_gpio.h
 )
@@ -88,6 +92,7 @@ target_include_directories(sim-base PUBLIC "sim")
 target_include_directories(sim-base PUBLIC "sim/libraries/log") # for nrf_log.h
 target_include_directories(sim-base PUBLIC "sim/nrfx") # for nrfx_log.h and others
 target_include_directories(sim-base PUBLIC "sim/nrfx/hal") # for nrfx_log.h
+target_include_directories(sim-base PUBLIC "sim/nrfx/mdk") # for nrf52_bitfields.h
 
 target_include_directories(sim-base PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}") # lv_drv_conf.h
 target_include_directories(sim-base PUBLIC "${InfiniTime_DIR}/src/libs")
@@ -129,8 +134,6 @@ target_sources(infinisim PUBLIC
   sim/components/heartrate/HeartRateController.cpp
   sim/components/motion/MotionController.h
   sim/components/motion/MotionController.cpp
-  sim/drivers/Watchdog.h
-  sim/drivers/Watchdog.cpp
   sim/drivers/Bma421.h
   sim/drivers/Bma421.cpp
   sim/drivers/Cst816s.h
@@ -201,6 +204,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/drivers/Spi.cpp
   ${InfiniTime_DIR}/src/drivers/St7789.h
   ${InfiniTime_DIR}/src/drivers/St7789.cpp
+  ${InfiniTime_DIR}/src/drivers/Watchdog.h
+  ${InfiniTime_DIR}/src/drivers/Watchdog.cpp
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.h
   ${InfiniTime_DIR}/src/touchhandler/TouchHandler.cpp
   ${InfiniTime_DIR}/src/systemtask/SystemTask.h
