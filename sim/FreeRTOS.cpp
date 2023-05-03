@@ -1,6 +1,6 @@
 #include "FreeRTOS.h"
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +11,7 @@ void APP_ERROR_HANDLER(int err) {
 }
 
 namespace {
-std::map<void *, size_t> allocatedMemory;
+std::unordered_map<void *, size_t> allocatedMemory;
 size_t currentFreeHeap = configTOTAL_HEAP_SIZE;
 size_t minimumEverFreeHeap = configTOTAL_HEAP_SIZE;
 }
