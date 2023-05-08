@@ -69,6 +69,8 @@
 #endif
 #include <gif.h>
 
+#include "img/sim_background.h" // provides variable SIM_BACKGROUND
+
 /*********************
  *      DEFINES
  *********************/
@@ -426,8 +428,10 @@ public:
         init_NRF_WDT();
         init_NRF_POWER();
 
-        // Attempt to load background PNG for the status display window
-        SDL_Surface* simDisplayBgRaw = SDL_LoadBMP("img/sim_background.bmp");
+        // Attempt to load background BMP from memory for the status display window
+        const size_t SIM_BACKGROUND_size = sizeof(SIM_BACKGROUND);
+        SDL_RWops *rw = SDL_RWFromMem((void*)SIM_BACKGROUND, SIM_BACKGROUND_size);
+        SDL_Surface* simDisplayBgRaw = SDL_LoadBMP_RW(rw, 1);
         if (simDisplayBgRaw == NULL) {
           printf("Failed to load sim background image: %s\n", SDL_GetError());
         } else {
