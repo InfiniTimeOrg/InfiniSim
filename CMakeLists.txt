@@ -325,6 +325,10 @@ endif()
 
 target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/gif-h")
 
+# embedd background image for the status window to use
+add_subdirectory(img)
+add_dependencies(infinisim infinisim_img_background)
+
 install(TARGETS infinisim DESTINATION bin)
 
 # helper library to manipulate littlefs raw image

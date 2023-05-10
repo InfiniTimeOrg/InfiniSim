@@ -69,6 +69,8 @@
 #endif
 #include <gif.h>
 
+#include "img/sim_background.h" // provides variable SIM_BACKGROUND
+
 /*********************
  *      DEFINES
  *********************/
@@ -426,6 +428,18 @@ public:
         init_NRF_WDT();
         init_NRF_POWER();
 
+        // Attempt to load background BMP from memory for the status display window
+        const size_t SIM_BACKGROUND_size = sizeof(SIM_BACKGROUND);
+        SDL_RWops *rw = SDL_RWFromMem((void*)SIM_BACKGROUND, SIM_BACKGROUND_size);
+        SDL_Surface* simDisplayBgRaw = SDL_LoadBMP_RW(rw, 1);
+        if (simDisplayBgRaw == NULL) {
+          printf("Failed to load sim background image: %s\n", SDL_GetError());
+        } else {
+          // convert the loaded image into a texture
+          simDisplayTexture = SDL_CreateTextureFromSurface(renderer, simDisplayBgRaw);
+          SDL_FreeSurface(simDisplayBgRaw);
+          simDisplayBgRaw = NULL;
+        }
         motorController.Init();
         settingsController.Init();
 
@@ -444,6 +458,9 @@ public:
 
     // Destructor
     ~Framework(){
+        if (simDisplayTexture != NULL) {
+          SDL_DestroyTexture(simDisplayTexture);
+        }
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -486,6 +503,8 @@ public:
     }
 
     void refresh() {
+      // left edge for all "bubbles" (circles)
+      constexpr const int bubbleLeftEdge = 65;
       // always refresh the LVGL screen
       this->refresh_screen();
 
@@ -494,9 +513,13 @@ public:
       }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
+        // Render the background if it was able to be loaded
+        if (simDisplayTexture != NULL) {
+          SDL_RenderCopy(renderer, simDisplayTexture, NULL, NULL);
+        }
         { // motorController.motor_is_running
-          constexpr const int center_x = 45;
-          constexpr const int center_y = 15;
+          constexpr const int center_x = bubbleLeftEdge;
+          constexpr const int center_y = 216;
           bool motor_is_running = nrf_gpio_pin_read(Pinetime::PinMap::Motor);
           if (motor_is_running) {
               draw_circle_red(center_x, center_y, 15);
@@ -505,8 +528,8 @@ public:
           }
         }
         { // ble.motor_is_running
-          constexpr const int center_x = 75;
-          constexpr const int center_y = 15;
+          constexpr const int center_x = bubbleLeftEdge;
+          constexpr const int center_y = 24;
           if (bleController.IsConnected()) {
               draw_circle_blue(center_x, center_y, 15);
           } else {
@@ -514,18 +537,31 @@ public:
           }
         }
         // batteryController.percentRemaining
-        for (uint8_t percent=0; percent<=10; percent++) {
-          const int center_x = 15+15*percent;
-          const int center_y = 60;
-          if (batteryController.percentRemaining < percent*10) {
-            draw_circle_grey(center_x, center_y, 15);
-          } else {
-            draw_circle_green(center_x, center_y, 15);
-          }
+        {
+          const int center_x = bubbleLeftEdge;
+          const int center_y = 164;
+          const int max_bar_length = 150;
+          const int filled_bar_length = max_bar_length * (batteryController.percentRemaining/100.0);
+          const int rect_height = 14;
+          SDL_Rect rect {
+            .x = center_x - rect_height/2,
+            .y = center_y,
+            .w = max_bar_length,
+            .h = rect_height
+          };
+          SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+          SDL_RenderDrawRect(renderer, &rect);
+
+          rect.w = filled_bar_length;
+          rect.h++;
+          rect.h-=2;
+          SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+          SDL_RenderFillRect(renderer, &rect);
+          //set color and new x pos, draw again
         }
         { // batteryController.isCharging
-          constexpr const int center_x = 15;
-          constexpr const int center_y = 90;
+          constexpr const int center_x = bubbleLeftEdge;
+          constexpr const int center_y = 120;
           if (batteryController.isCharging) {
               draw_circle_yellow(center_x, center_y, 15);
           } else
@@ -534,7 +570,7 @@ public:
           }
         }
         { // brightnessController.Level
-          constexpr const int center_y = 15;
+          constexpr const int center_y = 72;
           const Pinetime::Controllers::BrightnessController::Levels level = brightnessController.Level();
           uint8_t level_idx = 0;
           if (level == Pinetime::Controllers::BrightnessController::Levels::Low)
@@ -548,11 +584,12 @@ public:
             level_idx = 3;
           }
           for (uint8_t i=0; i<4; i++) {
-            const int center_x = 115+15*i;
+            const int bubble_size = (i*2) + 5;
+            const int center_x = bubbleLeftEdge + ((bubble_size+10) * i) - 5;
             if (i <= level_idx) {
-              draw_circle_white(center_x, center_y, 15);
+              draw_circle_white(center_x, center_y, bubble_size);
             } else {
-              draw_circle_grey(center_x, center_y, 15);
+              draw_circle_grey(center_x, center_y, bubble_size);
             }
           }
         }
@@ -943,6 +980,7 @@ private:
     int width;      // Width of the window
     SDL_Renderer *renderer = NULL;      // Pointer for the renderer
     SDL_Window *window = NULL;      // Pointer for the window
+    SDL_Texture* simDisplayTexture = NULL; // Background for the sim status window
 
     bool left_release_sent = true; // make sure to send one mouse button release event
     bool right_last_state = false; // varable used to send message only on changing state
