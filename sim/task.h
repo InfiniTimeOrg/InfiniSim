@@ -30,9 +30,14 @@
 #ifndef INC_TASK_H
 #define INC_TASK_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "portmacro_cmsis.h"
 
-#include <cstdint>
+#include <stdint.h>
+#include <stddef.h>
 // copied from InfiniTime/src/FreeRTOSConfig.h
 #define configTICK_RATE_HZ                      1024
 #define configSTACK_DEPTH_TYPE uint16_t
@@ -65,11 +70,11 @@ typedef void (*TaskFunction_t)(void *instance);
  * \ingroup Tasks
  */
 //typedef void * TaskHandle_t;
-struct TaskHandle_t {
-  void *thread_handle = nullptr;
+typedef struct TaskHandle_t {
+  void *thread_handle;
   TaskFunction_t task_fn;
-  void *instance = nullptr;
-};
+  void *instance;
+}TaskHandle_t;
 
 /* Task states returned by eTaskGetState. */
 enum eTaskState
@@ -101,7 +106,7 @@ is used in assert() statements. */
 
 /* Used with the uxTaskGetSystemState() function to return the state of each task
 in the system. */
-struct TaskStatus_t {
+typedef struct TaskStatus_t {
   TaskHandle_t xHandle;           /* The handle of the task to which the rest of the information in the structure relates. */
   const char *pcTaskName;         /* A pointer to the task's name.  This value will be invalid if the task was deleted since the structure was populated! */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
   UBaseType_t xTaskNumber;        /* A number unique to the task. */
@@ -111,7 +116,7 @@ struct TaskStatus_t {
   uint32_t ulRunTimeCounter;      /* The total run time allocated to the task so far, as defined by the run time stats clock.  See http://www.freertos.org/rtos-run-time-stats.html.  Only valid when configGENERATE_RUN_TIME_STATS is defined as 1 in FreeRTOSConfig.h. */
   //StackType_t *pxStackBase;       /* Points to the lowest address of the task's stack area. */
   uint16_t usStackHighWaterMark;  /* The minimum amount of stack space that has remained for the task since the task was created.  The closer this value is to zero the closer the task has come to overflowing its stack. */
-};
+}TaskStatus_t;
 
 /**
  * configUSE_TRACE_FACILITY must be defined as 1 in FreeRTOSConfig.h for
@@ -322,5 +327,9 @@ TaskHandle_t xTaskGetCurrentTaskHandle();
  * taskSCHEDULER_NOT_STARTED or taskSCHEDULER_SUSPENDED.
  */
 BaseType_t xTaskGetSchedulerState();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_TASK_H */

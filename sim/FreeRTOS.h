@@ -29,8 +29,13 @@
 #ifndef INC_FREERTOS_H
 #define INC_FREERTOS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "portmacro_cmsis.h"
 //#include "app_error.h"
+#include <stddef.h>
 
 // from nrf_error.h
 /** @defgroup NRF_ERRORS_BASE Error Codes Base number definitions
@@ -59,21 +64,17 @@
 #define NRF_ERROR_FORBIDDEN                   (NRF_ERROR_BASE_NUM + 15) ///< Forbidden Operation
 #define NRF_ERROR_INVALID_ADDR                (NRF_ERROR_BASE_NUM + 16) ///< Bad Memory Address
 #define NRF_ERROR_BUSY                        (NRF_ERROR_BASE_NUM + 17) ///< Busy
-#include <stdexcept>
-#include <string> // std::to_string()
-template<typename T>
-void APP_ERROR_HANDLER(T err) {
-  throw std::runtime_error("APP_ERROR_HANDLER: " + std::to_string(err));
-}
 
-struct SCB_t {
-  unsigned ICSR = 0;
-};
+void APP_ERROR_HANDLER(int err);
+
+typedef struct SCB_t {
+  unsigned ICSR;
+} SCB_t;
 static SCB_t SCB_member;
 static SCB_t *SCB = &SCB_member;
 
 //#define SCB_ICSR_VECTACTIVE_Msk            (0x1FFUL /*<< SCB_ICSR_VECTACTIVE_Pos*/)       /*!< SCB ICSR: VECTACTIVE Mask */
-constexpr unsigned SCB_ICSR_VECTACTIVE_Msk = 0x01;
+const unsigned SCB_ICSR_VECTACTIVE_Msk = 0x01;
 
 /**
   \brief   System Reset
@@ -81,5 +82,17 @@ constexpr unsigned SCB_ICSR_VECTACTIVE_Msk = 0x01;
  */
 // copied from nRF5_SDK_15.3.0_59ac345/components/toolchain/cmsis/include/core_cm4.h
 void NVIC_SystemReset(void);
+
+#define configTOTAL_HEAP_SIZE                   (1024 * 40)
+
+size_t xPortGetFreeHeapSize(void);
+size_t xPortGetMinimumEverFreeHeapSize(void);
+
+void *pvPortMalloc(size_t xWantedSize);
+void vPortFree(void *pv);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_FREERTOS_H */

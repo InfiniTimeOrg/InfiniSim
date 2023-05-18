@@ -443,8 +443,7 @@ public:
         motorController.Init();
         settingsController.Init();
 
-        lv_mem_monitor(&mem_mon);
-        printf("initial free_size = %u\n", mem_mon.free_size);
+        printf("initial free_size = %u\n", xPortGetFreeHeapSize());
 
         // update time to current system time once on startup
         dateTimeController.SetCurrentTime(std::chrono::system_clock::now());
@@ -919,17 +918,18 @@ public:
       }
 
       if (print_memory_usage) {
-        lv_mem_monitor(&mem_mon);
-        if (mem_mon.free_size != mem_mon_last_free_size) {
+        auto currentFreeHeap = xPortGetFreeHeapSize();
+        if (currentFreeHeap != lastFreeHeapSize) {
+          auto minimumEverFreeHeap = xPortGetMinimumEverFreeHeapSize();
           // 14KiB is the LVGL memory size used in InfiniTime
-          constexpr uint32_t pinetime_lvgl_memory = 14U*1024U;
-          uint32_t mem_used = LV_MEM_SIZE - mem_mon.free_size;
+          constexpr uint32_t pinetime_heap_memory = configTOTAL_HEAP_SIZE;
+          uint32_t mem_used = pinetime_heap_memory - currentFreeHeap;
           // The "budget" value shows how much free lvgl memory the PineTime
           // would have free and will go negative when more memory is used
           // in the simulator than is available on the real hardware.
-          int32_t budget = pinetime_lvgl_memory - mem_used;
-          printf("Mem: %5u used (change: %+5d, peak: %5u) %d budget left\n", mem_used, mem_mon_last_free_size - mem_mon.free_size, mem_mon.max_used, budget);
-          mem_mon_last_free_size = mem_mon.free_size;
+          int32_t budget = configTOTAL_HEAP_SIZE - mem_used;
+          printf("Mem: %5u used (change: %+5d, peak: %5u) %d budget left\n", mem_used, lastFreeHeapSize - currentFreeHeap, minimumEverFreeHeap, budget);
+          lastFreeHeapSize = currentFreeHeap;
         }
       }
 
@@ -940,7 +940,6 @@ public:
     }
 
     bool print_memory_usage = false;
-    lv_mem_monitor_t mem_mon;
 
     // variables to create and destroy an lvgl overlay to indicate a turned off screen
     bool screen_off_created = false;
@@ -985,11 +984,13 @@ private:
     bool left_release_sent = true; // make sure to send one mouse button release event
     bool right_last_state = false; // varable used to send message only on changing state
 
-    uint32_t mem_mon_last_free_size = LV_MEM_SIZE;
+    size_t lastFreeHeapSize = configTOTAL_HEAP_SIZE;
 
     GifManager gif_manager;
 };
 
+int mallocFailedCount = 0;
+int stackOverflowCount = 0;
 int main(int argc, char **argv)
 {
   // parse arguments
