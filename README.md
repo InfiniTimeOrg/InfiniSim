@@ -59,7 +59,7 @@ npm install lv_font_conv@1.5.2
 When you want to create a `resource.zip` file then install the `lv_img_conv` executable to the InfiniSim source directory (will be installed at `node_modules/.bin/lv_img_conv`)
 
 ```sh
-npm install ts-node@10.9.1 @swc/core lv_img_conv@0.3.0
+npm install ts-node@10.7.0 @swc/core@1.2.160 lv_img_conv@0.3.0
 ```
 
 ## Configure and Build

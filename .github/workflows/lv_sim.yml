@@ -41,7 +41,7 @@ jobs:
       - name: Install lv_img_conv
         run: |
           npm i -g ts-node@10.9.1 -g
-          npm i -g @swc/core -g
+          npm i -g @swc/core@1.2.160 -g
           npm i -g lv_img_conv@0.3.0 -g
 
       #########################################################################################
