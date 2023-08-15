@@ -180,7 +180,6 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/displayapp/Colors.cpp
   ${InfiniTime_DIR}/src/displayapp/DisplayApp.h
   ${InfiniTime_DIR}/src/displayapp/DisplayApp.cpp
-  ${InfiniTime_DIR}/src/displayapp/icons/bg_clock.c # used by WatchFaceAnalog.cpp
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.h
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.cpp
   ${InfiniTime_DIR}/src/components/alarm/AlarmController.h
