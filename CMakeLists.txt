@@ -211,6 +211,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/systemtask/SystemTask.cpp
   ${InfiniTime_DIR}/src/systemtask/SystemMonitor.h
   ${InfiniTime_DIR}/src/systemtask/SystemMonitor.cpp
+  ${InfiniTime_DIR}/src/utility/Math.h
+  ${InfiniTime_DIR}/src/utility/Math.cpp
 )
 
 target_sources(infinisim PUBLIC
