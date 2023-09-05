@@ -317,11 +317,9 @@ configure_file("${InfiniTime_DIR}/src/Version.h.in" "${CMAKE_CURRENT_BINARY_DIR}
 
 option(WITH_PNG "Compile with libpng support to dump current screen as png" ON)
 if(WITH_PNG)
+  find_package(PNG REQUIRED)
   target_compile_definitions(infinisim PRIVATE WITH_PNG)
-  add_subdirectory(libpng EXCLUDE_FROM_ALL)
-  target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-  target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/libpng")
-  target_link_libraries(infinisim PRIVATE png_static)
+  target_link_libraries(infinisim PRIVATE PNG::PNG)
 endif()
 
 target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/gif-h")

@@ -4,6 +4,3 @@
 [submodule "lv_drivers"]
 	path = lv_drivers
 	url = ../../lvgl/lv_drivers.git
-[submodule "libpng"]
-	path = libpng
-	url = ../../glennrp/libpng.git
