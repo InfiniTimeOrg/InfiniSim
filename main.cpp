@@ -65,7 +65,7 @@
 #include <chrono>
 #include <ctime>   // localtime
 #if defined(WITH_PNG)
-#include <libpng/png.h>
+#include <png.h>
 #endif
 #include <gif.h>
 

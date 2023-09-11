@@ -29,10 +29,10 @@ jobs:
       - name: Install cmake
         uses: lukka/get-cmake@v3.18.3
 
-      - name: Install SDL2 development package
+      - name: Install SDL2 and libpng development package
         run:  |
           sudo apt-get update
-          sudo apt-get -y install libsdl2-dev
+          sudo apt-get -y install libsdl2-dev libpng-dev
 
       - name: Install lv_font_conv
         run:

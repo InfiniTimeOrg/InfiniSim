@@ -31,23 +31,24 @@ git submodule update --init --recursive
 - [lv_font_conv](https://github.com/lvgl/lv_font_conv#install-the-script) (for `font.c` generation since [InfiniTime#1097](https://github.com/InfiniTimeOrg/InfiniTime/pull/1097))
   - Note: requires Node.js v12.0.0 or later
 - [lv_img_conv](https://github.com/lvgl/lv_img_conv) (for `resource.zip` generation when `BUILD_RESOURCES=ON`, which is the default)
+- optional: `libpng`, see `-DWITH_PNG=ON` cmake setting below for more info
 
 On Ubuntu/Debian install the following packages:
 
 ```sh
-sudo apt install -y cmake libsdl2-dev g++ npm
+sudo apt install -y cmake libsdl2-dev g++ npm libpng-dev
 ```
 
 On Arch Linux the following packages are needed:
 
 ```sh
-sudo pacman -S cmake sdl2 gcc npm
+sudo pacman -S cmake sdl2 gcc npm libpng
 ```
 
 On Fedora the following packages are needed:
 
 ```sh
-sudo dnf install cmake SDL2-devel gcc zlib-devel npm
+sudo dnf install cmake SDL2-devel g++ npm patch perl libpng-devel
 ```
 
 Then install the `lv_font_conv` executable to the InfiniSim source directory (will be installed at `node_modules/.bin/lv_font_conv`)
@@ -78,6 +79,10 @@ The following configuration settings can be added to the first `cmake -S . -B bu
   The default value points to the InfiniTime submodule in this repository.
 - `-DMONITOR_ZOOM=1`: scale simulator window by this factor
 - `-DBUILD_RESOURCES=ON`: enable/disable `resource.zip` creation, will be created in the `<build-dir>/resources` folder
+- `-DWITH_PNG=ON`: enable/disable the screenshot to `PNG` support.
+  Per default InfiniSim tries to use `libpng` to create screenshots in PNG format.
+  This requires `libpng` development libraries as build and runtime dependency.
+  Can be disabled with cmake config setting `-DWITH_PNG=OFF`.
 
 ## Run Simulator
 
