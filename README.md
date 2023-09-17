@@ -29,7 +29,7 @@ git submodule update --init --recursive
 - SDL2 (provides the simulator window, handles mouse and keyboard input)
 - Compiler (g++ or clang++)
 - [lv_font_conv](https://github.com/lvgl/lv_font_conv#install-the-script) (for `font.c` generation since [InfiniTime#1097](https://github.com/InfiniTimeOrg/InfiniTime/pull/1097))
-  - Note: requires Node.js v12.0.0 or later
+  - Note: requires Node.js v14.0.0 or later
 - [lv_img_conv](https://github.com/lvgl/lv_img_conv) (for `resource.zip` generation when `BUILD_RESOURCES=ON`, which is the default)
 - optional: `libpng`, see `-DWITH_PNG=ON` cmake setting below for more info
 

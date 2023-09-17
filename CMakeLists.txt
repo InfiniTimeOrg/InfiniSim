@@ -268,6 +268,20 @@ set_target_properties(QCBOR PROPERTIES LINKER_LANGUAGE C)
 #        )
 target_link_libraries(infinisim PRIVATE QCBOR)
 
+# check version number of installed node package for minimum required
+find_program(NODE_EXE "node" NO_CACHE QUIET)
+if(NODE_EXE)
+  exec_program("${NODE_EXE}" ARGS "--version" OUTPUT_VARIABLE NODE_VERSION)
+  string(REPLACE "v" "" NODE_VERSION "${NODE_VERSION}")
+  if(NODE_VERSION VERSION_LESS 14.0.0)
+    message(WARNING "Node version v${NODE_VERSION} is less than required 14+, you will probably encounter build errors")
+  else()
+    message(STATUS "Founde node version v${NODE_VERSION}")
+  endif()
+else()
+  message(STATUS "Didn't find executable 'node' in path to check its version number")
+endif()
+
 if(EXISTS ${InfiniTime_DIR}/src/displayapp/fonts/CMakeLists.txt)
   # available since https://github.com/InfiniTimeOrg/InfiniTime/pull/1097
   message(STATUS "add subdirectory ${InfiniTime_DIR}/src/displayapp/fonts for 'infinitime_fonts' target")
