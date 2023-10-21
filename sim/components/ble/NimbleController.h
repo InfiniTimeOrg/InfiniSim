@@ -53,7 +53,8 @@ namespace Pinetime {
                        Pinetime::Drivers::SpiNorFlash& spiNorFlash,
                        Controllers::HeartRateController& heartRateController,
                        Controllers::MotionController& motionController,
-                       Pinetime::Controllers::FS& fs);
+                       Pinetime::Controllers::FS& fs,
+                       Controllers::Settings& settingsController);
       void Init();
       void StartAdvertising();
 //      int OnGAPEvent(ble_gap_event* event);

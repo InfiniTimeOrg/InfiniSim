@@ -30,7 +30,8 @@ NimbleController::NimbleController(Pinetime::System::SystemTask& systemTask,
                                    Pinetime::Drivers::SpiNorFlash& spiNorFlash,
                                    Controllers::HeartRateController& heartRateController,
                                    Controllers::MotionController& motionController,
-                                   Controllers::FS& fs)
+                                   Controllers::FS& fs,
+                                   Controllers::Settings& settingsController)
   : systemTask {systemTask},
     bleController {bleController},
     dateTimeController {dateTimeController},
