@@ -34,15 +34,13 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install libsdl2-dev libpng-dev
 
+      - name: Install resource build dependencies
+        run:  |
+          sudo apt-get -y install --no-install-recommends python3-pil
+
       - name: Install lv_font_conv
         run:
           npm i -g lv_font_conv@1.5.2
-
-      - name: Install lv_img_conv
-        run: |
-          npm i -g ts-node@10.9.1 -g
-          npm i -g @swc/core -g
-          npm i -g lv_img_conv@0.3.0 -g
 
       #########################################################################################
       # Checkout
