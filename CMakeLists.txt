@@ -20,7 +20,7 @@ project(InfiniSim VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 string(COMPARE EQUAL "${CMAKE_CXX_STANDARD}" "" no_cmake_cxx_standard_set)
 if(no_cmake_cxx_standard_set)
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
   message(STATUS "Using default C++ standard ${CMAKE_CXX_STANDARD}")
