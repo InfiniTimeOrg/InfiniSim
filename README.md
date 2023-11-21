@@ -30,7 +30,7 @@ git submodule update --init --recursive
 - Compiler (g++ or clang++)
 - [lv_font_conv](https://github.com/lvgl/lv_font_conv#install-the-script) (for `font.c` generation since [InfiniTime#1097](https://github.com/InfiniTimeOrg/InfiniTime/pull/1097))
   - Note: requires Node.js v14.0.0 or later
-- [lv_img_conv](https://github.com/lvgl/lv_img_conv) (for `resource.zip` generation when `BUILD_RESOURCES=ON`, which is the default)
+- [Pillow](https://python-pillow.org/) (for `resource.zip` generation when `BUILD_RESOURCES=ON`, which is the default)
 - optional: `libpng`, see `-DWITH_PNG=ON` cmake setting below for more info
 
 On Ubuntu/Debian install the following packages:
@@ -57,10 +57,12 @@ Then install the `lv_font_conv` executable to the InfiniSim source directory (wi
 npm install lv_font_conv@1.5.2
 ```
 
-When you want to create a `resource.zip` file then install the `lv_img_conv` executable to the InfiniSim source directory (will be installed at `node_modules/.bin/lv_img_conv`)
+When you want to create a `resource.zip` file then install the `pillow` Python library to the InfiniSim source directory (will be installed in `.venv/`)
 
 ```sh
-npm install ts-node@10.9.1 @swc/core lv_img_conv@0.3.0
+python3 -m venv .venv
+source .venv/bin/activate
+pip install wheel Pillow
 ```
 
 ## Configure and Build
