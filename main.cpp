@@ -443,7 +443,7 @@ public:
         motorController.Init();
         settingsController.Init();
 
-        printf("initial free_size = %u\n", xPortGetFreeHeapSize());
+        printf("initial free_size = %lu\n", xPortGetFreeHeapSize());
 
         // update time to current system time once on startup
         dateTimeController.SetCurrentTime(std::chrono::system_clock::now());
@@ -928,7 +928,7 @@ public:
           // would have free and will go negative when more memory is used
           // in the simulator than is available on the real hardware.
           int32_t budget = configTOTAL_HEAP_SIZE - mem_used;
-          printf("Mem: %5u used (change: %+5d, peak: %5u) %d budget left\n", mem_used, lastFreeHeapSize - currentFreeHeap, minimumEverFreeHeap, budget);
+          printf("Mem: %5u used (change: %+5ld, peak: %5lu) %d budget left\n", mem_used, lastFreeHeapSize - currentFreeHeap, minimumEverFreeHeap, budget);
           lastFreeHeapSize = currentFreeHeap;
         }
       }
