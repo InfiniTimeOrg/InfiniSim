@@ -702,11 +702,11 @@ public:
       info.isValid = true;
       info.touching = true;
       info.gesture = gesture;
-      touchHandler.ProcessTouchInfo(info);
+      touchHandler.ProcessTouchInfo(info, false);
       displayApp.PushMessage(Pinetime::Applications::Display::Messages::TouchEvent);
       info.touching = false;
       info.gesture = Pinetime::Drivers::Cst816S::Gestures::None;
-      touchHandler.ProcessTouchInfo(info);
+      touchHandler.ProcessTouchInfo(info, false);
     }
     // modify the simulated controller depending on the pressed key
     void handle_key(SDL_Keycode key) {
