@@ -271,7 +271,7 @@ target_link_libraries(infinisim PRIVATE QCBOR)
 # check version number of installed node package for minimum required
 find_program(NODE_EXE "node" NO_CACHE QUIET)
 if(NODE_EXE)
-  exec_program("${NODE_EXE}" ARGS "--version" OUTPUT_VARIABLE NODE_VERSION)
+  execute_process(COMMAND "${NODE_EXE}" "--version" OUTPUT_VARIABLE NODE_VERSION)
   string(REPLACE "v" "" NODE_VERSION "${NODE_VERSION}")
   if(NODE_VERSION VERSION_LESS 14.0.0)
     message(WARNING "Node version v${NODE_VERSION} is less than required 14+, you will probably encounter build errors")
