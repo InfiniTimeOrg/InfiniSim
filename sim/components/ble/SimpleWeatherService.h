@@ -45,28 +45,29 @@ public:
     Unknown = 255
   };
 
+  using Location = std::array<char, 33>; // 32 char + \0 (end of string)
+
   struct CurrentWeather {
     CurrentWeather(uint64_t timestamp,
-                   uint8_t temperature,
-                   uint8_t minTemperature,
-                   uint8_t maxTemperature,
-                   uint8_t iconId,
-                   const char* location)
+                   int16_t temperature,
+                   int16_t minTemperature,
+                   int16_t maxTemperature,
+                   Icons iconId,
+                   Location&& location)
         : timestamp {timestamp},
           temperature {temperature},
           minTemperature {minTemperature},
           maxTemperature {maxTemperature},
-          iconId {iconId} {
-      std::memcpy(this->location, location, 32);
-      this->location[32] = 0;
+          iconId {iconId},
+          location {std::move(location)} {
     }
 
     uint64_t timestamp;
-    uint8_t temperature;
-    uint8_t minTemperature;
-    uint8_t maxTemperature;
+    int16_t temperature;
+    int16_t minTemperature;
+    int16_t maxTemperature;
     Icons iconId;
-    char location[33]; // 32 char + \0 (end of string)
+    Location location;
 
     bool operator==(const CurrentWeather& other) const;
   };
@@ -76,9 +77,9 @@ public:
     uint8_t nbDays;
 
     struct Day {
-      uint8_t minTemperature;
-      uint8_t maxTemperature;
-      uint8_t iconId;
+      int16_t minTemperature;
+      int16_t maxTemperature;
+      Icons iconId;
     };
 
     std::array<Day, MaxNbForecastDays> days;
