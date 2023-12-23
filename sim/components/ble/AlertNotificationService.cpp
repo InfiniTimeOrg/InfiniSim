@@ -11,10 +11,10 @@ using namespace Pinetime::Controllers;
 //constexpr ble_uuid16_t AlertNotificationService::ansCharUuid;
 //constexpr ble_uuid128_t AlertNotificationService::notificationEventUuid;
 
-int AlertNotificationCallback(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt, void* arg) {
-  auto anService = static_cast<AlertNotificationService*>(arg);
-  return anService->OnAlert(conn_handle, attr_handle, ctxt);
-}
+//int AlertNotificationCallback(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt, void* arg) {
+//auto anService = static_cast<AlertNotificationService*>(arg);
+//  return anService->OnAlert(conn_handle, attr_handle, ctxt);
+//}
 
 void AlertNotificationService::Init() {
 //  int res;

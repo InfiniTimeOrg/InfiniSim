@@ -124,8 +124,8 @@ target_sources(infinisim PUBLIC
   sim/components/ble/NavigationService.cpp
   sim/components/ble/NimbleController.h
   sim/components/ble/NimbleController.cpp
-  sim/components/ble/weather/WeatherService.h
-  sim/components/ble/weather/WeatherService.cpp
+  sim/components/ble/SimpleWeatherService.h
+  sim/components/ble/SimpleWeatherService.cpp
   sim/components/brightness/BrightnessController.h
   sim/components/brightness/BrightnessController.cpp
   sim/components/firmwarevalidator/FirmwareValidator.h
