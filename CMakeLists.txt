@@ -289,6 +289,13 @@ if(EXISTS ${InfiniTime_DIR}/src/displayapp/fonts/CMakeLists.txt)
   target_link_libraries(infinisim PRIVATE infinitime_fonts)
 endif()
 
+if(EXISTS ${InfiniTime_DIR}/src/displayapp/apps/CMakeLists.txt)
+  # available since https://github.com/InfiniTimeOrg/InfiniTime/pull/1928
+  message(STATUS "add subdirectory ${InfiniTime_DIR}/src/displayapp/apps for 'infinitime_apps' target")
+  add_subdirectory(${InfiniTime_DIR}/src/displayapp/apps displayapp/apps)
+  target_link_libraries(infinisim PRIVATE infinitime_apps)
+endif()
+
 option(BUILD_RESOURCES "Generate a resource.zip file to install to spi.raw file" ON)
 if(BUILD_RESOURCES)
   if(EXISTS ${InfiniTime_DIR}/src/resources/CMakeLists.txt)
