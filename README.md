@@ -51,6 +51,12 @@ On Fedora the following packages are needed:
 sudo dnf install cmake SDL2-devel g++ npm patch perl libpng-devel
 ```
 
+On OpenSUSE (Tumbleweed) the following packages are needed:
+
+```sh
+sudo zypper install cmake libSDL2-devel gcc-c++ gcc npm libpng16-devel patch
+```
+
 Then install the `lv_font_conv` executable to the InfiniSim source directory (will be installed at `node_modules/.bin/lv_font_conv`)
 
 ```sh
@@ -63,6 +69,13 @@ When you want to create a `resource.zip` file then install the `pillow` Python l
 python3 -m venv .venv
 source .venv/bin/activate
 pip install wheel Pillow
+```
+
+Optionally, depending on your distro, it may also serve the Pip package as official native installation packages:
+
+```sh
+# OpenSUSE Tumbleweed
+sudo zypper install python311-Pillow
 ```
 
 ## Configure and Build
