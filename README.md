@@ -146,6 +146,8 @@ Using the keyboard the following events can be triggered:
 - `H` ... stop heartrate
 - `i` ... take screenshot
 - `I` ... start/stop Gif screen capture
+- `w` ... generate weather data
+- `W` ... clear weather data
 
 Additionally using the arrow keys the respective swipe gesture can be triggered.
 For example pressing the UP key triggers a `SwipeUp` gesture.

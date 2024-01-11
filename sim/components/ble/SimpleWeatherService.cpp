@@ -70,6 +70,13 @@ void SimpleWeatherService::Init() {
   //ble_gatts_add_svcs(serviceDefinition);
 }
 
+void SimpleWeatherService::SetCurrentWeather(uint64_t timestamp, int16_t temperature, int iconId) {
+  SimpleWeatherService::Location cityName;
+  cityName[32] = '\0';
+  currentWeather = SimpleWeatherService::CurrentWeather((uint64_t)timestamp, temperature, temperature, temperature, SimpleWeatherService::Icons(iconId), std::move(cityName));
+  printf("currentWeather: timestamp=%d, temperature=%d, icon=%d\n", currentWeather->timestamp, currentWeather->temperature, currentWeather->iconId);
+}
+
 int SimpleWeatherService::OnCommand(struct ble_gatt_access_ctxt* ctxt) {
 
   return 0;

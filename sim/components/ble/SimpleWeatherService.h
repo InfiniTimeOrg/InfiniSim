@@ -27,6 +27,7 @@ public:
   explicit SimpleWeatherService(const DateTime& dateTimeController);
 
   void Init();
+  void SetCurrentWeather(uint64_t timestamp, int16_t temperature, int iconId);
 
   int OnCommand(struct ble_gatt_access_ctxt* ctxt);
 
