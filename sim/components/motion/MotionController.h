@@ -5,7 +5,7 @@
 //#include <FreeRTOS.h>
 
 #include "drivers/Bma421.h"
-//#include "components/ble/MotionService.h"
+#include "components/ble/MotionService.h"
 #include "utility/CircularBuffer.h"
 
 namespace Pinetime {
@@ -58,9 +58,13 @@ namespace Pinetime {
 
       void Init(Pinetime::Drivers::Bma421::DeviceTypes types);
 
-//      void SetService(Pinetime::Controllers::MotionService* service) {
-//        this->service = service;
-//      }
+      void SetService(Pinetime::Controllers::MotionService* service) {
+        this->service = service;
+      }
+
+      Pinetime::Controllers::MotionService* GetService() const {
+        return service;
+      }
 
     private:
       uint32_t nbSteps = 0;
@@ -93,7 +97,7 @@ namespace Pinetime {
       int32_t accumulatedSpeed = 0;
 
       DeviceTypes deviceType = DeviceTypes::Unknown;
-//      Pinetime::Controllers::MotionService* service = nullptr;
+      Pinetime::Controllers::MotionService* service = nullptr;
     };
   }
 }
