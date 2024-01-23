@@ -45,11 +45,11 @@ NimbleController::NimbleController(Pinetime::System::SystemTask& systemTask,
 //    currentTimeService {dateTimeController},
     musicService {systemTask},
     weatherService {dateTimeController},
-    navService {systemTask} {
+    navService {systemTask},
 //    batteryInformationService {batteryController},
 //    immediateAlertService {systemTask, notificationManager},
 //    heartRateService {systemTask, heartRateController},
-//    motionService {systemTask, motionController},
+    motionService {*this, motionController} {
 //    fsService {systemTask, fs},
 //    serviceDiscovery({&currentTimeClient, &alertNotificationClient}) {
 }

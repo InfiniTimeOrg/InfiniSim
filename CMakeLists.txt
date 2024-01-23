@@ -118,6 +118,8 @@ target_sources(infinisim PUBLIC
   sim/components/battery/BatteryController.cpp
   sim/components/ble/AlertNotificationService.h
   sim/components/ble/AlertNotificationService.cpp
+  sim/components/ble/MotionService.h
+  sim/components/ble/MotionService.cpp
   sim/components/ble/MusicService.h
   sim/components/ble/MusicService.cpp
   sim/components/ble/NavigationService.h
