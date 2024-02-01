@@ -802,19 +802,27 @@ public:
     }
 
     void generate_weather_data(bool clear) {
-      static int iconId = -1;
       if (clear) {
         systemTask.nimble().weather().SetCurrentWeather(0, 0, 0);
+        std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
+        systemTask.nimble().weather().SetForecast(0, days);
         return;
       }
       auto timestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
       srand((int)timestamp);
-      int temperature = (rand() % 81 - 40) * 100;
-      iconId++;
-      if (iconId > 8) {
-        iconId = 0;
+
+      // Generate current weather data
+      int16_t temperature = (rand() % 81 - 40) * 100;
+      systemTask.nimble().weather().SetCurrentWeather((uint64_t)timestamp, temperature, rand() % 9);
+
+      // Generate forecast data
+      std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
+      for (int i = 0; i < Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays; i++) {
+        days[i] = Pinetime::Controllers::SimpleWeatherService::Forecast::Day {
+          (int16_t)(temperature - rand() % 10 * 100), (int16_t)(temperature + rand() % 10 * 100), Pinetime::Controllers::SimpleWeatherService::Icons(rand() % 9)
+        };
       }
-      systemTask.nimble().weather().SetCurrentWeather((uint64_t)timestamp, temperature, iconId);
+      systemTask.nimble().weather().SetForecast((uint64_t)timestamp, days);
     }
 
     void handle_touch_and_button() {

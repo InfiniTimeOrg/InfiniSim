@@ -27,7 +27,6 @@ public:
   explicit SimpleWeatherService(const DateTime& dateTimeController);
 
   void Init();
-  void SetCurrentWeather(uint64_t timestamp, int16_t temperature, int iconId);
 
   int OnCommand(struct ble_gatt_access_ctxt* ctxt);
 
@@ -81,10 +80,17 @@ public:
       int16_t minTemperature;
       int16_t maxTemperature;
       Icons iconId;
+
+      bool operator==(const Day& other) const;
     };
 
     std::array<Day, MaxNbForecastDays> days;
+
+    bool operator==(const Forecast& other) const;
   };
+
+  void SetCurrentWeather(uint64_t timestamp, int16_t temperature, int iconId);
+  void SetForecast(uint64_t timestamp, std::array<Forecast::Day, MaxNbForecastDays> days);
 
   std::optional<CurrentWeather> Current() const;
   std::optional<Forecast> GetForecast() const;
