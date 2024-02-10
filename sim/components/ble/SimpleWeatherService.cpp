@@ -70,6 +70,20 @@ void SimpleWeatherService::Init() {
   //ble_gatts_add_svcs(serviceDefinition);
 }
 
+void SimpleWeatherService::SetCurrentWeather(uint64_t timestamp, int16_t temperature, int iconId) {
+  SimpleWeatherService::Location cityName;
+  cityName[32] = '\0';
+  currentWeather = SimpleWeatherService::CurrentWeather((uint64_t)timestamp, temperature, temperature, temperature, SimpleWeatherService::Icons(iconId), std::move(cityName));
+  printf("currentWeather: timestamp=%d, temperature=%d, icon=%d\n", currentWeather->timestamp, currentWeather->temperature, currentWeather->iconId);
+}
+
+void SimpleWeatherService::SetForecast(uint64_t timestamp, std::array<SimpleWeatherService::Forecast::Day, SimpleWeatherService::MaxNbForecastDays> days) {
+  forecast = SimpleWeatherService::Forecast {timestamp, SimpleWeatherService::MaxNbForecastDays, days};
+  for (int i = 0; i < SimpleWeatherService::MaxNbForecastDays; i++) {
+    printf("forecast: day=%d. min=%d, max=%d icon=%d\n", i, days[i].minTemperature, days[i].maxTemperature, days[i].iconId);
+  }
+}
+
 int SimpleWeatherService::OnCommand(struct ble_gatt_access_ctxt* ctxt) {
 
   return 0;
@@ -107,4 +121,18 @@ bool SimpleWeatherService::CurrentWeather::operator==(const SimpleWeatherService
   return this->iconId == other.iconId && this->temperature == other.temperature && this->timestamp == other.timestamp &&
          this->maxTemperature == other.maxTemperature && this->minTemperature == other.maxTemperature &&
          std::strcmp(this->location.data(), other.location.data()) == 0;
+}
+
+bool SimpleWeatherService::Forecast::Day::operator==(const SimpleWeatherService::Forecast::Day& other) const {
+  return this->iconId == other.iconId &&
+         this->maxTemperature == other.maxTemperature && this->minTemperature == other.maxTemperature;
+}
+
+bool SimpleWeatherService::Forecast::operator==(const SimpleWeatherService::Forecast& other) const {
+  for (int i = 0; i < this->nbDays; i++) {
+    if (this->days[i] != other.days[i]) {
+      return false;
+    }
+  }
+  return this->timestamp == other.timestamp && this->nbDays == other.nbDays;
 }

@@ -678,6 +678,7 @@ public:
       debounce('s', 'S', state[SDL_SCANCODE_S], key_handled_s);
       debounce('h', 'H', state[SDL_SCANCODE_H], key_handled_h);
       debounce('i', 'I', state[SDL_SCANCODE_I], key_handled_i);
+      debounce('w', 'W', state[SDL_SCANCODE_W], key_handled_w);
       // screen switcher buttons
       debounce('1', '!'+1, state[SDL_SCANCODE_1], key_handled_1);
       debounce('2', '!'+2, state[SDL_SCANCODE_2], key_handled_2);
@@ -780,6 +781,10 @@ public:
         } else {
           gif_manager.close();
         }
+      } else if (key == 'w') {
+        generate_weather_data(false);
+      } else if (key == 'W') {
+        generate_weather_data(true);
       } else if (key >= '0' && key <= '9') {
         this->switch_to_screen(key-'0');
       } else if (key >= '!'+0 && key <= '!'+9) {
@@ -794,6 +799,30 @@ public:
         send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideRight);
       }
       batteryController.voltage = batteryController.percentRemaining * 50;
+    }
+
+    void generate_weather_data(bool clear) {
+      if (clear) {
+        systemTask.nimble().weather().SetCurrentWeather(0, 0, 0);
+        std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
+        systemTask.nimble().weather().SetForecast(0, days);
+        return;
+      }
+      auto timestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+      srand((int)timestamp);
+
+      // Generate current weather data
+      int16_t temperature = (rand() % 81 - 40) * 100;
+      systemTask.nimble().weather().SetCurrentWeather((uint64_t)timestamp, temperature, rand() % 9);
+
+      // Generate forecast data
+      std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
+      for (int i = 0; i < Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays; i++) {
+        days[i] = Pinetime::Controllers::SimpleWeatherService::Forecast::Day {
+          (int16_t)(temperature - rand() % 10 * 100), (int16_t)(temperature + rand() % 10 * 100), Pinetime::Controllers::SimpleWeatherService::Icons(rand() % 9)
+        };
+      }
+      systemTask.nimble().weather().SetForecast((uint64_t)timestamp, days);
     }
 
     void handle_touch_and_button() {
@@ -958,6 +987,7 @@ private:
     bool key_handled_s = false; // s ... increase step count, S ... decrease step count
     bool key_handled_h = false; // h ... set heartrate running, H ... stop heartrate
     bool key_handled_i = false; // i ... take screenshot, I ... start/stop Gif screen capture
+    bool key_handled_w = false; // w ... generate weather data, W ... clear weather data
     // numbers from 0 to 9 to switch between screens
     bool key_handled_1 = false;
     bool key_handled_2 = false;
