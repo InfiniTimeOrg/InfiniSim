@@ -23,12 +23,20 @@ SimpleWeatherService::CurrentWeather CreateCurrentWeather(const uint8_t* dataBuf
   SimpleWeatherService::Location cityName;
   std::memcpy(cityName.data(), &dataBuffer[16], 32);
   cityName[32] = '\0';
+  uint64_t sunrise = 0;
+  uint64_t sunset = 0;
+  if (dataBuffer[1] > 0) {
+    sunrise = ToUInt64(&dataBuffer[49]);
+    sunset = ToUInt64(&dataBuffer[57]);
+  }
   return SimpleWeatherService::CurrentWeather(ToUInt64(&dataBuffer[2]),
                                               ToInt16(&dataBuffer[10]),
                                               ToInt16(&dataBuffer[12]),
                                               ToInt16(&dataBuffer[14]),
                                               SimpleWeatherService::Icons {dataBuffer[16 + 32]},
-                                              std::move(cityName));
+                                              std::move(cityName),
+                                              sunrise,
+                                              sunset);
 }
 
 SimpleWeatherService::Forecast CreateForecast(const uint8_t* dataBuffer) {
@@ -73,7 +81,7 @@ void SimpleWeatherService::Init() {
 void SimpleWeatherService::SetCurrentWeather(uint64_t timestamp, int16_t temperature, int iconId) {
   SimpleWeatherService::Location cityName;
   cityName[32] = '\0';
-  currentWeather = SimpleWeatherService::CurrentWeather((uint64_t)timestamp, temperature, temperature, temperature, SimpleWeatherService::Icons(iconId), std::move(cityName));
+  currentWeather = SimpleWeatherService::CurrentWeather((uint64_t)timestamp, temperature, temperature, temperature, SimpleWeatherService::Icons(iconId), std::move(cityName), (uint64_t)timestamp, (uint64_t)timestamp);
   printf("currentWeather: timestamp=%d, temperature=%d, icon=%d\n", currentWeather->timestamp, currentWeather->temperature, currentWeather->iconId);
 }
 
@@ -117,10 +125,27 @@ std::optional<SimpleWeatherService::Forecast> SimpleWeatherService::GetForecast(
   return {};
 }
 
+bool SimpleWeatherService::IsNight() const {
+  if (currentWeather) {
+    auto currentTime = dateTimeController.CurrentDateTime().time_since_epoch();
+
+    auto sunriseSecond = std::chrono::seconds {currentWeather->sunrise};
+    auto sunsetSecond = std::chrono::seconds {currentWeather->sunset};
+
+    auto sunrise = std::chrono::duration_cast<std::chrono::seconds>(sunriseSecond);
+    auto sunset = std::chrono::duration_cast<std::chrono::seconds>(sunsetSecond);
+
+    return currentTime < sunrise || currentTime > sunset;
+  }
+
+  return false;
+}
+
 bool SimpleWeatherService::CurrentWeather::operator==(const SimpleWeatherService::CurrentWeather& other) const {
   return this->iconId == other.iconId && this->temperature == other.temperature && this->timestamp == other.timestamp &&
          this->maxTemperature == other.maxTemperature && this->minTemperature == other.maxTemperature &&
-         std::strcmp(this->location.data(), other.location.data()) == 0;
+         std::strcmp(this->location.data(), other.location.data()) == 0 &&
+         this->sunrise == other.sunrise && this->sunset == other.sunset;
 }
 
 bool SimpleWeatherService::Forecast::Day::operator==(const SimpleWeatherService::Forecast::Day& other) const {

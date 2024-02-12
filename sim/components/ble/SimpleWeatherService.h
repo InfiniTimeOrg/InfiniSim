@@ -53,13 +53,17 @@ public:
                    int16_t minTemperature,
                    int16_t maxTemperature,
                    Icons iconId,
-                   Location&& location)
+                   Location&& location,
+                   uint64_t sunrise,
+                   uint64_t sunset)
         : timestamp {timestamp},
           temperature {temperature},
           minTemperature {minTemperature},
           maxTemperature {maxTemperature},
           iconId {iconId},
-          location {std::move(location)} {
+          location {std::move(location)},
+          sunrise {sunrise},
+          sunset {sunset} {
     }
 
     uint64_t timestamp;
@@ -68,6 +72,8 @@ public:
     int16_t maxTemperature;
     Icons iconId;
     Location location;
+    uint64_t sunrise;
+    uint64_t sunset;
 
     bool operator==(const CurrentWeather& other) const;
   };
@@ -94,6 +100,8 @@ public:
 
   std::optional<CurrentWeather> Current() const;
   std::optional<Forecast> GetForecast() const;
+
+  bool IsNight() const;
 
   static int16_t CelsiusToFahrenheit(int16_t celsius) {
     return celsius * 9 / 5 + 3200;
