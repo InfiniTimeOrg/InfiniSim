@@ -28,7 +28,7 @@
 
 #pragma once
 
-#include "portmacro_cmsis.h" // TickType_t
+#include "FreeRTOS.h" // TickType_t
 #include "task.h" // configTICK_RATE_HZ
 
 #include <SDL2/SDL.h>
@@ -55,9 +55,6 @@ struct TimerHandle_t {
 };
 
 
-constexpr uint32_t pdMS_TO_TICKS(uint32_t pdMS) {
-  return pdMS * configTICK_RATE_HZ / 1000;
-}
 // function only available in Simulator
 constexpr uint32_t pdTICKS_TO_MS(uint32_t ticks) {
   return ticks * 1000 / configTICK_RATE_HZ;
