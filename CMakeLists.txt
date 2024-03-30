@@ -65,6 +65,8 @@ add_library(sim-base STATIC
   sim/timers.cpp
   sim/queue.h
   sim/queue.cpp
+  sim/semphr.h
+  sim/semphr.cpp
   # src/FreeRTOS
   sim/portmacro_cmsis.h
   sim/portmacro_cmsis.cpp

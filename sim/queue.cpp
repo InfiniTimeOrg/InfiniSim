@@ -5,43 +5,45 @@
 
 QueueHandle_t xQueueCreate(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize)
 {
-  QueueHandle_t xQueue;
+  Queue_t *xQueue = new Queue_t;
   if (uxItemSize != 1) {
     throw std::runtime_error("uxItemSize must be 1");
   }
-  xQueue.queue.reserve(uxQueueLength);
+  xQueue->queue.reserve(uxQueueLength);
   return xQueue;
 }
 
-BaseType_t xQueueSend(QueueHandle_t &xQueue, const void * const pvItemToQueue, TickType_t xTicksToWait)
+BaseType_t xQueueSend(QueueHandle_t xQueue, const void * const pvItemToQueue, TickType_t xTicksToWait)
 {
-  std::lock_guard<std::mutex> guard(xQueue.mutex);
-  xQueue.queue.push_back(*reinterpret_cast<const uint8_t *const>(pvItemToQueue));
+  Queue_t* pxQueue = ( Queue_t * ) xQueue;
+  std::lock_guard<std::mutex> guard(pxQueue->mutex);
+  pxQueue->queue.push_back(*reinterpret_cast<const uint8_t *const>(pvItemToQueue));
   return true;
 }
 
-BaseType_t xQueueSendFromISR(QueueHandle_t &xQueue, const void * const pvItemToQueue, BaseType_t *xHigherPriorityTaskWoken)
+BaseType_t xQueueSendFromISR(QueueHandle_t xQueue, const void * const pvItemToQueue, BaseType_t *xHigherPriorityTaskWoken)
 {
   TickType_t xTicksToWait = 0;
   *xHigherPriorityTaskWoken = pdFALSE;
   return xQueueSend(xQueue, pvItemToQueue, 0.0);
 }
 
-BaseType_t xQueueReceive(QueueHandle_t &xQueue, void * const pvBuffer, TickType_t xTicksToWait)
+BaseType_t xQueueReceive(QueueHandle_t xQueue, void * const pvBuffer, TickType_t xTicksToWait)
 {
-  while (xQueue.queue.empty()) {
+  Queue_t* pxQueue = ( Queue_t * ) xQueue;
+  while (pxQueue->queue.empty()) {
     if (xTicksToWait <= 25) {
       return false;
     }
     SDL_Delay(25);
     xTicksToWait -= 25;
   }
-  if (xQueue.queue.empty()) {
+  if (pxQueue->queue.empty()) {
     return false;
   }
-  std::lock_guard<std::mutex> guard(xQueue.mutex);
+  std::lock_guard<std::mutex> guard(pxQueue->mutex);
   uint8_t *buf = reinterpret_cast<uint8_t * const>(pvBuffer);
-  *buf = xQueue.queue.at(0);
-  xQueue.queue.erase(xQueue.queue.begin());
+  *buf = pxQueue->queue.at(0);
+  pxQueue->queue.erase(pxQueue->queue.begin());
   return true;
 }
