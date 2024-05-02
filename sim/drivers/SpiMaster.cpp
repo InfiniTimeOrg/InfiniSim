@@ -176,7 +176,7 @@ void SpiMaster::OnStartedEvent() {
 //  spiBaseAddress->EVENTS_END = 0;
 //}
 
-bool SpiMaster::Write(uint8_t pinCsn, const uint8_t* data, size_t size) {
+bool SpiMaster::Write(uint8_t pinCsn, const uint8_t* data, size_t size, const std::function<void()>& preTransactionHook) {
 //  if (data == nullptr)
 //    return false;
 //  auto ok = xSemaphoreTake(mutex, portMAX_DELAY);
