@@ -35,6 +35,7 @@ extern "C" {
 
 #include "portmacro_cmsis.h"
 //#include "app_error.h"
+#include "projdefs.h"
 #include <stddef.h>
 
 // from nrf_error.h

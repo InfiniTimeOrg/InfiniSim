@@ -1,7 +1,5 @@
 #pragma once
 
-#include "portmacro_cmsis.h"
-
 #include <mutex>
 #include <vector>
 
