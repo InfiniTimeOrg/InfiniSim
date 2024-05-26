@@ -83,7 +83,6 @@ On OpenSUSE (Tumbleweed)
 
 ```sh
 sudo zypper install python311-Pillow
-
 ```
 
 ## Configure and Build
