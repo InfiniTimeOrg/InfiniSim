@@ -73,8 +73,15 @@ pip install wheel Pillow
 
 Optionally, depending on your distro, it may also serve the Pip package as official native installation packages:
 
+On Ubuntu/Debian 
+
 ```sh
-# OpenSUSE Tumbleweed
+sudo apt install python3-pil
+```
+
+On OpenSUSE (Tumbleweed) 
+
+```sh
 sudo zypper install python311-Pillow
 ```
 
