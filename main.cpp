@@ -376,7 +376,8 @@ Pinetime::Applications::DisplayApp displayApp(lcd,
                                               alarmController,
                                               brightnessController,
                                               touchHandler,
-                                              fs);
+                                              fs,
+                                              spiNorFlash);
 
 Pinetime::System::SystemTask systemTask(spi,
                                         spiNorFlash,

@@ -52,4 +52,7 @@ void nrfx_gpiote_in_init(uint32_t pin_number, nrfx_gpiote_in_config_t *config, n
 void nrfx_gpiote_in_event_enable(uint32_t pin_number, bool enable) {}
 void nrf_gpio_cfg_sense_input(uint32_t pin_number, nrf_gpio_pin_pull_t pin_pull, nrf_gpio_pin_sense_t sense) {}
 
+bool nrfx_gpiote_is_init() { return true; }
+void nrfx_gpiote_init() {}
+
 void APP_GPIOTE_INIT(uint32_t max_users) {}

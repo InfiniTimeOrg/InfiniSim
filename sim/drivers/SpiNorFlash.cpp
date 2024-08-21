@@ -26,7 +26,7 @@ SpiNorFlash::~SpiNorFlash() {
 }
 
 void SpiNorFlash::Init() {
-  device_id = ReadIdentificaion();
+  device_id = ReadIdentification();
   NRF_LOG_INFO(
     "[SpiNorFlash] Manufacturer : %d, Memory type : %d, memory density : %d", device_id.manufacturer, device_id.type, device_id.density);
 }
@@ -42,7 +42,7 @@ void SpiNorFlash::Wakeup() {
   NRF_LOG_INFO("[SpiNorFlash] Wakeup")
 }
 
-SpiNorFlash::Identification SpiNorFlash::ReadIdentificaion() {
+SpiNorFlash::Identification SpiNorFlash::ReadIdentification() {
   return {};
 }
 
@@ -89,6 +89,10 @@ bool SpiNorFlash::ProgramFailed() {
 
 bool SpiNorFlash::EraseFailed() {
   return false;
+}
+
+SpiNorFlash::Identification SpiNorFlash::GetIdentification() const {
+  return device_id;
 }
 
 void SpiNorFlash::Write(uint32_t address, const uint8_t* buffer, size_t size) {
