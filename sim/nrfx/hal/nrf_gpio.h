@@ -141,6 +141,8 @@ void nrf_gpio_range_cfg_input(uint32_t            pin_range_start,
  */
 void nrf_gpio_cfg_input(uint32_t pin_number, nrf_gpio_pin_pull_t pull_config);
 
+bool nrfx_gpiote_is_init(void);
+void nrfx_gpiote_init(void);
 void nrfx_gpiote_in_init(uint32_t pin_number, nrfx_gpiote_in_config_t *config, nrfx_gpiote_event_handler_t);
 void nrfx_gpiote_in_event_enable(uint32_t pin_number, bool enable);
 void nrf_gpio_cfg_sense_input(uint32_t pin_number, nrf_gpio_pin_pull_t pin_pull, nrf_gpio_pin_sense_t sense);

@@ -74,6 +74,7 @@ add_library(sim-base STATIC
   sim/libraries/log/nrf_log.h
   sim/libraries/delay/nrf_delay.h
   sim/libraries/delay/nrf_delay.cpp
+  sim/libraries/util/app_util.h
   sim/nrfx/nrfx_log.h
   sim/nrfx/drivers/include/nrfx_twi.h
   sim/nrfx/hal/nrf_gpio.h
@@ -92,6 +93,7 @@ add_library(sim-base STATIC
 target_include_directories(sim-base PUBLIC "${CMAKE_CURRENT_BINARY_DIR}") # lv_conf.h
 target_include_directories(sim-base PUBLIC "sim")
 target_include_directories(sim-base PUBLIC "sim/libraries/log") # for nrf_log.h
+target_include_directories(sim-base PUBLIC "sim/libraries/util") # for app_util.h
 target_include_directories(sim-base PUBLIC "sim/nrfx") # for nrfx_log.h and others
 target_include_directories(sim-base PUBLIC "sim/nrfx/hal") # for nrfx_log.h
 target_include_directories(sim-base PUBLIC "sim/nrfx/mdk") # for nrf52_bitfields.h

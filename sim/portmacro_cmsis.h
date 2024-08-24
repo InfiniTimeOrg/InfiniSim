@@ -29,6 +29,8 @@
 #ifndef PORTMACRO_CMSIS_H
 #define PORTMACRO_CMSIS_H
 
+#include "app_util.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -47,6 +49,8 @@ typedef uint32_t NRF_RTC_Type;
 const NRF_RTC_Type portNRF_RTC_REG = 1;
 
 void portYIELD_FROM_ISR(BaseType_t);
+
+
 
 #ifdef __cplusplus
 }
