@@ -34,6 +34,8 @@ namespace Pinetime {
       bool ProgramFailed();
       bool EraseFailed();
 
+      Identification GetIdentification() const;
+
       void Init();
       void Uninit();
 

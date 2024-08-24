@@ -99,3 +99,7 @@ void SpiNorFlash::Write(uint32_t address, const uint8_t* buffer, size_t size) {
   memoryFile.write(reinterpret_cast<const char *>(buffer), size);
   memoryFile.flush();
 }
+
+SpiNorFlash::Identification SpiNorFlash::GetIdentification() const {
+  return device_id;
+}
