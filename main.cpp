@@ -354,7 +354,11 @@ Pinetime::Controllers::MotionController motionController;
 Pinetime::Controllers::TimerController timerController;
 #endif
 
+#if defined(ALARMCONTROLLER_NEEDS_FS)
+Pinetime::Controllers::AlarmController alarmController {dateTimeController, fs};
+#else
 Pinetime::Controllers::AlarmController alarmController {dateTimeController};
+#endif
 Pinetime::Controllers::TouchHandler touchHandler;
 Pinetime::Controllers::ButtonHandler buttonHandler;
 Pinetime::Controllers::BrightnessController brightnessController {};
