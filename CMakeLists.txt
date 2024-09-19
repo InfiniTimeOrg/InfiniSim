@@ -316,6 +316,13 @@ if(BUILD_RESOURCES)
   endif()
 endif()
 
+# check if AlarmController.h needs FileSystem member
+file(STRINGS "${InfiniTime_DIR}/src/components/alarm/AlarmController.h" alarmControllerFileSystemEntries REGEX "Controllers::FS")
+if(NOT alarmControllerFileSystemEntries STREQUAL "")
+  message(STATUS "detected AlarmController.h using 'Controllers::FS'")
+  set_source_files_properties(main.cpp PROPERTIES COMPILE_DEFINITIONS ALARMCONTROLLER_NEEDS_FS)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # Special case for SDL2 dependency, goal is to find a config that exports SDL2::SDL2 target
 # libsdl2-dev has a `sdl2-config.cmake` that doesn't export this, but vcpkg does..
