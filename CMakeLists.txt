@@ -237,6 +237,13 @@ else()
   )
 endif()
 
+if(EXISTS ${InfiniTime_DIR}/src/systemtask/WakeLock.h)
+  target_sources(infinisim PUBLIC
+    ${InfiniTime_DIR}/src/systemtask/WakeLock.h
+    ${InfiniTime_DIR}/src/systemtask/WakeLock.cpp
+  )
+endif()
+
 # littlefs
 add_library(littlefs STATIC
   ${InfiniTime_DIR}/src/libs/littlefs/lfs_util.h
