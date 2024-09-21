@@ -47,3 +47,17 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, void * const pvBuffer, TickType_t
   pxQueue->queue.erase(pxQueue->queue.begin());
   return true;
 }
+
+UBaseType_t uxQueueMessagesWaiting(const QueueHandle_t xQueue)
+{
+  UBaseType_t uxReturn;
+  SDL_assert(xQueue);
+  Queue_t* pxQueue = ( Queue_t * ) xQueue;
+  // taskENTER_CRITICAL();
+  {
+    std::lock_guard<std::mutex> guard(pxQueue->mutex);
+    uxReturn = static_cast<UBaseType_t>(pxQueue->queue.size());
+  }
+  // taskEXIT_CRITICAL();
+  return uxReturn;
+}
