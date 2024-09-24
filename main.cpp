@@ -25,6 +25,10 @@
 #include <drivers/Hrs3300.h>
 #include <drivers/Bma421.h>
 
+# // be sure to get the sim headers for SimpleWeatherService.h
+#include "host/ble_gatt.h"
+#include "host/ble_uuid.h"
+
 #include "BootloaderVersion.h"
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
@@ -57,6 +61,8 @@
 #include <iostream>
 #include <typeinfo>
 #include <algorithm>
+#include <array>
+#include <vector>
 #include <cmath> // std::pow
 
 // additional includes for 'saveScreenshot()' function
@@ -806,11 +812,73 @@ public:
       batteryController.voltage = batteryController.percentRemaining * 50;
     }
 
+    void write_uint64(uint8_t* data, uint64_t val)
+    {
+      for (int i=0; i<8; i++)
+      {
+        data[i] = (val >> (i*8)) & 0xff;
+      }
+    }
+    void write_int16(uint8_t* data, int16_t val)
+    {
+      data[0] = val & 0xff;
+      data[1] = (val >> 8) & 0xff;
+    }
+    void set_current_weather(uint64_t timestamp, int16_t temperature, int iconId)
+    {
+      std::array<uint8_t, 49> dataBuffer {};
+      os_mbuf buffer;
+      ble_gatt_access_ctxt ctxt;
+      ctxt.om = &buffer;
+      buffer.om_data = dataBuffer.data();
+
+      // fill buffer with specified format
+      int16_t minTemperature = temperature;
+      int16_t maxTemperature = temperature;
+      dataBuffer.at(0) = 0; // MessageType::CurrentWeather
+      dataBuffer.at(1) = 0; // Vesion 0
+      write_uint64(&dataBuffer[2], timestamp);
+      write_int16(&dataBuffer[10], temperature);
+      write_int16(&dataBuffer[12], minTemperature);
+      write_int16(&dataBuffer[14], maxTemperature);
+      dataBuffer.at(48) = static_cast<uint8_t>(iconId);
+
+      // send weather to SimpleWeatherService
+      systemTask.nimble().weather().OnCommand(&ctxt);
+    }
+    void set_forecast(
+      uint64_t timestamp,
+      std::array<
+      Pinetime::Controllers::SimpleWeatherService::Forecast::Day,
+      Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days)
+    {
+      std::array<uint8_t, 36> dataBuffer {};
+      os_mbuf buffer;
+      ble_gatt_access_ctxt ctxt;
+      ctxt.om = &buffer;
+      buffer.om_data = dataBuffer.data();
+
+      // fill buffer with specified format
+      dataBuffer.at(0) = 1; // MessageType::Forecast
+      dataBuffer.at(1) = 0; // Vesion 0
+      write_uint64(&dataBuffer[2], timestamp);
+      dataBuffer.at(10) = static_cast<uint8_t>(days.size());
+      for (int i = 0; i < days.size(); i++)
+      {
+        const Pinetime::Controllers::SimpleWeatherService::Forecast::Day &day = days.at(i);
+        write_int16(&dataBuffer[11+(i*5)], day.minTemperature);
+        write_int16(&dataBuffer[13+(i*5)], day.maxTemperature);
+        dataBuffer.at(15+(i*5)) = static_cast<uint8_t>(day.iconId);
+      }
+      // send Forecast to SimpleWeatherService
+      systemTask.nimble().weather().OnCommand(&ctxt);
+    }
+
     void generate_weather_data(bool clear) {
       if (clear) {
-        systemTask.nimble().weather().SetCurrentWeather(0, 0, 0);
+        set_current_weather(0, 0, 0);
         std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
-        systemTask.nimble().weather().SetForecast(0, days);
+        set_forecast(0, days);
         return;
       }
       auto timestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -818,7 +886,7 @@ public:
 
       // Generate current weather data
       int16_t temperature = (rand() % 81 - 40) * 100;
-      systemTask.nimble().weather().SetCurrentWeather((uint64_t)timestamp, temperature, rand() % 9);
+      set_current_weather((uint64_t)timestamp, temperature, rand() % 9);
 
       // Generate forecast data
       std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
@@ -827,7 +895,7 @@ public:
           (int16_t)(temperature - rand() % 10 * 100), (int16_t)(temperature + rand() % 10 * 100), Pinetime::Controllers::SimpleWeatherService::Icons(rand() % 9)
         };
       }
-      systemTask.nimble().weather().SetForecast((uint64_t)timestamp, days);
+      set_forecast((uint64_t)timestamp, days);
     }
 
     void handle_touch_and_button() {
