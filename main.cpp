@@ -829,7 +829,7 @@ public:
     }
     void set_current_weather(uint64_t timestamp, int16_t temperature, int iconId)
     {
-      std::array<uint8_t, 49> dataBuffer {};
+      std::array<uint8_t, 53> dataBuffer {};
       std::span<uint8_t> data(dataBuffer);
       os_mbuf buffer;
       ble_gatt_access_ctxt ctxt;
@@ -840,12 +840,14 @@ public:
       int16_t minTemperature = temperature;
       int16_t maxTemperature = temperature;
       dataBuffer.at(0) = 0; // MessageType::CurrentWeather
-      dataBuffer.at(1) = 0; // Vesion 0
+      dataBuffer.at(1) = 1; // Vesion 1
       write_uint64(data.subspan(2), timestamp);
       write_int16(data.subspan(10), temperature);
       write_int16(data.subspan(12), minTemperature);
       write_int16(data.subspan(14), maxTemperature);
       dataBuffer.at(48) = static_cast<uint8_t>(iconId);
+      write_int16(data.subspan(49), 6*60);
+      write_int16(data.subspan(51), 18*60);
 
       // send weather to SimpleWeatherService
       systemTask.nimble().weather().OnCommand(&ctxt);
