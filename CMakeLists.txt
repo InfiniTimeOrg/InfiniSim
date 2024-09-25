@@ -87,6 +87,11 @@ add_library(sim-base STATIC
   sim/nrfx/mdk/nrf52_bitfields.h
   # nrf/components/libraries/timer
   sim/libraries/gpiote/app_gpiote.h # includes hal/nrf_gpio.h
+  # nibmle
+  sim/host/ble_gap.h
+  sim/host/ble_gatt.h
+  sim/host/ble_gatt.cpp
+  sim/host/ble_uuid.h
 )
 # include the generated lv_conf.h file before anything else
 target_include_directories(sim-base PUBLIC "${CMAKE_CURRENT_BINARY_DIR}") # lv_conf.h
@@ -128,8 +133,6 @@ target_sources(infinisim PUBLIC
   sim/components/ble/NavigationService.cpp
   sim/components/ble/NimbleController.h
   sim/components/ble/NimbleController.cpp
-  sim/components/ble/SimpleWeatherService.h
-  sim/components/ble/SimpleWeatherService.cpp
   sim/components/brightness/BrightnessController.h
   sim/components/brightness/BrightnessController.cpp
   sim/components/firmwarevalidator/FirmwareValidator.h
@@ -196,6 +199,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.h
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.cpp
+  ${InfiniTime_DIR}/src/components/ble/SimpleWeatherService.h
+  ${InfiniTime_DIR}/src/components/ble/SimpleWeatherService.cpp
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/motor/MotorController.h
