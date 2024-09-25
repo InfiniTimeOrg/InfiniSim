@@ -30,6 +30,10 @@
 #include <inttypes.h>
 //#include "host/ble_att.h"
 #include "host/ble_uuid.h"
+// include from sim for ASSERT
+#include "nrf_assert.h"
+#include "host/os_mbuf.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -611,42 +615,6 @@ struct ble_gatt_dsc_def {
 
     /** Optional argument for callback. */
     void *arg;
-};
-
-// buffer from os_mbuf.h
-/**
- * Chained memory buffer.
- */
-struct os_mbuf {
-    /**
-     * Current pointer to data in the structure
-     */
-    uint8_t *om_data;
-    /**
-     * Flags associated with this buffer, see OS_MBUF_F_* defintions
-     */
-    uint8_t om_flags;
-    /**
-     * Length of packet header
-     */
-    uint8_t om_pkthdr_len;
-    /**
-     * Length of data in this buffer
-     */
-    uint16_t om_len;
-
-    // sim: disabled, not used by InfiniSim
-    ///**
-    // * The mbuf pool this mbuf was allocated out of
-    // */
-    //struct os_mbuf_pool *om_omp;
-
-    //SLIST_ENTRY(os_mbuf) om_next;
-
-    /**
-     * Pointer to the beginning of the data, after this buffer
-     */
-    uint8_t om_databuf[0];
 };
 
 

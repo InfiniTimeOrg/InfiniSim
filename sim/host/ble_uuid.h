@@ -80,6 +80,15 @@ typedef union {
     ble_uuid128_t u128;
 } ble_uuid_any_t;
 
+/** @brief Compares two Bluetooth UUIDs.
+ *
+ * @param uuid1  The first UUID to compare.
+ * @param uuid2  The second UUID to compare.
+ *
+ * @return       0 if the two UUIDs are equal, nonzero if the UUIDs differ.
+ */
+int ble_uuid_cmp(const ble_uuid_t *uuid1, const ble_uuid_t *uuid2);
+
 #ifdef __cplusplus
 }
 #endif
