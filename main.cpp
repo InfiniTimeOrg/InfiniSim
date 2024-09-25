@@ -63,6 +63,7 @@
 #include <algorithm>
 #include <array>
 #include <vector>
+#include <span>
 #include <cmath> // std::pow
 
 // additional includes for 'saveScreenshot()' function
@@ -812,21 +813,24 @@ public:
       batteryController.voltage = batteryController.percentRemaining * 50;
     }
 
-    void write_uint64(uint8_t* data, uint64_t val)
+    void write_uint64(std::span<uint8_t> data, uint64_t val)
     {
+      assert(data.size() >= 8);
       for (int i=0; i<8; i++)
       {
         data[i] = (val >> (i*8)) & 0xff;
       }
     }
-    void write_int16(uint8_t* data, int16_t val)
+    void write_int16(std::span<uint8_t> data, int16_t val)
     {
+      assert(data.size() >= 2);
       data[0] = val & 0xff;
       data[1] = (val >> 8) & 0xff;
     }
     void set_current_weather(uint64_t timestamp, int16_t temperature, int iconId)
     {
       std::array<uint8_t, 49> dataBuffer {};
+      std::span<uint8_t> data(dataBuffer);
       os_mbuf buffer;
       ble_gatt_access_ctxt ctxt;
       ctxt.om = &buffer;
@@ -837,10 +841,10 @@ public:
       int16_t maxTemperature = temperature;
       dataBuffer.at(0) = 0; // MessageType::CurrentWeather
       dataBuffer.at(1) = 0; // Vesion 0
-      write_uint64(&dataBuffer[2], timestamp);
-      write_int16(&dataBuffer[10], temperature);
-      write_int16(&dataBuffer[12], minTemperature);
-      write_int16(&dataBuffer[14], maxTemperature);
+      write_uint64(data.subspan(2), timestamp);
+      write_int16(data.subspan(10), temperature);
+      write_int16(data.subspan(12), minTemperature);
+      write_int16(data.subspan(14), maxTemperature);
       dataBuffer.at(48) = static_cast<uint8_t>(iconId);
 
       // send weather to SimpleWeatherService
@@ -853,6 +857,7 @@ public:
       Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days)
     {
       std::array<uint8_t, 36> dataBuffer {};
+      std::span<uint8_t> data(dataBuffer);
       os_mbuf buffer;
       ble_gatt_access_ctxt ctxt;
       ctxt.om = &buffer;
@@ -861,13 +866,13 @@ public:
       // fill buffer with specified format
       dataBuffer.at(0) = 1; // MessageType::Forecast
       dataBuffer.at(1) = 0; // Vesion 0
-      write_uint64(&dataBuffer[2], timestamp);
+      write_uint64(data.subspan(2), timestamp);
       dataBuffer.at(10) = static_cast<uint8_t>(days.size());
       for (int i = 0; i < days.size(); i++)
       {
         const Pinetime::Controllers::SimpleWeatherService::Forecast::Day &day = days.at(i);
-        write_int16(&dataBuffer[11+(i*5)], day.minTemperature);
-        write_int16(&dataBuffer[13+(i*5)], day.maxTemperature);
+        write_int16(data.subspan(11+(i*5)), day.minTemperature);
+        write_int16(data.subspan(13+(i*5)), day.maxTemperature);
         dataBuffer.at(15+(i*5)) = static_cast<uint8_t>(day.iconId);
       }
       // send Forecast to SimpleWeatherService
