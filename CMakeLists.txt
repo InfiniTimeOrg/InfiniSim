@@ -92,6 +92,9 @@ add_library(sim-base STATIC
   sim/host/ble_gatt.h
   sim/host/ble_gatt.cpp
   sim/host/ble_uuid.h
+  sim/host/ble_uuid.cpp
+  sim/host/os_mbuf.h
+  sim/host/os_mbuf.cpp
 )
 # include the generated lv_conf.h file before anything else
 target_include_directories(sim-base PUBLIC "${CMAKE_CURRENT_BINARY_DIR}") # lv_conf.h
@@ -129,8 +132,6 @@ target_sources(infinisim PUBLIC
   sim/components/ble/MotionService.cpp
   sim/components/ble/MusicService.h
   sim/components/ble/MusicService.cpp
-  sim/components/ble/NavigationService.h
-  sim/components/ble/NavigationService.cpp
   sim/components/ble/NimbleController.h
   sim/components/ble/NimbleController.cpp
   sim/components/brightness/BrightnessController.h
@@ -197,6 +198,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/datetime/DateTimeController.cpp
   ${InfiniTime_DIR}/src/components/settings/Settings.h
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp
+  ${InfiniTime_DIR}/src/components/ble/NavigationService.h
+  ${InfiniTime_DIR}/src/components/ble/NavigationService.cpp
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.h
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.cpp
   ${InfiniTime_DIR}/src/components/ble/SimpleWeatherService.h

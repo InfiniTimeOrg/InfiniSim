@@ -20,14 +20,15 @@
 #include "lv_drivers/indev/keyboard.h"
 #include "lv_drivers/indev/mousewheel.h"
 
-// get PineTime header
-#include "displayapp/InfiniTimeTheme.h"
-#include <drivers/Hrs3300.h>
-#include <drivers/Bma421.h>
 
 # // be sure to get the sim headers for SimpleWeatherService.h
 #include "host/ble_gatt.h"
 #include "host/ble_uuid.h"
+
+// get PineTime header
+#include "displayapp/InfiniTimeTheme.h"
+#include <drivers/Hrs3300.h>
+#include <drivers/Bma421.h>
 
 #include "BootloaderVersion.h"
 #include "components/battery/BatteryController.h"
