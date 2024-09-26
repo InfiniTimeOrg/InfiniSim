@@ -2,11 +2,11 @@
 
 #include <cstdint>
 
-//#define min // workaround: nimble's min/max macros conflict with libstdc++
-//#define max
-//#include <host/ble_gap.h>
-//#undef max
-//#undef min
+#define min // workaround: nimble's min/max macros conflict with libstdc++
+#define max
+#include <host/ble_gap.h>
+#undef max
+#undef min
 //#include "components/ble/AlertNotificationClient.h"
 #include "components/ble/AlertNotificationService.h"
 //#include "components/ble/BatteryInformationService.h"
@@ -121,7 +121,7 @@ namespace Pinetime {
 //      ServiceDiscovery serviceDiscovery;
 
       uint8_t addrType;
-//      uint16_t connectionHandle = BLE_HS_CONN_HANDLE_NONE;
+      uint16_t connectionHandle = BLE_HS_CONN_HANDLE_NONE;
       uint8_t fastAdvCount = 0;
       uint8_t bondId[16] = {0};
 

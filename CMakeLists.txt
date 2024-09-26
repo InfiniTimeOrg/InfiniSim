@@ -88,9 +88,12 @@ add_library(sim-base STATIC
   # nrf/components/libraries/timer
   sim/libraries/gpiote/app_gpiote.h # includes hal/nrf_gpio.h
   # nibmle
+  sim/host/ble_att.h
   sim/host/ble_gap.h
   sim/host/ble_gatt.h
   sim/host/ble_gatt.cpp
+  sim/host/ble_hs_mbuf.h
+  sim/host/ble_hs_mbuf.cpp
   sim/host/ble_uuid.h
   sim/host/ble_uuid.cpp
   sim/host/os_mbuf.h
@@ -128,8 +131,6 @@ target_sources(infinisim PUBLIC
   sim/components/battery/BatteryController.cpp
   sim/components/ble/AlertNotificationService.h
   sim/components/ble/AlertNotificationService.cpp
-  sim/components/ble/MotionService.h
-  sim/components/ble/MotionService.cpp
   sim/components/ble/MusicService.h
   sim/components/ble/MusicService.cpp
   sim/components/ble/NimbleController.h
@@ -198,6 +199,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/datetime/DateTimeController.cpp
   ${InfiniTime_DIR}/src/components/settings/Settings.h
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp
+  ${InfiniTime_DIR}/src/components/ble/MotionService.h
+  ${InfiniTime_DIR}/src/components/ble/MotionService.cpp
   ${InfiniTime_DIR}/src/components/ble/NavigationService.h
   ${InfiniTime_DIR}/src/components/ble/NavigationService.cpp
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.h

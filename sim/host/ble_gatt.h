@@ -30,6 +30,8 @@
 #include <inttypes.h>
 //#include "host/ble_att.h"
 #include "host/ble_uuid.h"
+#include "host/ble_att.h"
+#include "host/ble_hs_mbuf.h"
 // include from sim for ASSERT
 #include "nrf_assert.h"
 #include "host/os_mbuf.h"
