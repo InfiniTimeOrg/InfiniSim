@@ -139,8 +139,6 @@ target_sources(infinisim PUBLIC
   sim/components/firmwarevalidator/FirmwareValidator.cpp
   sim/components/heartrate/HeartRateController.h
   sim/components/heartrate/HeartRateController.cpp
-  sim/components/motion/MotionController.h
-  sim/components/motion/MotionController.cpp
   sim/drivers/Bma421.h
   sim/drivers/Bma421.cpp
   sim/drivers/Cst816s.h
@@ -209,6 +207,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/ble/SimpleWeatherService.cpp
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
+  ${InfiniTime_DIR}/src/components/motion/MotionController.h
+  ${InfiniTime_DIR}/src/components/motion/MotionController.cpp
   ${InfiniTime_DIR}/src/components/motor/MotorController.h
   ${InfiniTime_DIR}/src/components/motor/MotorController.cpp
   ${InfiniTime_DIR}/src/drivers/Hrs3300.h
