@@ -129,8 +129,6 @@ target_sources(infinisim PUBLIC
   sim/displayapp/LittleVgl.cpp
   sim/components/battery/BatteryController.h
   sim/components/battery/BatteryController.cpp
-  sim/components/ble/MusicService.h
-  sim/components/ble/MusicService.cpp
   sim/components/ble/NimbleController.h
   sim/components/ble/NimbleController.cpp
   sim/components/brightness/BrightnessController.h
@@ -199,6 +197,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/ble/AlertNotificationService.cpp
   ${InfiniTime_DIR}/src/components/ble/MotionService.h
   ${InfiniTime_DIR}/src/components/ble/MotionService.cpp
+  ${InfiniTime_DIR}/src/components/ble/MusicService.h
+  ${InfiniTime_DIR}/src/components/ble/MusicService.cpp
   ${InfiniTime_DIR}/src/components/ble/NavigationService.h
   ${InfiniTime_DIR}/src/components/ble/NavigationService.cpp
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.h
