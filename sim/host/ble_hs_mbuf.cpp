@@ -17,17 +17,10 @@
  * under the License.
  */
 
-#include "host/os_mbuf.h"
+#include "host/ble_hs_mbuf.h"
 
 
-int
-os_mbuf_copydata(const struct os_mbuf *m, int off, int len, void *dst)
+struct os_mbuf *ble_hs_mbuf_from_flat(const void *buf, uint16_t len)
 {
-    return 0;
-}
-
-int
-os_mbuf_append(struct os_mbuf *om, const void *data,  uint16_t len)
-{
-    return 0;
+    return (os_mbuf *)nullptr;
 }

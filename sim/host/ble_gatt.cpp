@@ -19,6 +19,12 @@
 
 #include "host/ble_gatt.h"
 
+int ble_gattc_notify_custom(uint16_t conn_handle, uint16_t att_handle,
+                            struct os_mbuf *om)
+{
+    return 0;
+}
+
 int
 ble_gatts_count_cfg(const struct ble_gatt_svc_def *defs)
 {

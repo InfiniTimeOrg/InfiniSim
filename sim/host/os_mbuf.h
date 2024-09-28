@@ -115,6 +115,18 @@ struct os_mbuf {
 int os_mbuf_copydata(const struct os_mbuf *m, int off, int len, void *dst);
 
 
+/**
+ * Append data onto a mbuf
+ *
+ * @param om   The mbuf to append the data onto
+ * @param data The data to append onto the mbuf
+ * @param len  The length of the data to append
+ *
+ * @return 0 on success, and an error code on failure
+ */
+int os_mbuf_append(struct os_mbuf *m, const void *, uint16_t);
+
+
 #ifdef __cplusplus
 }
 #endif

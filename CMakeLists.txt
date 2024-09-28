@@ -88,9 +88,12 @@ add_library(sim-base STATIC
   # nrf/components/libraries/timer
   sim/libraries/gpiote/app_gpiote.h # includes hal/nrf_gpio.h
   # nibmle
+  sim/host/ble_att.h
   sim/host/ble_gap.h
   sim/host/ble_gatt.h
   sim/host/ble_gatt.cpp
+  sim/host/ble_hs_mbuf.h
+  sim/host/ble_hs_mbuf.cpp
   sim/host/ble_uuid.h
   sim/host/ble_uuid.cpp
   sim/host/os_mbuf.h
@@ -126,10 +129,6 @@ target_sources(infinisim PUBLIC
   sim/displayapp/LittleVgl.cpp
   sim/components/battery/BatteryController.h
   sim/components/battery/BatteryController.cpp
-  sim/components/ble/AlertNotificationService.h
-  sim/components/ble/AlertNotificationService.cpp
-  sim/components/ble/MotionService.h
-  sim/components/ble/MotionService.cpp
   sim/components/ble/MusicService.h
   sim/components/ble/MusicService.cpp
   sim/components/ble/NimbleController.h
@@ -140,8 +139,6 @@ target_sources(infinisim PUBLIC
   sim/components/firmwarevalidator/FirmwareValidator.cpp
   sim/components/heartrate/HeartRateController.h
   sim/components/heartrate/HeartRateController.cpp
-  sim/components/motion/MotionController.h
-  sim/components/motion/MotionController.cpp
   sim/drivers/Bma421.h
   sim/drivers/Bma421.cpp
   sim/drivers/Cst816s.h
@@ -198,6 +195,10 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/datetime/DateTimeController.cpp
   ${InfiniTime_DIR}/src/components/settings/Settings.h
   ${InfiniTime_DIR}/src/components/settings/Settings.cpp
+  ${InfiniTime_DIR}/src/components/ble/AlertNotificationService.h
+  ${InfiniTime_DIR}/src/components/ble/AlertNotificationService.cpp
+  ${InfiniTime_DIR}/src/components/ble/MotionService.h
+  ${InfiniTime_DIR}/src/components/ble/MotionService.cpp
   ${InfiniTime_DIR}/src/components/ble/NavigationService.h
   ${InfiniTime_DIR}/src/components/ble/NavigationService.cpp
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.h
@@ -206,6 +207,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/ble/SimpleWeatherService.cpp
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
+  ${InfiniTime_DIR}/src/components/motion/MotionController.h
+  ${InfiniTime_DIR}/src/components/motion/MotionController.cpp
   ${InfiniTime_DIR}/src/components/motor/MotorController.h
   ${InfiniTime_DIR}/src/components/motor/MotorController.cpp
   ${InfiniTime_DIR}/src/drivers/Hrs3300.h
