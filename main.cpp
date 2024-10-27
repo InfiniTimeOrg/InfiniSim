@@ -911,12 +911,12 @@ public:
       const bool right_click = (buttons & SDL_BUTTON_RMASK) != 0;
       if (left_click) {
         left_release_sent = false;
-        systemTask.OnTouchEvent();
+        systemTask.PushMessage(Pinetime::System::Messages::OnTouchEvent);
         return;
       } else {
         if (!left_release_sent) {
           left_release_sent = true;
-          systemTask.OnTouchEvent();
+          systemTask.PushMessage(Pinetime::System::Messages::OnTouchEvent);
           return;
         }
       }
