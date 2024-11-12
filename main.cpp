@@ -854,7 +854,7 @@ public:
     void set_forecast(
       uint64_t timestamp,
       std::array<
-      Pinetime::Controllers::SimpleWeatherService::Forecast::Day,
+      std::optional<Pinetime::Controllers::SimpleWeatherService::Forecast::Day>,
       Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days)
     {
       std::array<uint8_t, 36> dataBuffer {};
@@ -871,10 +871,13 @@ public:
       dataBuffer.at(10) = static_cast<uint8_t>(days.size());
       for (int i = 0; i < days.size(); i++)
       {
-        const Pinetime::Controllers::SimpleWeatherService::Forecast::Day &day = days.at(i);
-        write_int16(data.subspan(11+(i*5)), day.minTemperature);
-        write_int16(data.subspan(13+(i*5)), day.maxTemperature);
-        dataBuffer.at(15+(i*5)) = static_cast<uint8_t>(day.iconId);
+        const std::optional<Pinetime::Controllers::SimpleWeatherService::Forecast::Day> &day = days.at(i);
+        if (!day.has_value()) {
+          continue;
+        }
+        write_int16(data.subspan(11+(i*5)), day->minTemperature.PreciseCelsius());
+        write_int16(data.subspan(13+(i*5)), day->maxTemperature.PreciseCelsius());
+        dataBuffer.at(15+(i*5)) = static_cast<uint8_t>(day->iconId);
       }
       // send Forecast to SimpleWeatherService
       systemTask.nimble().weather().OnCommand(&ctxt);
@@ -883,7 +886,7 @@ public:
     void generate_weather_data(bool clear) {
       if (clear) {
         set_current_weather(0, 0, 0);
-        std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
+        std::array<std::optional<Pinetime::Controllers::SimpleWeatherService::Forecast::Day>, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
         set_forecast(0, days);
         return;
       }
@@ -895,10 +898,12 @@ public:
       set_current_weather((uint64_t)timestamp, temperature, rand() % 9);
 
       // Generate forecast data
-      std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
+      std::array<std::optional<Pinetime::Controllers::SimpleWeatherService::Forecast::Day>, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
       for (int i = 0; i < Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays; i++) {
         days[i] = Pinetime::Controllers::SimpleWeatherService::Forecast::Day {
-          (int16_t)(temperature - rand() % 10 * 100), (int16_t)(temperature + rand() % 10 * 100), Pinetime::Controllers::SimpleWeatherService::Icons(rand() % 9)
+          Pinetime::Controllers::SimpleWeatherService::Temperature(temperature - rand() % 10 * 100),
+          Pinetime::Controllers::SimpleWeatherService::Temperature(temperature + rand() % 10 * 100),
+          Pinetime::Controllers::SimpleWeatherService::Icons(rand() % 9),
         };
       }
       set_forecast((uint64_t)timestamp, days);
