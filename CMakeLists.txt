@@ -131,6 +131,8 @@ target_sources(infinisim PUBLIC
   sim/components/battery/BatteryController.cpp
   sim/components/ble/MusicService.h
   sim/components/ble/MusicService.cpp
+  sim/components/ble/ImmediateAlertClient.h
+  sim/components/ble/ImmediateAlertClient.cpp
   sim/components/ble/NimbleController.h
   sim/components/ble/NimbleController.cpp
   sim/components/brightness/BrightnessController.h
