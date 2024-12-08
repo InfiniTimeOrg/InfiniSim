@@ -36,6 +36,10 @@ void vPortFree( void *pv ) {
   return free(pv);
 }
 
+size_t xPortGetHeapSize(void) {
+  return configTOTAL_HEAP_SIZE;
+}
+
 size_t xPortGetFreeHeapSize(void) {
   return currentFreeHeap;
 }
