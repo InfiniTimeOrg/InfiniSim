@@ -86,6 +86,7 @@ void NVIC_SystemReset(void);
 
 #define configTOTAL_HEAP_SIZE                   (1024 * 40)
 
+size_t xPortGetHeapSize(void);
 size_t xPortGetFreeHeapSize(void);
 size_t xPortGetMinimumEverFreeHeapSize(void);
 
