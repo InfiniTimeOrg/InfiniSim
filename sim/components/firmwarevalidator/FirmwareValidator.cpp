@@ -19,3 +19,5 @@ void FirmwareValidator::Validate() {
 void FirmwareValidator::Reset() {
 //  NVIC_SystemReset();
 }
+
+void FirmwareValidator::AutoValidate() {}
