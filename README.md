@@ -161,7 +161,7 @@ For example pressing the UP key triggers a `SwipeUp` gesture.
 
 ## Littlefs-do helper
 
-To help working with the SPI-raw file the tool `littlefs-do` is provided.
+To help working with the SPI-raw file the tool `littlefs-do` is provided (in the build directory).
 The SPI-raw file emulates the persistent 4MB storage available over the SPI bus on the PineTime.
 
 ```sh
