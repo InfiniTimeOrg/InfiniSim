@@ -110,6 +110,30 @@ The following configuration settings can be added to the first `cmake -S . -B bu
   Ex: `-DENABLE_USERAPPS="Apps::Timer, Apps::Alarm"`.
   The default list of user applications will be selected if this variable is not set.
 
+### Build with Docker
+
+You can also build the simulator using Docker. This is useful if you don't want to install all the dependencies on your system.
+First build the Docker image:
+```sh
+docker build -t infinisim-build .
+```
+
+Afterwards you can build the simulator with:
+```sh
+docker run --rm -it -v ${PWD}:/sources infinisim-build
+```
+
+By default this builds the InfiniTime from the submodule in your ${PWD}. If you want to use a different repository, you got to mount it and pass the path to the `INFITIME_DIR` variable:
+```sh
+docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/infinitime -e INFITIME_DIR=/infinitime infinisim-build
+```
+
+Other build configurations can be passed to the BUILD_FLAGS variable:
+```sh
+docker run --rm -it -v ${PWD}:/sources -e BUILD_FLAGS=-DENABLE_USERAPPS="Apps::MyApp,Apps::Alarm" infinisim-build
+```
+
+
 ## Run Simulator
 
 When the build was successful the simulator binary can be started with
