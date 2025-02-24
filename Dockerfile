@@ -1,27 +1,26 @@
 FROM ubuntu:22.04
 
 # Install dependencies
-RUN apt-get update && \
+ARG DEBIAN_FRONTEND=noninteractive
+ARG NODE_MAJOR=20
+RUN apt-get update -qq && \
     apt-get install -y \
     curl \
     cmake \
     libsdl2-dev \
     g++ \
+    libpng-dev \
     python3-pip \
     python3-venv \
-    libpng-dev \
-    git \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh \
+    && rm -rf /var/cache/apt/* /var/lib/apt/lists/* \
+    && curl -sL https://deb.nodesource.com/setup_${NODE_MAJOR}.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
     && apt-get install -y nodejs \
     && npm install -g lv_font_conv@1.5.2 \
     && pip install wheel Pillow
 
-
 WORKDIR /sources
-
-# Define build configuration environment variables with default values
+# Build configuration environment variables
 ENV INFITIME_DIR="/sources/InfiniTime"
 ENV BUILD_FLAGS=""
 
