@@ -1,0 +1,32 @@
+// For format details, see https://aka.ms/devcontainer.json.
+{
+	"name": "InfiniSim Dev Container",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"marus25.cortex-debug",
+				"notskm.clang-tidy",
+				"mjohns.clang-format",
+				"timonwong.shellcheck"
+			]
+		}
+	},
+
+	"mounts": [
+		// Local volume to store bash history across rebuilds
+		"source=projectname-bashhistory,target=/commandhistory,type=volume"
+		// Uncomment and modify path to mount external InfiniTime source into the container
+		//,"source=/home/example/git/InfiniTime,target=/workspaces/InfiniTime,type=bind,consistency=cached"
+	],
+
+	// Sudo password "it"
+	"remoteUser": "infinitime"
+}
