@@ -10,6 +10,7 @@ RUN apt-get update -qq \
     ccache \
     libsdl2-dev \
     g++ \
+    gdb \
     git \
     libpng-dev \
     ninja-build \
