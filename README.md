@@ -112,7 +112,8 @@ The following configuration settings can be added to the first `cmake -S . -B bu
 
 ### Build with Docker
 
-You can also build the simulator using Docker. This is useful if you don't want to install all the dependencies on your system.
+You can also build the simulator using Docker.
+This is useful if you don't want to install all the dependencies on your system.
 First build the Docker image:
 ```sh
 docker build -t infinisim-build .devcontainer
@@ -123,12 +124,13 @@ Afterwards you can build the simulator with:
 docker run --rm -it -v ${PWD}:/sources infinisim-build
 ```
 
-By default this builds the InfiniTime from the submodule in your ${PWD}. If you want to use a different repository, you got to mount it and pass the path to the `INFITIME_DIR` variable:
+By default this builds the InfiniTime from the submodule in your `${PWD}`.
+If you want to use a different repository, you got to mount it and pass the path to the `INFINITIME_DIR` variable:
 ```sh
-docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/infinitime -e INFITIME_DIR=/infinitime infinisim-build
+docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/infinitime -e INFINITIME_DIR=/infinitime infinisim-build
 ```
 
-Other CMake generation and build arguments can be passed to the GENERATE_ARGS and BUILD_ARGS variables:
+Other CMake generation and build arguments can be passed to the `GENERATE_ARGS` and `BUILD_ARGS` variables:
 ```sh
 docker run --rm -it -v ${PWD}:/sources -e GENERATE_ARGS=-DENABLE_USERAPPS="Apps::Timer,Apps::Alarm" -e BUILD_ARGS=-j16 infinisim-build
 ```
