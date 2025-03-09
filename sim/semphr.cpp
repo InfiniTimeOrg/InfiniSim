@@ -13,7 +13,7 @@ QueueHandle_t xSemaphoreCreateMutex() {
 BaseType_t xSemaphoreTake(SemaphoreHandle_t xSemaphore,
                           TickType_t xTicksToWait) {
   Queue_t *pxQueue = (Queue_t *)xSemaphore;
-  const int DELAY_BETWEEN_ATTEMPTS = 25;
+  constexpr TickType_t DELAY_BETWEEN_ATTEMPTS = 25;
   do {
     if (pxQueue->mutex.try_lock()) {
       std::lock_guard<std::mutex> lock(pxQueue->mutex, std::adopt_lock);
