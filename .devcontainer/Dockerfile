@@ -1,10 +1,10 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
-# Install dependencies
+# Install apt dependencies
 ARG DEBIAN_FRONTEND=noninteractive
 ARG NODE_MAJOR=20
-RUN apt-get update -qq && \
-    apt-get install -y \
+RUN apt-get update -qq \
+    && apt-get install -y \
     curl \
     cmake \
     ccache \
@@ -16,26 +16,38 @@ RUN apt-get update -qq && \
     sudo \
     python3-pip \
     python3-venv \
-    && rm -rf /var/cache/apt/* /var/lib/apt/lists/* \
-    && curl -sL https://deb.nodesource.com/setup_${NODE_MAJOR}.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt-get install -y nodejs \
-    && npm install -g lv_font_conv@1.5.2 \
-    && pip install wheel Pillow
+    && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 
-# Add the infinitime user with sudo password "it" for developing in devcontainer
-RUN adduser infinitime && echo "infinitime:it" | chpasswd && usermod -aG sudo infinitime
+# Install nodejs based dependencies
+RUN curl -sL https://deb.nodesource.com/setup_${NODE_MAJOR}.x -o nodesource_setup.sh \
+    && bash nodesource_setup.sh \
+    && apt-get update -qq \
+    && apt-get install -y nodejs \
+    && npm install -g \
+    lv_font_conv@1.5.2 \
+    && rm nodesource_setup.sh \
+    && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --break-system-packages \
+    wheel \
+    Pillow \
+    && pip cache purge
+
+# The user ubuntu already exists set its password to ubuntu and add to sudo group for developing in devcontainer
+RUN usermod -aG sudo ubuntu \
+    && echo "ubuntu:ubuntu" | chpasswd 
 
 # Persist bash history across container rebuilds
 # Reference: https://code.visualstudio.com/remote/advancedcontainers/persist-bash-history
-ARG USERNAME=infinitime
+ARG USERNAME=ubuntu
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
     && mkdir /commandhistory \
     && touch /commandhistory/.bash_history \
     && chown -R $USERNAME /commandhistory \
     && echo "$SNIPPET" >> "/home/$USERNAME/.bashrc"
 
-USER infinitime
+USER ubuntu
 
 # Section for interactive compilation during docker run
 
@@ -49,4 +61,5 @@ ENV BUILD_ARGS=""
 # Build directory
 ENV BUILD_DIRECTORY="build"
 
-CMD ["bash", "-c", "cmake -S . -B ${BUILD_DIRECTORY} -G Ninja -DInfiniTime_DIR=${INFITIME_DIR} ${GENERATE_ARGS} && cmake --build ${BUILD_DIRECTORY} ${BUILD_ARGS}"]
+CMD ["bash", "-c", "cmake -S . -B ${BUILD_DIRECTORY} -G Ninja -DInfiniTime_DIR=${INFITIME_DIR} ${GENERATE_ARGS} \
+    && cmake --build ${BUILD_DIRECTORY} ${BUILD_ARGS}"]

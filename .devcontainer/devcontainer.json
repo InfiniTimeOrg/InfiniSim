@@ -27,6 +27,6 @@
 		//,"source=/home/example/git/InfiniTime,target=/workspaces/InfiniTime,type=bind,consistency=cached"
 	],
 
-	// Sudo password "it"
-	"remoteUser": "infinitime"
+	// Sudo password "ubuntu"
+	"remoteUser": "ubuntu"
 }
