@@ -53,7 +53,7 @@ USER ubuntu
 
 WORKDIR /sources
 # Directory if InfiniTime source code
-ENV INFITIME_DIR="/sources/InfiniTime"
+ENV INFINITIME_DIR="/sources/InfiniTime"
 # Passed to CMake generate step
 ENV GENERATE_ARGS=""
 # Passed to CMake build step
@@ -61,5 +61,5 @@ ENV BUILD_ARGS=""
 # Build directory
 ENV BUILD_DIRECTORY="build"
 
-CMD ["bash", "-c", "cmake -S . -B ${BUILD_DIRECTORY} -G Ninja -DInfiniTime_DIR=${INFITIME_DIR} ${GENERATE_ARGS} \
+CMD ["bash", "-c", "cmake -S . -B ${BUILD_DIRECTORY} -G Ninja -DInfiniTime_DIR=${INFINITIME_DIR} ${GENERATE_ARGS} \
     && cmake --build ${BUILD_DIRECTORY} ${BUILD_ARGS}"]
