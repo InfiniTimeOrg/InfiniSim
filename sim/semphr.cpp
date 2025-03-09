@@ -6,7 +6,7 @@ QueueHandle_t xSemaphoreCreateMutex() {
   SemaphoreHandle_t xSemaphore = xQueueCreate(1, 1);
   Queue_t *pxQueue = (Queue_t *)xSemaphore;
   // Queue full represents taken semaphore/locked mutex
-  pxQueue->queue.push_back(0); 
+  pxQueue->queue.push_back(0);
   return xSemaphore;
 }
 
