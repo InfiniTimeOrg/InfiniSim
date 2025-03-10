@@ -319,11 +319,30 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # Special case for SDL2 dependency, goal is to find a config that exports SDL2::SDL2 target
 # libsdl2-dev has a `sdl2-config.cmake` that doesn't export this, but vcpkg does..
+if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+  # emcmake cmake -S . -B _build_em
+  set(USE_FLAGS "-s USE_PTHREADS=1 -pthread")
+  set(USE_FLAGS "${USE_FLAGS} -s USE_SDL=2")
+  set(USE_FLAGS "${USE_FLAGS} -fwasm-exceptions")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s PTHREAD_POOL_SIZE=4 -s PROXY_TO_PTHREAD=1")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s INITIAL_MEMORY=30736384") # 30MB memory
+  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ALLOW_MEMORY_GROWTH=1")
+  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ABORTING_MALLOC=0")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s EXPORTED_RUNTIME_METHODS=[\"printErr\"]")
+  set(CMAKE_EXECUTABLE_SUFFIX .html)
+  target_include_directories(infinisim PRIVATE ${SDL2_INCLUDE_DIRS})
+  target_link_libraries(infinisim PRIVATE ${SDL2_LIBRARIES})
+  #set_target_properties(infinisim PROPERTIES LINK_FLAGS "--shell-file ${PROJECT_SOURCE_DIR}/lvgl_shell.html")
+else()
 find_package(SDL2 CONFIG QUIET)
 if(NOT TARGET SDL2::SDL2)
   find_package(SDL2 MODULE REQUIRED)
 endif()
 target_link_libraries(infinisim PRIVATE SDL2::SDL2)
+endif()
 
 # Some toolchains (e.g. g++-8) require to explicitly link with the standard filesystem library
 # See https://github.com/InfiniTimeOrg/InfiniSim/issues/57#issuecomment-1386889378
