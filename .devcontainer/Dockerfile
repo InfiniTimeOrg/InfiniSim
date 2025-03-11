@@ -53,8 +53,8 @@ USER ubuntu
 # Section for interactive compilation during docker run
 
 WORKDIR /sources
-# Directory of InfiniTime source code
-ENV INFINITIME_DIR="/sources/InfiniTime"
+# Directory if InfiniTime source code
+ENV InfiniTime_DIR="/sources/InfiniTime"
 # Passed to CMake generate step
 ENV GENERATE_ARGS=""
 # Passed to CMake build step
