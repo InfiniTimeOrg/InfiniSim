@@ -29,4 +29,8 @@
 
 	// Sudo password "ubuntu"
 	"remoteUser": "ubuntu"
+	// This might be needed when you do not have a local user called ubuntu but your dev container implementation
+	// tries to find it in the local /etc/passwd and fails to build your container.
+	// The default is true.
+	//,"updateRemoteUserUID": false
 }
