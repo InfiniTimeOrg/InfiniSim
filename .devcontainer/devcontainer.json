@@ -22,7 +22,7 @@
 
 	"mounts": [
 		// Local volume to store bash history across rebuilds
-		"source=projectname-bashhistory,target=/commandhistory,type=volume"
+		"source=infinisim-bashhistory,target=/commandhistory,type=volume"
 		// Uncomment and modify path to mount external InfiniTime source into the container
 		//,"source=/home/example/git/InfiniTime,target=/workspaces/InfiniTime,type=bind,consistency=cached"
 	],
