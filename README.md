@@ -124,7 +124,7 @@ Afterwards you can build the simulator with:
 docker run --rm -it -v ${PWD}:/sources infinisim-build
 ```
 
-By default this builds the InfiniTime from the submodule in your `${PWD}`.
+By default this builds the simulator using the InfiniTime files from the submodule in your `${PWD}`.
 If you want to use a different repository, you got to mount it and pass the path to the `INFINITIME_DIR` variable:
 ```sh
 docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/infinitime -e INFINITIME_DIR=/infinitime infinisim-build

@@ -53,7 +53,7 @@ USER ubuntu
 # Section for interactive compilation during docker run
 
 WORKDIR /sources
-# Directory if InfiniTime source code
+# Directory of InfiniTime source code
 ENV INFINITIME_DIR="/sources/InfiniTime"
 # Passed to CMake generate step
 ENV GENERATE_ARGS=""
@@ -62,5 +62,5 @@ ENV BUILD_ARGS=""
 # Build directory
 ENV BUILD_DIRECTORY="build"
 
-CMD ["bash", "-c", "cmake -S . -B ${BUILD_DIRECTORY} -G Ninja -DInfiniTime_DIR=${INFINITIME_DIR} ${GENERATE_ARGS} \
+CMD ["bash", "-c", "cmake -S . -B ${BUILD_DIRECTORY} -G Ninja -DInfiniTime_DIR=${InfiniTime_DIR} ${GENERATE_ARGS} \
     && cmake --build ${BUILD_DIRECTORY} ${BUILD_ARGS}"]
