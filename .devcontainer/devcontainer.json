@@ -12,7 +12,6 @@
 			"extensions": [
 				"ms-vscode.cpptools",
 				"ms-vscode.cmake-tools",
-				"marus25.cortex-debug",
 				"notskm.clang-tidy",
 				"mjohns.clang-format",
 				"timonwong.shellcheck"
