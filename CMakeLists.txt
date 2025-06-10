@@ -205,6 +205,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/components/ble/NotificationManager.cpp
   ${InfiniTime_DIR}/src/components/ble/SimpleWeatherService.h
   ${InfiniTime_DIR}/src/components/ble/SimpleWeatherService.cpp
+  ${InfiniTime_DIR}/src/components/sleeptracking/SleepTrackingController.h
+  ${InfiniTime_DIR}/src/components/sleeptracking/SleepTrackingController.cpp
   ${InfiniTime_DIR}/src/components/fs/FS.h
   ${InfiniTime_DIR}/src/components/fs/FS.cpp
   ${InfiniTime_DIR}/src/components/motion/MotionController.h
