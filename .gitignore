@@ -49,3 +49,9 @@ Testing/Temporary/
 src/nRF5_SDK_15.3.0_59ac345
 src/arm-none-eabi
 
+# Developer files
+CMakeUserPresets.json
+compile_commands.json
+package-lock.json
+package.json
+node_modules/
