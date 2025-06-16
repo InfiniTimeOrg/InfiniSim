@@ -1,0 +1,35 @@
+// For format details, see https://aka.ms/devcontainer.json.
+{
+	"name": "InfiniSim Dev Container",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"notskm.clang-tidy",
+				"mjohns.clang-format",
+				"timonwong.shellcheck"
+			]
+		}
+	},
+
+	"mounts": [
+		// Local volume to store bash history across rebuilds
+		"source=infinisim-bashhistory,target=/commandhistory,type=volume"
+		// Uncomment and modify path to mount external InfiniTime source into the container
+		//,"source=/home/example/git/InfiniTime,target=/workspaces/InfiniTime,type=bind,consistency=cached"
+	],
+
+	// Sudo password "ubuntu"
+	"remoteUser": "ubuntu"
+	// This might be needed when you do not have a local user called ubuntu but your dev container implementation
+	// tries to find it in the local /etc/passwd and fails to build your container.
+	// The default is true.
+	//,"updateRemoteUserUID": false
+}
