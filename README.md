@@ -124,6 +124,12 @@ Afterwards you can build the simulator with:
 docker run --rm -it -v ${PWD}:/sources --user $(id -u):$(id -g) infinisim-build
 ```
 
+Note: when using rootless `podman` instead of `docker` the `--user` part can be left out.
+The command to build the simulator using `podman` is:
+```sh
+podman run --rm -it -v ${PWD}:/sources infinisim-build
+```
+
 By default this builds the simulator using the InfiniTime files from the submodule in your `${PWD}`.
 If you want to use a different repository, you got to mount it and pass the path to the `INFINITIME_DIR` variable:
 ```sh
