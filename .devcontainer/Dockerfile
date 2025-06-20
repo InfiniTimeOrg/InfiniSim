@@ -48,8 +48,6 @@ RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhisto
     && chown -R $USERNAME /commandhistory \
     && echo "$SNIPPET" >> "/home/$USERNAME/.bashrc"
 
-USER ubuntu
-
 # Section for interactive compilation during docker run
 
 WORKDIR /sources

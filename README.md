@@ -121,18 +121,24 @@ docker build -t infinisim-build .devcontainer
 
 Afterwards you can build the simulator with:
 ```sh
-docker run --rm -it -v ${PWD}:/sources infinisim-build
+docker run --rm -it -v ${PWD}:/sources --user $(id -u):$(id -g) infinisim-build
+```
+
+Note: when using rootless `podman` instead of `docker` the `--user` part can be left out.
+The command to build the simulator using `podman` is:
+```sh
+podman run --rm -it -v ${PWD}:/sources infinisim-build
 ```
 
 By default this builds the simulator using the InfiniTime files from the submodule in your `${PWD}`.
 If you want to use a different repository, you got to mount it and pass the path to the `INFINITIME_DIR` variable:
 ```sh
-docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/infinitime -e INFINITIME_DIR=/infinitime infinisim-build
+docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/infinitime -e INFINITIME_DIR=/infinitime  --user $(id -u):$(id -g) infinisim-build
 ```
 
 Other CMake generation and build arguments can be passed to the `GENERATE_ARGS` and `BUILD_ARGS` variables:
 ```sh
-docker run --rm -it -v ${PWD}:/sources -e GENERATE_ARGS=-DENABLE_USERAPPS="Apps::Timer,Apps::Alarm" -e BUILD_ARGS=-j16 infinisim-build
+docker run --rm -it -v ${PWD}:/sources -e GENERATE_ARGS=-DENABLE_USERAPPS="Apps::Timer,Apps::Alarm" -e BUILD_ARGS=-j16 --user $(id -u):$(id -g)  infinisim-build
 ```
 
 
