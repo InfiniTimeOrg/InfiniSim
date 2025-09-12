@@ -185,6 +185,8 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/displayapp/DisplayApp.cpp
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.h
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.cpp
+  ${InfiniTime_DIR}/src/components/activity/ActivityController.h
+  ${InfiniTime_DIR}/src/components/activity/ActivityController.cpp
   ${InfiniTime_DIR}/src/components/alarm/AlarmController.h
   ${InfiniTime_DIR}/src/components/alarm/AlarmController.cpp
   ${InfiniTime_DIR}/src/components/ble/BleController.h
