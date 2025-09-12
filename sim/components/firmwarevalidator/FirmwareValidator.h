@@ -7,6 +7,7 @@ namespace Pinetime {
     class FirmwareValidator {
     public:
       void Validate();
+      void AutoValidate();
       bool IsValidated() const;
 
       void Reset();
