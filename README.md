@@ -131,7 +131,7 @@ podman run --rm -it -v ${PWD}:/sources infinisim-build
 ```
 
 By default this builds the simulator using the InfiniTime files from the submodule in your `${PWD}`.
-If you want to use a different repository, you got to mount it and pass the path to the `/sources/InfiniTime` directory:
+If you want to use a different repository, the easiest way is to mount over the default submodule location in the container at `/sources/InfiniTime`:
 ```sh
 docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/sources/InfiniTime --user $(id -u):$(id -g) infinisim-build
 ```
