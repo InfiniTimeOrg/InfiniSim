@@ -131,9 +131,9 @@ podman run --rm -it -v ${PWD}:/sources infinisim-build
 ```
 
 By default this builds the simulator using the InfiniTime files from the submodule in your `${PWD}`.
-If you want to use a different repository, you got to mount it and pass the path to the `INFINITIME_DIR` variable:
+If you want to use a different repository, you got to mount it and pass the path to the `/sources/InfiniTime` directory:
 ```sh
-docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/infinitime -e INFINITIME_DIR=/infinitime  --user $(id -u):$(id -g) infinisim-build
+docker run --rm -it -v ${PWD}:/sources -v ${PWD}/../InfiniTime:/sources/InfiniTime --user $(id -u):$(id -g) infinisim-build
 ```
 
 Other CMake generation and build arguments can be passed to the `GENERATE_ARGS` and `BUILD_ARGS` variables:
