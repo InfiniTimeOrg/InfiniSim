@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 //#include <components/ble/HeartRateService.h>
 
 namespace Pinetime {
@@ -18,13 +19,13 @@ namespace Pinetime {
       HeartRateController() = default;
       void Start();
       void Stop();
-      void Update(States newState, uint8_t heartRate);
+      void Update(States newState, std::optional<uint8_t> heartRate);
 
       void SetHeartRateTask(Applications::HeartRateTask* task);
       States State() const {
         return state;
       }
-      uint8_t HeartRate() const {
+      std::optional<uint8_t> HeartRate() const {
         return heartRate;
       }
 
@@ -33,7 +34,7 @@ namespace Pinetime {
     private:
       Applications::HeartRateTask* task = nullptr;
       States state = States::Stopped;
-      uint8_t heartRate = 0;
+      std::optional<uint8_t> heartRate = std::nullopt;
       //Pinetime::Controllers::HeartRateService* service = nullptr;
     };
   }

@@ -778,10 +778,14 @@ public:
         if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::Stopped) {
           heartRateController.Start();
         } else if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::NotEnoughData) {
-          heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, 10);
+          heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, std::make_optional<uint8_t>(10));
         } else {
-          uint8_t heartrate = heartRateController.HeartRate();
-          heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, heartrate + 10);
+          auto heartrate = heartRateController.HeartRate();
+          if (heartrate.has_value()) {
+            heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, std::make_optional<uint8_t>(heartrate.value() + 10));
+          } else {
+            heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, std::make_optional<uint8_t>(10));
+          }
         }
       } else if (key == 'H') {
         heartRateController.Stop();
