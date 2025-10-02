@@ -636,14 +636,14 @@ public:
     };
     size_t notification_idx = 0; // which message to send next
     void send_notification() {
-      Pinetime::Controllers::NotificationManager::Notification notif;
       const std::string &title   = notification_messages.at(notification_idx*2);
       const std::string &message = notification_messages.at(notification_idx*2+1);
-      std::copy(title.begin(), title.end(), notif.message.data());
-      notif.message[title.size()] = '\0'; // title and message is \0 separated
-      std::copy(message.begin(), message.end(), notif.message.data()+title.size()+1);
-      notif.message[title.size() + 1 + message.size()] = '\0'; // zero terminate the message
-      notif.size = title.size() + 1 + message.size();
+      char messagedata[title.size() + 1 + message.size() + 1];
+      std::copy(title.begin(), title.end(), messagedata);
+      messagedata[title.size()] = '\0'; // title and message is \0 separated
+      std::copy(message.begin(), message.end(), messagedata+title.size()+1);
+      messagedata[title.size() + 1 + message.size()] = '\0'; // zero terminate the message
+      Pinetime::Controllers::NotificationManager::Notification notif(messagedata, title.size() + 1 + message.size() + 1);
       notif.category = static_cast<Pinetime::Controllers::NotificationManager::Categories>(notification_idx % 11);
       notificationManager.Push(std::move(notif));
       // send next message the next time
