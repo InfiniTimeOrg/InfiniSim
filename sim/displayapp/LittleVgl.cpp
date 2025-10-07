@@ -156,6 +156,10 @@ void LittleVgl::SetFullRefresh(FullRefreshDirections direction) {
   fullRefresh = true;
 }
 
+bool LittleVgl::IsScrolling() {
+  return scrollDirection != LittleVgl::FullRefreshDirections::None;
+}
+
 // glue the lvgl code to the lv-sim monitor driver
 void DrawBuffer(lv_disp_drv_t *disp_drv, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t* data, size_t size) {
   lv_area_t area;
