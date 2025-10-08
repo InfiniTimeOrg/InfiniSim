@@ -26,13 +26,10 @@ jobs:
       #########################################################################################
       # Download and Install Dependencies
 
-      - name: Install cmake
-        uses: lukka/get-cmake@v3.18.3
-
-      - name: Install SDL2 and libpng development package
+      - name: Install CMake SDL2 and libpng development package
         run:  |
-          sudo apt-get update
-          sudo apt-get -y install libsdl2-dev libpng-dev
+          sudo apt-get update -qq
+          sudo apt-get -y install cmake libsdl2-dev libpng-dev
 
       - name: Install resource build dependencies
         run:  |
