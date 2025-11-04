@@ -362,6 +362,7 @@ Pinetime::Controllers::MotionController motionController;
 Pinetime::Controllers::TimerController timerController;
 #endif
 
+Pinetime::Controllers::StopWatchController stopWatchController {};
 #if defined(ALARMCONTROLLER_NEEDS_FS)
 Pinetime::Controllers::AlarmController alarmController {dateTimeController, fs};
 #else
@@ -385,6 +386,7 @@ Pinetime::Applications::DisplayApp displayApp(lcd,
                                               #if defined(INFINITIME_TIMERCONTROLLER)
                                               timerController,
                                               #endif
+                                              stopWatchController,
                                               alarmController,
                                               brightnessController,
                                               touchHandler,
@@ -401,6 +403,7 @@ Pinetime::System::SystemTask systemTask(spi,
                                         #if defined(INFINITIME_TIMERCONTROLLER)
                                         timerController,
                                         #endif
+                                        stopWatchController,
                                         alarmController,
                                         watchdog,
                                         notificationManager,
