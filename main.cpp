@@ -779,7 +779,7 @@ public:
         }
       } else if (key == 'h') {
         if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::Stopped) {
-          heartRateController.Start();
+          heartRateController.Enable();
         } else if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::NotEnoughData) {
           heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, 10);
         } else {
@@ -787,7 +787,7 @@ public:
           heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, heartrate + 10);
         }
       } else if (key == 'H') {
-        heartRateController.Stop();
+        heartRateController.Disable();
       } else if (key == 'i') {
         saveScreenshot();
       } else if (key == 'I') {
