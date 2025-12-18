@@ -831,9 +831,15 @@ public:
       data[0] = val & 0xff;
       data[1] = (val >> 8) & 0xff;
     }
+    void write_uint16(std::span<uint8_t> data, uint16_t val)
+    {
+      assert(data.size() >= 2);
+      data[0] = val & 0xff;
+      data[1] = (val >> 8) & 0xff;
+    }
     void set_current_weather(uint64_t timestamp, int16_t temperature, int iconId)
     {
-      std::array<uint8_t, 49> dataBuffer {};
+      std::array<uint8_t, 53> dataBuffer {};
       std::span<uint8_t> data(dataBuffer);
       os_mbuf buffer;
       ble_gatt_access_ctxt ctxt;
@@ -844,12 +850,27 @@ public:
       int16_t minTemperature = temperature;
       int16_t maxTemperature = temperature;
       dataBuffer.at(0) = 0; // MessageType::CurrentWeather
-      dataBuffer.at(1) = 0; // Vesion 0
+      dataBuffer.at(1) = 1; // Version 1 (includes sunrise/sunset)
       write_uint64(data.subspan(2), timestamp);
       write_int16(data.subspan(10), temperature);
       write_int16(data.subspan(12), minTemperature);
       write_int16(data.subspan(14), maxTemperature);
+
+      // Location (offset 16-47, 32 chars + null terminator)
+      const char* cities[] = {"San Francisco", "Chicago", "New York", "Toronto", "Montreal",
+                              "London", "Paris", "Beijing", "Tokyo", "Sydney"};
+      const char* location = cities[rand() % 10];
+      strncpy(reinterpret_cast<char*>(&dataBuffer.at(16)), location, 32);
+      dataBuffer.at(47) = '\0'; // ensure null terminator
+
       dataBuffer.at(48) = static_cast<uint8_t>(iconId);
+
+      // Sunrise/Sunset (Version 1 fields)
+      // Generate reasonable sunrise/sunset times
+      uint16_t sunrise = (6 * 60) + (rand() % 90); // 6-7:30am in minutes since midnight
+      uint16_t sunset = (17 * 60) + (30 + rand() % 90); // 5:30-7pm in minutes since midnight
+      write_uint16(data.subspan(49), sunrise);
+      write_uint16(data.subspan(51), sunset);
 
       // send weather to SimpleWeatherService
       systemTask.nimble().weather().OnCommand(&ctxt);
