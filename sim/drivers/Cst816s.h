@@ -35,6 +35,7 @@ namespace Pinetime {
 
       bool Init();
       TouchInfos GetTouchInfo();
+      void InjectTap(uint16_t x, uint16_t y);
       void Sleep();
       void Wakeup();
 

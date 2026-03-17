@@ -7,6 +7,7 @@
 #include <string> // std::to_string
 
 bool motor_running = false;
+bool sim_button_pressed = false;
 
 void nrf_gpio_cfg_default(uint32_t pin_number) {
   if (pin_number == Pinetime::PinMap::Motor)
@@ -23,6 +24,7 @@ void nrf_gpio_pin_set(uint32_t pin_number) {
 uint32_t nrf_gpio_pin_read(uint32_t pin_number)
 {
   if (pin_number == Pinetime::PinMap::Button) {
+    if (sim_button_pressed) return 1;
     int x, y;
     uint32_t buttons = SDL_GetMouseState(&x, &y);
     bool right_click = (buttons & SDL_BUTTON_RMASK) != 0;
