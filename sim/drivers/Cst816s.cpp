@@ -6,6 +6,10 @@
 
 using namespace Pinetime::Drivers;
 
+static uint8_t  sim_tap_phase = 0; // 0=idle, 1=press, 2=release
+static uint16_t sim_tap_x = 0;
+static uint16_t sim_tap_y = 0;
+
 /* References :
  * This implementation is based on this article :
  * https://medium.com/@ly.lee/building-a-rust-driver-for-pinetimes-touch-controller-cbc1a5d5d3e9 Touch panel datasheet (weird chinese
@@ -23,7 +27,33 @@ bool Cst816S::Init() {
   return true;
 }
 
+void Cst816S::InjectTap(uint16_t x, uint16_t y) {
+  sim_tap_x = x;
+  sim_tap_y = y;
+  sim_tap_phase = 1;
+}
+
 Cst816S::TouchInfos Cst816S::GetTouchInfo() {
+  // Serve injected tap before reading the real SDL mouse state.
+  if (sim_tap_phase == 1) {
+    sim_tap_phase = 2;
+    TouchInfos info;
+    info.x = sim_tap_x;
+    info.y = sim_tap_y;
+    info.touching = true;
+    info.gesture = Gestures::SingleTap;
+    info.isValid = true;
+    return info;
+  } else if (sim_tap_phase == 2) {
+    sim_tap_phase = 0;
+    TouchInfos info;
+    info.x = sim_tap_x;
+    info.y = sim_tap_y;
+    info.touching = false;
+    info.gesture = Gestures::None;
+    info.isValid = true;
+    return info;
+  }
   int x, y;
   uint32_t buttons = SDL_GetMouseState(&x, &y);
   // scale down real mouse coordinates to InfiniTime scale to make zoom work

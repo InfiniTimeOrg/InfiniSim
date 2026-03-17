@@ -10,6 +10,10 @@
 #define _DEFAULT_SOURCE /* needed for usleep() */
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+
+extern bool sim_button_pressed;
 #define SDL_MAIN_HANDLED /*To fix SDL's "undefined reference to WinMain" issue*/
 #include <SDL2/SDL.h>
 #include "lvgl/lvgl.h"
@@ -103,26 +107,13 @@ typedef struct {
 extern monitor_t monitor;
 }
 
-void saveScreenshot()
+void saveScreenshot(const std::string& screenshot_filename)
 {
-  auto now = std::chrono::system_clock::now();
-  auto in_time_t = std::chrono::system_clock::to_time_t(now);
-  // timestamped png filename
-  std::stringstream ss;
-  ss << "InfiniSim_" << std::put_time(std::localtime(&in_time_t), "%F_%H%M%S");
-  std::string screenshot_filename_base = ss.str();
-  // TODO: use std::format once we have C++20 and new enough GCC 13
-  //std::string screenshot_filename_base = std::format("InfiniSim_%F_%H%M%S", std::chrono::floor<std::chrono::seconds>(now));
-  //std::string screenshot_filename_base = "InfiniSim";
-
   const int width = 240;
   const int height = 240;
   auto renderer = monitor.renderer;
 
-
 #if defined(WITH_PNG)
-  std::string screenshot_filename = screenshot_filename_base + ".png";
-
   FILE * fp2 = fopen(screenshot_filename.c_str(), "wb");
   if (!fp2) {
     // dealing with error
@@ -175,7 +166,6 @@ void saveScreenshot()
 
   SDL_FreeSurface(surface);
 #else
-  std::string screenshot_filename = screenshot_filename_base + ".bmp";
   const Uint32 format = SDL_PIXELFORMAT_RGB888;
   SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 24, format);
   SDL_RenderReadPixels(renderer, NULL, format, surface->pixels, surface->pitch);
@@ -183,6 +173,23 @@ void saveScreenshot()
   SDL_FreeSurface(surface);
 #endif
   std::cout << "InfiniSim: Screenshot created: " << screenshot_filename << std::endl;
+}
+
+void saveScreenshot()
+{
+  auto now = std::chrono::system_clock::now();
+  auto in_time_t = std::chrono::system_clock::to_time_t(now);
+  std::stringstream ss;
+  ss << "InfiniSim_" << std::put_time(std::localtime(&in_time_t), "%F_%H%M%S");
+  // TODO: use std::format once we have C++20 and new enough GCC 13
+  //std::string screenshot_filename_base = std::format("InfiniSim_%F_%H%M%S", std::chrono::floor<std::chrono::seconds>(now));
+  //std::string screenshot_filename_base = "InfiniSim";
+
+#if defined(WITH_PNG)
+  saveScreenshot(ss.str() + ".png");
+#else
+  saveScreenshot(ss.str() + ".bmp");
+#endif
 }
 
 class GifManager
@@ -424,7 +431,7 @@ std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> NoI
 class Framework {
 public:
     // Contructor which initialize the parameters.
-    Framework(bool visible_, int height_, int width_) :
+    Framework(bool visible_, int height_, int width_, bool enable_fifo = false) :
       visible(visible_), height(height_), width(width_)
       {
         if (visible) {
@@ -469,6 +476,13 @@ public:
         // initialize the first LVGL screen
         //const auto clockface = settingsController.GetClockFace();
         //switch_to_screen(1+clockface);
+
+        // Create control FIFO for external automation
+        if (enable_fifo) {
+          cmd_fifo_path = "/tmp/infinisim_" + std::to_string(getpid()) + ".fifo";
+          mkfifo(cmd_fifo_path.c_str(), 0600);
+          cmd_fifo_fd = open(cmd_fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
+        }
     }
 
     // Destructor
@@ -712,6 +726,7 @@ public:
       debounce('<', '<', state[SDL_SCANCODE_LEFT], key_handled_left);
       debounce('>', '>', state[SDL_SCANCODE_RIGHT], key_handled_right);
     }
+
     // inject a swipe gesture to the touch handler and notify displayapp to notice it
     void send_gesture(Pinetime::Drivers::Cst816S::Gestures gesture)
     {
@@ -725,6 +740,31 @@ public:
       info.gesture = Pinetime::Drivers::Cst816S::Gestures::None;
       touchHandler.ProcessTouchInfo(info);
     }
+
+    void send_tap(uint16_t x, uint16_t y)
+    {
+      touchPanel.InjectTap(x, y);
+      systemTask.PushMessage(Pinetime::System::Messages::OnTouchEvent);
+      sim_tap_hold_frames = 3;
+    }
+
+    void send_button()
+    {
+      sim_button_pressed = true;
+      systemTask.PushMessage(Pinetime::System::Messages::HandleButtonEvent);
+      sim_btn_hold_frames = 3;
+    }
+
+    void send_prepare()
+    {
+      generate_weather_data(false);
+      batteryController.percentRemaining = 50;
+      batteryController.voltage = batteryController.percentRemaining * 50;
+      motionSensor.steps = 2500;
+      heartRateController.Enable();
+      heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, 50);
+    }
+
     // modify the simulated controller depending on the pressed key
     void handle_key(SDL_Keycode key) {
       if (key == 'r') {
@@ -912,7 +952,88 @@ public:
       set_forecast((uint64_t)timestamp, days);
     }
 
+    // Read and process commands from the control FIFO.
+    // Each command is a single line.
+    // After each write from an external process the FIFO reaches EOF:
+    // we re-open it so subsequent commands are received correctly.
+    void handle_pipe_commands()
+    {
+      if (cmd_fifo_fd < 0)
+        return;
+
+      char buf[128];
+      ssize_t n = read(cmd_fifo_fd, buf, sizeof(buf) - 1);
+      if (n == 0)
+      {
+        // EOF: the writer closed its end. Re-open for the next command
+        close(cmd_fifo_fd);
+        cmd_fifo_fd = open(cmd_fifo_path.c_str(), O_RDONLY | O_NONBLOCK);
+        return;
+      }
+      if (n < 0)
+        return; // EAGAIN or transient error
+
+      buf[n] = '\0';
+      std::istringstream ss(buf);
+      std::string line;
+      while (std::getline(ss, line))
+      {
+        if (line.rfind("tap ", 0) == 0)
+        {
+          int x = 0, y = 0;
+          if (sscanf(line.c_str() + 4, "%d %d", &x, &y) == 2)
+          {
+            send_tap(static_cast<uint16_t>(x), static_cast<uint16_t>(y));
+          }
+        }
+        else if (line == "button")
+        {
+          send_button();
+        }
+        else if (line == "swipe up")
+        {
+          send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideUp);
+        }
+        else if (line == "swipe down")
+        {
+          send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideDown);
+        }
+        else if (line == "swipe left")
+        {
+          send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideLeft);
+        }
+        else if (line == "swipe right")
+        {
+          send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideRight);
+        }
+        else if (line == "prepare")
+        {
+          send_prepare();
+        }
+        else if (line.rfind("screenshot ", 0) == 0)
+        {
+          saveScreenshot(line.substr(11));
+        }
+      }
+    }
+
     void handle_touch_and_button() {
+      // If a FIFO-injected tap is in progress, hold the press state for
+      // sim_tap_hold_frames iterations so lv_task_handler() can observe
+      // tapped=true, then send the release on the last frame.
+      if (sim_tap_hold_frames > 0) {
+        if (--sim_tap_hold_frames == 0) {
+          systemTask.PushMessage(Pinetime::System::Messages::OnTouchEvent); // release
+        }
+        return;
+      }
+      if (sim_btn_hold_frames > 0) {
+        if (--sim_btn_hold_frames == 0) {
+          sim_button_pressed = false;
+          systemTask.PushMessage(Pinetime::System::Messages::HandleButtonEvent); // release
+        }
+        return;
+      }
       int x, y;
       uint32_t buttons = SDL_GetMouseState(&x, &y);
       const bool left_click = (buttons & SDL_BUTTON_LMASK) != 0;
@@ -1101,6 +1222,11 @@ private:
     bool left_release_sent = true; // make sure to send one mouse button release event
     bool right_last_state = false; // varable used to send message only on changing state
 
+    int cmd_fifo_fd = -1;
+    std::string cmd_fifo_path;
+    int sim_tap_hold_frames = 0;
+    int sim_btn_hold_frames = 0;
+
     size_t lastFreeHeapSize = configTOTAL_HEAP_SIZE;
 
     GifManager gif_manager;
@@ -1113,12 +1239,16 @@ int main(int argc, char **argv)
   // parse arguments
   bool fw_status_window_visible = true;
   bool arg_help = false;
+  bool arg_enable_fifo = false;
   for (int i=1; i<argc; i++)
   {
     const std::string arg(argv[i]);
     if (arg == "--hide-status")
     {
       fw_status_window_visible = false;
+    } else if (arg == "--enable-fifo")
+    {
+      arg_enable_fifo = true;
     } else if (arg == "-h" || arg == "--help")
     {
       arg_help = true;
@@ -1133,6 +1263,7 @@ int main(int argc, char **argv)
     std::cout << "Options:" << std::endl;
     std::cout << "  -h, --help           show this help message and exit" << std::endl;
     std::cout << "      --hide-status    don't show simulator status window, so only lvgl window is open" << std::endl;
+    std::cout << "      --enable-fifo    create a control FIFO at /tmp/infinisim_<PID>.fifo for automation" << std::endl;
     return 0;
   }
 
@@ -1145,10 +1276,11 @@ int main(int argc, char **argv)
   fs.Init();
 
   // initialize the core of our Simulator
-  Framework fw(fw_status_window_visible, 240,240);
+  Framework fw(fw_status_window_visible, 240,240, arg_enable_fifo);
 
   while(1) {
       fw.handle_keys(); // key event polling
+      fw.handle_pipe_commands();
       fw.handle_touch_and_button();
       fw.refresh();
       usleep(LV_DISP_DEF_REFR_PERIOD * 1000);
