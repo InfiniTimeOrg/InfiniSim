@@ -8,9 +8,9 @@
 
 using namespace Pinetime::Drivers;
 
-SpiNorFlash::SpiNorFlash(const std::string& memoryFilePath) : memoryFilePath{memoryFilePath} {
+SpiNorFlash::SpiNorFlash(const std::string& memoryFilePath) : memoryFilePath {memoryFilePath} {
   namespace fs = std::filesystem;
-  fs::path f{ memoryFilePath };
+  fs::path f {memoryFilePath};
   if (fs::exists(f)) {
     memoryFile = std::fstream(memoryFilePath, std::ios::binary | std::fstream::in | std::fstream::out);
   } else {
@@ -19,6 +19,7 @@ SpiNorFlash::SpiNorFlash(const std::string& memoryFilePath) : memoryFilePath{mem
     memoryFile.write("", 1);
   }
 }
+
 SpiNorFlash::~SpiNorFlash() {
   if (memoryFile.is_open()) {
     memoryFile.close();
@@ -27,8 +28,10 @@ SpiNorFlash::~SpiNorFlash() {
 
 void SpiNorFlash::Init() {
   device_id = ReadIdentification();
-  NRF_LOG_INFO(
-    "[SpiNorFlash] Manufacturer : %d, Memory type : %d, memory density : %d", device_id.manufacturer, device_id.type, device_id.density);
+  NRF_LOG_INFO("[SpiNorFlash] Manufacturer : %d, Memory type : %d, memory density : %d",
+               device_id.manufacturer,
+               device_id.type,
+               device_id.density);
 }
 
 void SpiNorFlash::Uninit() {
@@ -38,9 +41,7 @@ void SpiNorFlash::Sleep() {
   NRF_LOG_INFO("[SpiNorFlash] Sleep")
 }
 
-void SpiNorFlash::Wakeup() {
-  NRF_LOG_INFO("[SpiNorFlash] Wakeup")
-}
+void SpiNorFlash::Wakeup() {NRF_LOG_INFO("[SpiNorFlash] Wakeup")}
 
 SpiNorFlash::Identification SpiNorFlash::ReadIdentification() {
   return {};
@@ -68,15 +69,13 @@ void SpiNorFlash::Read(uint32_t address, uint8_t* buffer, size_t size) {
     throw std::runtime_error("SpiNorFlash::Read out of bounds");
   }
   memoryFile.seekp(address);
-  memoryFile.read(reinterpret_cast<char *>(buffer), size);
+  memoryFile.read(reinterpret_cast<char*>(buffer), size);
 }
 
 void SpiNorFlash::WriteEnable() {
-
 }
 
 void SpiNorFlash::SectorErase(uint32_t sectorAddress) {
-
 }
 
 uint8_t SpiNorFlash::ReadSecurityRegister() {
@@ -100,6 +99,6 @@ void SpiNorFlash::Write(uint32_t address, const uint8_t* buffer, size_t size) {
     throw std::runtime_error("SpiNorFlash::Write out of bounds");
   }
   memoryFile.seekp(address);
-  memoryFile.write(reinterpret_cast<const char *>(buffer), size);
+  memoryFile.write(reinterpret_cast<const char*>(buffer), size);
   memoryFile.flush();
 }

@@ -6,6 +6,7 @@
 namespace Pinetime {
   namespace Drivers {
     class Spi;
+
     class SpiNorFlash {
     public:
       explicit SpiNorFlash(const std::string& memoryFilePath);
@@ -60,7 +61,6 @@ namespace Pinetime {
 
       static constexpr size_t memorySize {0x400000};
       const std::string& memoryFilePath;
-
 
       Identification device_id;
       std::fstream memoryFile;

@@ -84,7 +84,7 @@ LittleVgl::LittleVgl(Pinetime::Drivers::St7789& lcd, Pinetime::Controllers::FS& 
 }
 
 void LittleVgl::Init() {
-//  lv_init();
+  //  lv_init();
   InitTheme();
   InitDisplay();
   InitTouchpad();
@@ -161,36 +161,36 @@ bool LittleVgl::IsScrolling() {
 }
 
 // glue the lvgl code to the lv-sim monitor driver
-void DrawBuffer(lv_disp_drv_t *disp_drv, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t* data, size_t size) {
+void DrawBuffer(lv_disp_drv_t* disp_drv, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t* data, size_t size) {
   lv_area_t area;
   area.x1 = x;
-  area.x2 = x+width-1;
+  area.x2 = x + width - 1;
   area.y1 = y;
-  area.y2 = y+height-1;
+  area.y2 = y + height - 1;
   lv_color_t* color_p = reinterpret_cast<lv_color_t*>(data);
   monitor_flush(disp_drv, &area, color_p);
 }
 
 // copied from lv_drivers/display/monitor.c to get the SDL_Window for the InfiniTime screen
-extern "C"
-{
+extern "C" {
 typedef struct {
-  SDL_Window * window;
-  SDL_Renderer * renderer;
-  SDL_Texture * texture;
+  SDL_Window* window;
+  SDL_Renderer* renderer;
+  SDL_Texture* texture;
   volatile bool sdl_refr_qry;
 #if MONITOR_DOUBLE_BUFFERED
-  uint32_t * tft_fb_act;
+  uint32_t* tft_fb_act;
 #else
   uint32_t tft_fb[LV_HOR_RES_MAX * LV_VER_RES_MAX];
 #endif
-}monitor_t;
+} monitor_t;
+
 extern monitor_t monitor;
 }
 
 // positive height moves screen down (draw y=0 to y=height)
 // negative height moves screen up   (draw y=height to y=0)
-void MoveScreen(lv_disp_drv_t *disp_drv, int16_t height) {
+void MoveScreen(lv_disp_drv_t* disp_drv, int16_t height) {
   if (height == 0)
     return; // nothing to do
 
@@ -200,35 +200,35 @@ void MoveScreen(lv_disp_drv_t *disp_drv, int16_t height) {
 
   constexpr size_t zoom = MONITOR_ZOOM;
   const Uint32 format = SDL_PIXELFORMAT_RGBA8888;
-  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, sdl_width*zoom, sdl_height*zoom, 32, format);
+  SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, sdl_width * zoom, sdl_height * zoom, 32, format);
   SDL_RenderReadPixels(renderer, NULL, format, surface->pixels, surface->pitch);
-  uint8_t *pixels = (uint8_t*) surface->pixels;
+  uint8_t* pixels = (uint8_t*) surface->pixels;
 
-  std::array<lv_color16_t, 240*240> color_p;
+  std::array<lv_color16_t, 240 * 240> color_p;
   for (int hi = 0; hi < sdl_height; hi++) {
     for (int wi = 0; wi < sdl_width; wi++) {
-      auto red   = pixels[hi*surface->pitch*zoom + wi*4*zoom + 3]; // red
-      auto green = pixels[hi*surface->pitch*zoom + wi*4*zoom + 2]; // greeen
-      auto blue  = pixels[hi*surface->pitch*zoom + wi*4*zoom + 1]; // blue
+      auto red = pixels[hi * surface->pitch * zoom + wi * 4 * zoom + 3];   // red
+      auto green = pixels[hi * surface->pitch * zoom + wi * 4 * zoom + 2]; // greeen
+      auto blue = pixels[hi * surface->pitch * zoom + wi * 4 * zoom + 1];  // blue
       color_p.at(hi * sdl_width + wi) = LV_COLOR_MAKE(red, green, blue);
     }
   }
   int16_t buffer_height = sdl_height - abs(height);
   if (height >= 0) {
-    DrawBuffer(disp_drv, 0, height, sdl_width, sdl_height, (uint8_t*)color_p.data(), sdl_width*buffer_height *2);
+    DrawBuffer(disp_drv, 0, height, sdl_width, sdl_height, (uint8_t*) color_p.data(), sdl_width * buffer_height * 2);
   } else {
-    DrawBuffer(disp_drv, 0, 0, sdl_width, sdl_height, (uint8_t*)(&color_p.at(sdl_width*abs(height))), sdl_width*buffer_height *2);
+    DrawBuffer(disp_drv, 0, 0, sdl_width, sdl_height, (uint8_t*) (&color_p.at(sdl_width * abs(height))), sdl_width * buffer_height * 2);
   }
 }
 
 void LittleVgl::FlushDisplay(const lv_area_t* area, lv_color_t* color_p) {
   uint16_t y1, y2, width, height = 0;
 
-  //if ((scrollDirection == LittleVgl::FullRefreshDirections::Down) && (area->y2 == visibleNbLines - 1)) {
-  //  writeOffset = ((writeOffset + totalNbLines) - visibleNbLines) % totalNbLines;
-  //} else if ((scrollDirection == FullRefreshDirections::Up) && (area->y1 == 0)) {
-  //  writeOffset = (writeOffset + visibleNbLines) % totalNbLines;
-  //}
+  // if ((scrollDirection == LittleVgl::FullRefreshDirections::Down) && (area->y2 == visibleNbLines - 1)) {
+  //   writeOffset = ((writeOffset + totalNbLines) - visibleNbLines) % totalNbLines;
+  // } else if ((scrollDirection == FullRefreshDirections::Up) && (area->y1 == 0)) {
+  //   writeOffset = (writeOffset + visibleNbLines) % totalNbLines;
+  // }
 
   y1 = (area->y1 + writeOffset) % totalNbLines;
   y2 = (area->y2 + writeOffset) % totalNbLines;
@@ -294,29 +294,29 @@ void LittleVgl::FlushDisplay(const lv_area_t* area, lv_color_t* color_p) {
     height = totalNbLines - y1;
 
     if (height > 0) {
-      //lcd.DrawBuffer(area->x1, y1, width, height, reinterpret_cast<const uint8_t*>(color_p), width * height * 2);
+      // lcd.DrawBuffer(area->x1, y1, width, height, reinterpret_cast<const uint8_t*>(color_p), width * height * 2);
       DrawBuffer(&disp_drv, area->x1, y1, width, height, reinterpret_cast<uint8_t*>(color_p), width * height * 2);
     }
 
     uint16_t pixOffset = width * height;
     height = y2 + 1;
-    //lcd.DrawBuffer(area->x1, 0, width, height, reinterpret_cast<const uint8_t*>(color_p + pixOffset), width * height * 2);
+    // lcd.DrawBuffer(area->x1, 0, width, height, reinterpret_cast<const uint8_t*>(color_p + pixOffset), width * height * 2);
     DrawBuffer(&disp_drv, area->x1, 0, width, height, reinterpret_cast<uint8_t*>(color_p + pixOffset), width * height * 2);
 
   } else {
-    //lcd.DrawBuffer(area->x1, y1, width, height, reinterpret_cast<const uint8_t*>(color_p), width * height * 2);
+    // lcd.DrawBuffer(area->x1, y1, width, height, reinterpret_cast<const uint8_t*>(color_p), width * height * 2);
     DrawBuffer(&disp_drv, area->x1, y1, width, height, reinterpret_cast<uint8_t*>(color_p), width * height * 2);
   }
 
   // IMPORTANT!!!
   // Inform the graphics library that you are ready with the flushing
-  //lv_disp_flush_ready(&disp_drv);
+  // lv_disp_flush_ready(&disp_drv);
 
   // call flush with flushing_last set
   // workaround because lv_disp_flush_ready() doesn't seem to trigger monitor_flush
-  lv_disp_t *disp = lv_disp_get_default();
+  lv_disp_t* disp = lv_disp_get_default();
   lv_disp_get_buf(disp)->flushing_last = true;
-  lv_area_t area_zero {0,0,0,0};
+  lv_area_t area_zero {0, 0, 0, 0};
   monitor_flush(&disp_drv, &area_zero, color_p);
   // delay drawing to mimic PineTime display rendering speed
   vTaskDelay(pdMS_TO_TICKS(3));
