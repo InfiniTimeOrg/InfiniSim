@@ -38,7 +38,7 @@ namespace Pinetime {
     private:
       static Battery* instance;
 
-      //static constexpr nrf_saadc_input_t batteryVoltageAdcInput = NRF_SAADC_INPUT_AIN7;
+      // static constexpr nrf_saadc_input_t batteryVoltageAdcInput = NRF_SAADC_INPUT_AIN7;
     public:
       uint16_t voltage = 0;
       uint8_t percentRemaining = 0;
@@ -48,10 +48,10 @@ namespace Pinetime {
       bool isPowerPresent = false;
       bool firstMeasurement = true;
 
-      //void SaadcInit();
+      // void SaadcInit();
 
-      //void SaadcEventHandler(nrfx_saadc_evt_t const* p_event);
-      //static void AdcCallbackStatic(nrfx_saadc_evt_t const* event);
+      // void SaadcEventHandler(nrfx_saadc_evt_t const* p_event);
+      // static void AdcCallbackStatic(nrfx_saadc_evt_t const* event);
 
       static constexpr uint8_t lowBatteryThreshold {20};
 

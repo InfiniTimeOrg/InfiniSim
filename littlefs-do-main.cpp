@@ -77,26 +77,40 @@ Pinetime::Controllers::FS fs {spiNorFlash};
 Pinetime::Controllers::Settings settingsController {fs};
 
 const char* lfs_error_to_string(int err) {
-  if (err == LFS_ERR_OK)          return "LFS_ERR_OK";           // No error
-  if (err == LFS_ERR_IO)          return "LFS_ERR_IO";           // Error during device operation
-  if (err == LFS_ERR_CORRUPT)     return "LFS_ERR_CORRUPT";      // Corrupted
-  if (err == LFS_ERR_NOENT)       return "LFS_ERR_NOENT";        // No directory entry
-  if (err == LFS_ERR_EXIST)       return "LFS_ERR_EXIST";        // Entry already exists
-  if (err == LFS_ERR_NOTDIR)      return "LFS_ERR_NOTDIR";       // Entry is not a dir
-  if (err == LFS_ERR_ISDIR)       return "LFS_ERR_ISDIR";        // Entry is a dir
-  if (err == LFS_ERR_NOTEMPTY)    return "LFS_ERR_NOTEMPTY";     // Dir is not empty
-  if (err == LFS_ERR_BADF)        return "LFS_ERR_BADF";         // Bad file number
-  if (err == LFS_ERR_FBIG)        return "LFS_ERR_FBIG";         // File too large
-  if (err == LFS_ERR_INVAL)       return "LFS_ERR_INVAL";        // Invalid parameter
-  if (err == LFS_ERR_NOSPC)       return "LFS_ERR_NOSPC";        // No space left on device
-  if (err == LFS_ERR_NOMEM)       return "LFS_ERR_NOMEM";        // No more memory available
-  if (err == LFS_ERR_NOATTR)      return "LFS_ERR_NOATTR";       // No data/attr available
-  if (err == LFS_ERR_NAMETOOLONG) return "LFS_ERR_NAMETOOLONG";  // File name too long
+  if (err == LFS_ERR_OK)
+    return "LFS_ERR_OK"; // No error
+  if (err == LFS_ERR_IO)
+    return "LFS_ERR_IO"; // Error during device operation
+  if (err == LFS_ERR_CORRUPT)
+    return "LFS_ERR_CORRUPT"; // Corrupted
+  if (err == LFS_ERR_NOENT)
+    return "LFS_ERR_NOENT"; // No directory entry
+  if (err == LFS_ERR_EXIST)
+    return "LFS_ERR_EXIST"; // Entry already exists
+  if (err == LFS_ERR_NOTDIR)
+    return "LFS_ERR_NOTDIR"; // Entry is not a dir
+  if (err == LFS_ERR_ISDIR)
+    return "LFS_ERR_ISDIR"; // Entry is a dir
+  if (err == LFS_ERR_NOTEMPTY)
+    return "LFS_ERR_NOTEMPTY"; // Dir is not empty
+  if (err == LFS_ERR_BADF)
+    return "LFS_ERR_BADF"; // Bad file number
+  if (err == LFS_ERR_FBIG)
+    return "LFS_ERR_FBIG"; // File too large
+  if (err == LFS_ERR_INVAL)
+    return "LFS_ERR_INVAL"; // Invalid parameter
+  if (err == LFS_ERR_NOSPC)
+    return "LFS_ERR_NOSPC"; // No space left on device
+  if (err == LFS_ERR_NOMEM)
+    return "LFS_ERR_NOMEM"; // No more memory available
+  if (err == LFS_ERR_NOATTR)
+    return "LFS_ERR_NOATTR"; // No data/attr available
+  if (err == LFS_ERR_NAMETOOLONG)
+    return "LFS_ERR_NAMETOOLONG"; // File name too long
   return "unknown";
 }
 
-void print_help_generic(const std::string &program_name)
-{
+void print_help_generic(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " <command> [options]" << std::endl;
   std::cout << "Commands:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
@@ -110,43 +124,43 @@ void print_help_generic(const std::string &program_name)
   std::cout << "  settings             list settings from 'settings.h'" << std::endl;
   std::cout << "  res                  resource.zip handling" << std::endl;
 }
-void print_help_stat(const std::string &program_name)
-{
+
+void print_help_stat(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " stat [options] [path]" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
   std::cout << "  path                 path to directory or file to work on, defaults to '/'" << std::endl;
 }
-void print_help_ls(const std::string &program_name)
-{
+
+void print_help_ls(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " ls [options] [path]" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
   std::cout << "  path                 path to directory or file to work on, defaults to '/'" << std::endl;
 }
-void print_help_mkdir(const std::string &program_name)
-{
+
+void print_help_mkdir(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " mkdir [options] path" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
   std::cout << "  path                 path to directory to create" << std::endl;
 }
-void print_help_rmdir(const std::string &program_name)
-{
+
+void print_help_rmdir(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " rmdir [options] path" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
   std::cout << "  path                 path to directory to remove" << std::endl;
 }
-void print_help_rm(const std::string &program_name)
-{
+
+void print_help_rm(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " rm [options] path" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
   std::cout << "  path                 path to file or directory directory to remove" << std::endl;
 }
-void print_help_cp(const std::string &program_name)
-{
+
+void print_help_cp(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " cp [options] source [source2 ...] destination" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
@@ -155,14 +169,14 @@ void print_help_cp(const std::string &program_name)
   std::cout << "the host system into the raw image, otherwise the files are copied" << std::endl;
   std::cout << "from the raw image to the host system provided directory." << std::endl;
 }
-void print_help_settings(const std::string &program_name)
-{
+
+void print_help_settings(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " settings [options]" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
 }
-void print_help_res(const std::string &program_name)
-{
+
+void print_help_res(const std::string& program_name) {
   std::cout << "Usage: " << program_name << " res <action> [options]" << std::endl;
   std::cout << "actions:" << std::endl;
   std::cout << "  load res.zip         load zip file into SPI memory" << std::endl;
@@ -170,17 +184,14 @@ void print_help_res(const std::string &program_name)
   std::cout << "  -h, --help           show this help message for the selected command and exit" << std::endl;
 }
 
-int command_stat(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+int command_stat(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose)
     std::cout << "running command 'stat'" << std::endl;
   // argv: littlefs-do stat [args]
   std::string path = "/";
   // check for help flag first
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_stat(program_name);
       return 0;
     }
@@ -189,14 +200,15 @@ int command_stat(const std::string &program_name, const std::vector<std::string>
     if (verbose) {
       std::cout << "no path given, showing '/'" << std::endl;
     }
-  } if (args.size() == 1) {
+  }
+  if (args.size() == 1) {
     path = args.at(0);
   }
 
   lfs_info info;
   int ret = fs.Stat(path.c_str(), &info);
   if (ret) {
-    std::cout << "fs.Stat returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+    std::cout << "fs.Stat returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
     return ret;
   }
   if (info.type == LFS_TYPE_REG) {
@@ -206,25 +218,21 @@ int command_stat(const std::string &program_name, const std::vector<std::string>
   } else if (info.type == LFS_TYPE_DIR) {
     std::cout << "type: DIR" << std::endl;
     std::cout << "name: " << std::string(info.name) << std::endl;
-  }
-  else {
+  } else {
     std::cout << "unknown type: " << info.type << std::endl;
     return 1;
   }
   return 0;
 }
 
-int command_ls(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+int command_ls(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose)
     std::cout << "running command 'ls'" << std::endl;
   // argv: littlefs-do ls [args]
   std::string path = "/";
   // check for help flag first
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_ls(program_name);
       return 0;
     }
@@ -233,14 +241,15 @@ int command_ls(const std::string &program_name, const std::vector<std::string> &
     if (verbose) {
       std::cout << "no path given, showing '/'" << std::endl;
     }
-  } if (args.size() == 1) {
+  }
+  if (args.size() == 1) {
     path = args.at(0);
   }
 
   lfs_info info;
   int ret = fs.Stat(path.c_str(), &info);
   if (ret) {
-    std::cout << "fs.Stat returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+    std::cout << "fs.Stat returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
     return ret;
   }
   if (info.type == LFS_TYPE_REG) {
@@ -253,13 +262,13 @@ int command_ls(const std::string &program_name, const std::vector<std::string> &
     lfs_dir_t lfs_dir;
     ret = fs.DirOpen(path.c_str(), &lfs_dir);
     if (ret) {
-      std::cout << "fs.DirOpen returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+      std::cout << "fs.DirOpen returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
       return ret;
     }
     ret = fs.DirRead(&lfs_dir, &info);
     while (ret > 0) {
       if (ret < 0) {
-        std::cout << "fs.DirRead returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+        std::cout << "fs.DirRead returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
         return ret;
       }
       if (info.type == LFS_TYPE_REG) {
@@ -277,7 +286,7 @@ int command_ls(const std::string &program_name, const std::vector<std::string> &
       ret = fs.DirRead(&lfs_dir, &info);
     } // end of while loop
     if (ret < 0) {
-      std::cout << "fs.DirRead returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+      std::cout << "fs.DirRead returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
       return ret;
     }
   } else { // endif provided path
@@ -286,17 +295,15 @@ int command_ls(const std::string &program_name, const std::vector<std::string> &
   }
   return 0;
 }
-int command_mkdir(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+
+int command_mkdir(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose) {
     std::cout << "running command 'mkdir'" << std::endl;
   }
   // argv: littlefs-do mkdir path
   // check for help flag first
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_mkdir(program_name);
       return 0;
     }
@@ -306,31 +313,27 @@ int command_mkdir(const std::string &program_name, const std::vector<std::string
     print_help_mkdir(program_name);
     return 1;
   }
-  for (const std::string &path : args)
-  {
+  for (const std::string& path : args) {
     if (verbose) {
       std::cout << "mkdir: " << path << std::endl;
     }
     int ret = fs.DirCreate(path.c_str());
     if (ret < 0) {
-      std::cout << "fs.DirCreate returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+      std::cout << "fs.DirCreate returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
       return ret;
     }
   }
   return 0;
 }
 
-int command_rmdir(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+int command_rmdir(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose) {
     std::cout << "running command 'rmdir'" << std::endl;
   }
   // argv: littlefs-do rmdir path
   // check for help flag first
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_rmdir(program_name);
       return 0;
     }
@@ -340,15 +343,14 @@ int command_rmdir(const std::string &program_name, const std::vector<std::string
     print_help_rmdir(program_name);
     return 1;
   }
-  for (const std::string &path : args)
-  {
+  for (const std::string& path : args) {
     if (verbose) {
       std::cout << "rmdir: " << path << std::endl;
     }
     lfs_info info;
     int ret = fs.Stat(path.c_str(), &info);
     if (ret) {
-      std::cout << "fs.Stat returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+      std::cout << "fs.Stat returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
       return ret;
     }
     if (info.type == LFS_TYPE_REG) {
@@ -358,24 +360,21 @@ int command_rmdir(const std::string &program_name, const std::vector<std::string
     // assume non-files are directories
     ret = fs.FileDelete(path.c_str());
     if (ret < 0) {
-      std::cout << "fs.FileDelete returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+      std::cout << "fs.FileDelete returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
       return ret;
     }
   }
   return 0;
 }
 
-int command_rm(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+int command_rm(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose) {
     std::cout << "running command 'rm'" << std::endl;
   }
   // argv: littlefs-do rm path
   // check for help flag first
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_rm(program_name);
       return 0;
     }
@@ -385,30 +384,26 @@ int command_rm(const std::string &program_name, const std::vector<std::string> &
     print_help_rm(program_name);
     return 1;
   }
-  for (const std::string &path : args)
-  {
+  for (const std::string& path : args) {
     if (verbose) {
       std::cout << "rm: " << path << std::endl;
     }
     // assume non-files are directories
     int ret = fs.FileDelete(path.c_str());
     if (ret < 0) {
-      std::cout << "fs.FileDelete returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+      std::cout << "fs.FileDelete returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
       return ret;
     }
   }
   return 0;
 }
 
-int command_cp(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+int command_cp(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose) {
     std::cout << "running 'cp'" << std::endl;
   }
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_cp(program_name);
       return 0;
     }
@@ -418,7 +413,7 @@ int command_cp(const std::string &program_name, const std::vector<std::string> &
     print_help_cp(program_name);
     return 1;
   }
-  const std::string &destination = args.back();
+  const std::string& destination = args.back();
   static constexpr size_t memorySize {0x400000};
   std::array<uint8_t, memorySize> buffer;
   if (destination[0] == '/') {
@@ -429,7 +424,7 @@ int command_cp(const std::string &program_name, const std::vector<std::string> &
       lfs_info info;
       int ret = fs.Stat(destination.c_str(), &info);
       if (ret) {
-        std::cout << "fs.Stat for destination path returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+        std::cout << "fs.Stat for destination path returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
         return ret;
       }
       if (info.type == LFS_TYPE_REG) {
@@ -437,57 +432,52 @@ int command_cp(const std::string &program_name, const std::vector<std::string> &
         return 1;
       }
     }
-    for (size_t i=0; i<args.size()-1; i++)
-    {
-      const std::string &source = args.at(i);
-      if (!std::filesystem::exists(source))
-      {
+    for (size_t i = 0; i < args.size() - 1; i++) {
+      const std::string& source = args.at(i);
+      if (!std::filesystem::exists(source)) {
         std::cout << "error: source file not found: '" << source << "'" << std::endl;
         return 1;
       }
-      const std::string dest_path = (std::filesystem::path{destination} / std::filesystem::path{source}.filename()).generic_string();
+      const std::string dest_path = (std::filesystem::path {destination} / std::filesystem::path {source}.filename()).generic_string();
       if (verbose) {
         std::cout << "copy file: " << source << " to " << dest_path << std::endl;
       }
       lfs_file_t file_p;
       int ret = fs.FileOpen(&file_p, dest_path.c_str(), LFS_O_WRONLY | LFS_O_CREAT);
       if (ret) {
-        std::cout << "fs.FileOpen returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+        std::cout << "fs.FileOpen returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
         return ret;
       }
       const size_t f_size = std::filesystem::file_size(source);
       std::ifstream ifs(source, std::ios::binary);
-      ifs.read((char*)(buffer.data()), f_size);
+      ifs.read((char*) (buffer.data()), f_size);
       ret = fs.FileWrite(&file_p, buffer.data(), f_size);
       if (ret < 0) {
-        std::cout << "fs.FileWrite returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+        std::cout << "fs.FileWrite returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
         fs.FileClose(&file_p);
         return ret;
       }
       fs.FileClose(&file_p);
     }
   } // end cp from host to raw image
-  else
-  {
+  else {
     if (verbose) {
       std::cout << "destination not starting with '/', copying files from image to host" << std::endl;
     }
-    if (!std::filesystem::is_directory(destination))
-    {
+    if (!std::filesystem::is_directory(destination)) {
       std::cout << "error: destination is expected to be a directory: '" << destination << "'" << std::endl;
       return 1;
     }
-    for (size_t i=0; i<args.size()-1; i++)
-    {
-      const std::string &source = args.at(i);
-      const std::string dest_path = (std::filesystem::path{destination} / std::filesystem::path{source}.filename()).generic_string();
+    for (size_t i = 0; i < args.size() - 1; i++) {
+      const std::string& source = args.at(i);
+      const std::string dest_path = (std::filesystem::path {destination} / std::filesystem::path {source}.filename()).generic_string();
       if (verbose) {
         std::cout << "copy file: " << source << " to " << dest_path << std::endl;
       }
       lfs_info info;
       int ret = fs.Stat(source.c_str(), &info);
       if (ret) {
-        std::cout << "fs.Stat for source path returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+        std::cout << "fs.Stat for source path returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
         return ret;
       }
       if (info.type == LFS_TYPE_DIR) {
@@ -497,33 +487,30 @@ int command_cp(const std::string &program_name, const std::vector<std::string> &
       lfs_file_t file_p;
       ret = fs.FileOpen(&file_p, source.c_str(), LFS_O_RDONLY);
       if (ret) {
-        std::cout << "fs.FileOpen returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+        std::cout << "fs.FileOpen returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
         return ret;
       }
       ret = fs.FileRead(&file_p, buffer.data(), info.size);
       if (ret < 0) {
-        std::cout << "fs.FileRead returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+        std::cout << "fs.FileRead returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
         fs.FileClose(&file_p);
         return ret;
       }
       fs.FileClose(&file_p);
       std::ofstream ofs(dest_path, std::ios::binary);
-      ofs.write((char*)(buffer.data()), info.size);
+      ofs.write((char*) (buffer.data()), info.size);
     }
   } // end cp from raw image to host
-  
+
   return 0;
 }
 
-int command_settings(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+int command_settings(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose) {
     std::cout << "running 'settings'" << std::endl;
   }
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_settings(program_name);
       return 0;
     }
@@ -537,10 +524,14 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   {
     auto clockface = settingsController.GetWatchFace();
     auto clockface_str = [](auto val) {
-      if (val == Pinetime::Applications::WatchFace::Digital) return "Digital";
-      if (val == Pinetime::Applications::WatchFace::Analog) return "Analog";
-      if (val == Pinetime::Applications::WatchFace::PineTimeStyle) return "PineTimeStyle";
-      if (val == Pinetime::Applications::WatchFace::Terminal) return "Terminal";
+      if (val == Pinetime::Applications::WatchFace::Digital)
+        return "Digital";
+      if (val == Pinetime::Applications::WatchFace::Analog)
+        return "Analog";
+      if (val == Pinetime::Applications::WatchFace::PineTimeStyle)
+        return "PineTimeStyle";
+      if (val == Pinetime::Applications::WatchFace::Terminal)
+        return "Terminal";
       return "unknown";
     }(clockface);
     std::cout << "ClockFace: " << static_cast<uint32_t>(clockface) << " " << clockface_str << std::endl;
@@ -548,30 +539,49 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   {
     auto chimes = settingsController.GetChimeOption();
     auto chimes_str = [](auto val) {
-      if (val == Settings::ChimesOption::None) return "None";
-      if (val == Settings::ChimesOption::Hours) return "Hours";
-      if (val == Settings::ChimesOption::HalfHours) return "HalfHours";
+      if (val == Settings::ChimesOption::None)
+        return "None";
+      if (val == Settings::ChimesOption::Hours)
+        return "Hours";
+      if (val == Settings::ChimesOption::HalfHours)
+        return "HalfHours";
       return "unknown";
     }(chimes);
     std::cout << "Chimes: " << static_cast<int>(chimes) << " " << chimes_str << std::endl;
   }
   auto color_str = [](auto c) {
-    if (c == Settings::Colors::White) return "White";
-    if (c == Settings::Colors::Silver) return "Silver";
-    if (c == Settings::Colors::Gray) return "Gray";
-    if (c == Settings::Colors::Black) return "Black";
-    if (c == Settings::Colors::Red) return "Red";
-    if (c == Settings::Colors::Maroon) return "Maroon";
-    if (c == Settings::Colors::Yellow) return "Yellow";
-    if (c == Settings::Colors::Olive) return "Olive";
-    if (c == Settings::Colors::Lime) return "Lime";
-    if (c == Settings::Colors::Green) return "Cyan";
-    if (c == Settings::Colors::Teal) return "Teal";
-    if (c == Settings::Colors::Blue) return "Blue";
-    if (c == Settings::Colors::Navy) return "Navy";
-    if (c == Settings::Colors::Magenta) return "Magenta";
-    if (c == Settings::Colors::Purple) return "Purple";
-    if (c == Settings::Colors::Orange) return "Orange";
+    if (c == Settings::Colors::White)
+      return "White";
+    if (c == Settings::Colors::Silver)
+      return "Silver";
+    if (c == Settings::Colors::Gray)
+      return "Gray";
+    if (c == Settings::Colors::Black)
+      return "Black";
+    if (c == Settings::Colors::Red)
+      return "Red";
+    if (c == Settings::Colors::Maroon)
+      return "Maroon";
+    if (c == Settings::Colors::Yellow)
+      return "Yellow";
+    if (c == Settings::Colors::Olive)
+      return "Olive";
+    if (c == Settings::Colors::Lime)
+      return "Lime";
+    if (c == Settings::Colors::Green)
+      return "Cyan";
+    if (c == Settings::Colors::Teal)
+      return "Teal";
+    if (c == Settings::Colors::Blue)
+      return "Blue";
+    if (c == Settings::Colors::Navy)
+      return "Navy";
+    if (c == Settings::Colors::Magenta)
+      return "Magenta";
+    if (c == Settings::Colors::Purple)
+      return "Purple";
+    if (c == Settings::Colors::Orange)
+      return "Orange";
     return "unknown";
   };
   std::cout << "PTSColorTime: " << color_str(settingsController.GetPTSColorTime()) << std::endl;
@@ -583,9 +593,12 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   {
     auto notif = settingsController.GetNotificationStatus();
     auto notif_str = [](auto val) {
-      if (val == Settings::Notification::On) return "On";
-      if (val == Settings::Notification::Off) return "Off";
-      if (val == Settings::Notification::Sleep) return "Sleep";
+      if (val == Settings::Notification::On)
+        return "On";
+      if (val == Settings::Notification::Off)
+        return "Off";
+      if (val == Settings::Notification::Sleep)
+        return "Sleep";
       return "unknown";
     }(notif);
     std::cout << "NotificationStatus: " << static_cast<int>(notif) << " " << notif_str << std::endl;
@@ -602,10 +615,14 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   {
     auto brightness = settingsController.GetBrightness();
     auto brightness_str = [](auto val) {
-      if (val == BrightnessController::Levels::Off) return "Off";
-      if (val == BrightnessController::Levels::Low) return "Low";
-      if (val == BrightnessController::Levels::Medium) return "Medium";
-      if (val == BrightnessController::Levels::High) return "High";
+      if (val == BrightnessController::Levels::Off)
+        return "Off";
+      if (val == BrightnessController::Levels::Low)
+        return "Low";
+      if (val == BrightnessController::Levels::Medium)
+        return "Medium";
+      if (val == BrightnessController::Levels::High)
+        return "High";
       return "unknown";
     }(brightness);
     std::cout << "Brightness: " << static_cast<int>(brightness) << " " << brightness_str << std::endl;
@@ -615,10 +632,10 @@ int command_settings(const std::string &program_name, const std::vector<std::str
   return 0;
 }
 
-void mkdir_path(const std::filesystem::path &path) {
+void mkdir_path(const std::filesystem::path& path) {
   if (!path.is_absolute()) {
     // for absolute paths parent path converges at '/', then parent_path == path
-    mkdir_path(std::filesystem::path{"/"} / path);
+    mkdir_path(std::filesystem::path {"/"} / path);
     return;
   }
   std::filesystem::path parent = path.parent_path();
@@ -636,20 +653,18 @@ void mkdir_path(const std::filesystem::path &path) {
   // then create current dir
   ret = fs.DirCreate(path.generic_string().c_str());
   if (ret < 0) {
-    std::cout << "mkdir_path: fs.DirCreate returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+    std::cout << "mkdir_path: fs.DirCreate returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
     assert(false);
     return;
   }
 }
-int command_res(const std::string &program_name, const std::vector<std::string> &args, bool verbose)
-{
+
+int command_res(const std::string& program_name, const std::vector<std::string>& args, bool verbose) {
   if (verbose) {
     std::cout << "running 'res'" << std::endl;
   }
-  for (const std::string &arg : args)
-  {
-    if (arg == "-h" || arg == "--help")
-    {
+  for (const std::string& arg : args) {
+    if (arg == "-h" || arg == "--help") {
       print_help_res(program_name);
       return 0;
     }
@@ -668,17 +683,17 @@ int command_res(const std::string &program_name, const std::vector<std::string> 
       print_help_res(program_name);
       return 1;
     }
-    for (size_t i=1; i<args.size(); i++) {
+    for (size_t i = 1; i < args.size(); i++) {
       const std::filesystem::path path = args.at(i);
       if (verbose) {
         std::cout << "loading resource file: " << path << std::endl;
       }
       if (path.extension() == ".zip") {
-        const std::string &zip_filename = args.at(i);
+        const std::string& zip_filename = args.at(i);
         const size_t f_size = std::filesystem::file_size(path);
         std::vector<uint8_t> buffer_compressed(f_size);
         std::ifstream ifs(path, std::ios::binary);
-        ifs.read((char*)(buffer_compressed.data()), f_size);
+        ifs.read((char*) (buffer_compressed.data()), f_size);
 
         mz_zip_archive zip_archive {};
         int mz_status = mz_zip_reader_init_file(&zip_archive, zip_filename.c_str(), 0);
@@ -693,16 +708,15 @@ int command_res(const std::string &program_name, const std::vector<std::string> 
         }
 
         size_t uncomp_size = 0;
-        void *p = nullptr;
+        void* p = nullptr;
         // extract resources.json file to heap, create a string and parse it
         p = mz_zip_reader_extract_file_to_heap(&zip_archive, "resources.json", &uncomp_size, 0);
-        if (!p)
-        {
+        if (!p) {
           std::cout << "mz_zip_reader_extract_file_to_heap() failed to extract resources.json file" << std::endl;
           mz_zip_reader_end(&zip_archive);
           return 1;
         }
-        std::string_view json_data(static_cast<const char *>(p), uncomp_size);
+        std::string_view json_data(static_cast<const char*>(p), uncomp_size);
         nlohmann::json doc = nlohmann::json::parse(json_data);
         mz_free(p); // free json data, already converted into json document
         if (!doc.contains("resources")) {
@@ -711,18 +725,18 @@ int command_res(const std::string &program_name, const std::vector<std::string> 
           return 1;
         }
         // copy all listed resources to SPI raw file
-        for (const auto &res : doc["resources"]) {
+        for (const auto& res : doc["resources"]) {
           const auto filename = res["filename"].get<std::string>();
           const auto dest_path = res["path"].get<std::string>();
           if (verbose) {
-            std::cout << "copy file " << std::left << std::setw(25) << filename
-              << " from zip to SPI path '" << dest_path << "'" << std::endl;
+            std::cout << "copy file " << std::left << std::setw(25) << filename << " from zip to SPI path '" << dest_path << "'"
+                      << std::endl;
           }
           // make sure destination directory exists before copy
-          const std::filesystem::path dest_dir = std::filesystem::path{dest_path}.parent_path();
+          const std::filesystem::path dest_dir = std::filesystem::path {dest_path}.parent_path();
           mkdir_path(dest_dir);
           // extract from zip to heap to then copy to SPI raw file
-          void *p = mz_zip_reader_extract_file_to_heap(&zip_archive, filename.c_str(), &uncomp_size, 0);
+          void* p = mz_zip_reader_extract_file_to_heap(&zip_archive, filename.c_str(), &uncomp_size, 0);
           if (!p) {
             std::cout << "mz_zip_reader_extract_file_to_heap() failed to extract file: " << filename << std::endl;
             mz_zip_reader_end(&zip_archive);
@@ -731,12 +745,12 @@ int command_res(const std::string &program_name, const std::vector<std::string> 
           lfs_file_t file_p;
           int ret = fs.FileOpen(&file_p, dest_path.c_str(), LFS_O_WRONLY | LFS_O_CREAT);
           if (ret) {
-            std::cout << "fs.FileOpen returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+            std::cout << "fs.FileOpen returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
             return ret;
           }
-          ret = fs.FileWrite(&file_p, static_cast<uint8_t *>(p), uncomp_size);
+          ret = fs.FileWrite(&file_p, static_cast<uint8_t*>(p), uncomp_size);
           if (ret < 0) {
-            std::cout << "fs.FileWrite returned error code: " << ret  << " " << lfs_error_to_string(ret) << std::endl;
+            std::cout << "fs.FileWrite returned error code: " << ret << " " << lfs_error_to_string(ret) << std::endl;
             fs.FileClose(&file_p);
             return ret;
           }
@@ -764,9 +778,7 @@ int command_res(const std::string &program_name, const std::vector<std::string> 
   return 0;
 }
 
-
-int main(int argc, char **argv)
-{
+int main(int argc, char** argv) {
   // parse arguments
   if (argc <= 1) {
     print_help_generic(argv[0]);
@@ -774,8 +786,7 @@ int main(int argc, char **argv)
   }
   bool verbose = false;
   std::vector<std::string> args;
-  for (int i=1; i<argc; i++)
-  {
+  for (int i = 1; i < argc; i++) {
     const std::string arg(argv[i]);
     if (arg == "-v" || arg == "--verbose") {
       verbose = true;
@@ -814,8 +825,7 @@ int main(int argc, char **argv)
     return command_settings(argv[0], args, verbose);
   } else if (command == "res") {
     return command_res(argv[0], args, verbose);
-  } else
-  {
+  } else {
     std::cout << "unknown argument '" << command << "'" << std::endl;
     return 1;
   }

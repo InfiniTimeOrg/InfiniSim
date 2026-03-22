@@ -1,41 +1,41 @@
 #include "BrightnessController.h"
-//#include <hal/nrf_gpio.h>
+// #include <hal/nrf_gpio.h>
 #include "displayapp/screens/Symbols.h"
 #include "drivers/PinMap.h"
 using namespace Pinetime::Controllers;
 
 void BrightnessController::Init() {
-  //nrf_gpio_cfg_output(PinMap::LcdBacklightLow);
-  //nrf_gpio_cfg_output(PinMap::LcdBacklightMedium);
-  //nrf_gpio_cfg_output(PinMap::LcdBacklightHigh);
+  // nrf_gpio_cfg_output(PinMap::LcdBacklightLow);
+  // nrf_gpio_cfg_output(PinMap::LcdBacklightMedium);
+  // nrf_gpio_cfg_output(PinMap::LcdBacklightHigh);
   Set(level);
 }
 
 void BrightnessController::Set(BrightnessController::Levels level) {
   this->level = level;
-  //switch (level) {
-  //  default:
-  //  case Levels::High:
-  //    nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
-  //    nrf_gpio_pin_clear(PinMap::LcdBacklightMedium);
-  //    nrf_gpio_pin_clear(PinMap::LcdBacklightHigh);
-  //    break;
-  //  case Levels::Medium:
-  //    nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
-  //    nrf_gpio_pin_clear(PinMap::LcdBacklightMedium);
-  //    nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
-  //    break;
-  //  case Levels::Low:
-  //    nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
-  //    nrf_gpio_pin_set(PinMap::LcdBacklightMedium);
-  //    nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
-  //    break;
-  //  case Levels::Off:
-  //    nrf_gpio_pin_set(PinMap::LcdBacklightLow);
-  //    nrf_gpio_pin_set(PinMap::LcdBacklightMedium);
-  //    nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
-  //    break;
-  //}
+  // switch (level) {
+  //   default:
+  //   case Levels::High:
+  //     nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
+  //     nrf_gpio_pin_clear(PinMap::LcdBacklightMedium);
+  //     nrf_gpio_pin_clear(PinMap::LcdBacklightHigh);
+  //     break;
+  //   case Levels::Medium:
+  //     nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
+  //     nrf_gpio_pin_clear(PinMap::LcdBacklightMedium);
+  //     nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
+  //     break;
+  //   case Levels::Low:
+  //     nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
+  //     nrf_gpio_pin_set(PinMap::LcdBacklightMedium);
+  //     nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
+  //     break;
+  //   case Levels::Off:
+  //     nrf_gpio_pin_set(PinMap::LcdBacklightLow);
+  //     nrf_gpio_pin_set(PinMap::LcdBacklightMedium);
+  //     nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
+  //     break;
+  // }
 }
 
 void BrightnessController::Lower() {

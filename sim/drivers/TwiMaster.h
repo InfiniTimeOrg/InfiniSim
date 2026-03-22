@@ -1,6 +1,6 @@
 #pragma once
 #include <FreeRTOS.h>
-//#include <semphr.h>
+// #include <semphr.h>
 #include <drivers/include/nrfx_twi.h> // NRF_TWIM_Type
 #include <cstdint>
 
@@ -20,13 +20,13 @@ namespace Pinetime {
       void Wakeup();
 
     private:
-//      ErrorCodes Read(uint8_t deviceAddress, uint8_t* buffer, size_t size, bool stop);
-//      ErrorCodes Write(uint8_t deviceAddress, const uint8_t* data, size_t size, bool stop);
-//      void FixHwFreezed();
-//      void ConfigurePins() const;
+      //      ErrorCodes Read(uint8_t deviceAddress, uint8_t* buffer, size_t size, bool stop);
+      //      ErrorCodes Write(uint8_t deviceAddress, const uint8_t* data, size_t size, bool stop);
+      //      void FixHwFreezed();
+      //      void ConfigurePins() const;
 
       NRF_TWIM_Type* twiBaseAddress;
-//      SemaphoreHandle_t mutex = nullptr;
+      //      SemaphoreHandle_t mutex = nullptr;
       NRF_TWIM_Type* module;
       uint32_t frequency;
       uint8_t pinSda;

@@ -4,8 +4,9 @@
 #include <functional>
 
 #include <FreeRTOS.h>
-//#include <semphr.h>
-//#include <task.h>
+
+// #include <semphr.h>
+// #include <task.h>
 
 namespace Pinetime {
   namespace Drivers {
@@ -15,6 +16,7 @@ namespace Pinetime {
       enum class BitOrder : uint8_t { Msb_Lsb, Lsb_Msb };
       enum class Modes : uint8_t { Mode0, Mode1, Mode2, Mode3 };
       enum class Frequencies : uint8_t { Freq8Mhz };
+
       struct Parameters {
         BitOrder bitOrder;
         Modes mode;
@@ -43,15 +45,15 @@ namespace Pinetime {
       void Wakeup();
 
     private:
-//      void SetupWorkaroundForFtpan58(NRF_SPIM_Type* spim, uint32_t ppi_channel, uint32_t gpiote_channel);
-//      void DisableWorkaroundForFtpan58(NRF_SPIM_Type* spim, uint32_t ppi_channel, uint32_t gpiote_channel);
-//      void PrepareTx(const volatile uint32_t bufferAddress, const volatile size_t size);
-//      void PrepareRx(const volatile uint32_t cmdAddress,
-//                     const volatile size_t cmdSize,
-//                     const volatile uint32_t bufferAddress,
-//                     const volatile size_t size);
+      //      void SetupWorkaroundForFtpan58(NRF_SPIM_Type* spim, uint32_t ppi_channel, uint32_t gpiote_channel);
+      //      void DisableWorkaroundForFtpan58(NRF_SPIM_Type* spim, uint32_t ppi_channel, uint32_t gpiote_channel);
+      //      void PrepareTx(const volatile uint32_t bufferAddress, const volatile size_t size);
+      //      void PrepareRx(const volatile uint32_t cmdAddress,
+      //                     const volatile size_t cmdSize,
+      //                     const volatile uint32_t bufferAddress,
+      //                     const volatile size_t size);
 
-//      NRF_SPIM_Type* spiBaseAddress;
+      //      NRF_SPIM_Type* spiBaseAddress;
       uint8_t pinCsn;
 
       SpiMaster::SpiModule spi;
@@ -59,8 +61,8 @@ namespace Pinetime {
 
       volatile uint32_t currentBufferAddr = 0;
       volatile size_t currentBufferSize = 0;
-//      volatile TaskHandle_t taskToNotify;
-//      SemaphoreHandle_t mutex = nullptr;
+      //      volatile TaskHandle_t taskToNotify;
+      //      SemaphoreHandle_t mutex = nullptr;
     };
   }
 }

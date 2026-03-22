@@ -8,7 +8,7 @@ void HeartRateController::Update(HeartRateController::States newState, uint8_t h
   this->state = newState;
   if (this->heartRate != heartRate) {
     this->heartRate = heartRate;
-    //service->OnNewHeartRateValue(heartRate);
+    // service->OnNewHeartRateValue(heartRate);
   }
 }
 
@@ -30,6 +30,6 @@ void HeartRateController::SetHeartRateTask(Pinetime::Applications::HeartRateTask
   this->task = task;
 }
 
-//void HeartRateController::SetService(Pinetime::Controllers::HeartRateService* service) {
-//  this->service = service;
-//}
+// void HeartRateController::SetService(Pinetime::Controllers::HeartRateService* service) {
+//   this->service = service;
+// }

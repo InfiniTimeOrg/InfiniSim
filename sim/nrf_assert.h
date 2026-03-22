@@ -2,5 +2,5 @@
 #include <cassert>
 
 #ifndef ASSERT
-#define ASSERT(expr)   assert(expr)
+  #define ASSERT(expr) assert(expr)
 #endif
