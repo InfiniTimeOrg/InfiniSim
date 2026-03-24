@@ -113,6 +113,8 @@ target_include_directories(sim-base PUBLIC "lv_drivers")
 
 target_include_directories(sim-base PUBLIC "${InfiniTime_DIR}/src") # InfiniTime drivers, components and all
 
+find_package(SDL2 REQUIRED)
+target_link_libraries(sim-base PUBLIC SDL2::SDL2)
 
 set(MONITOR_ZOOM 1 CACHE STRING "Scale simulator window by this factor")
 if(MONITOR_ZOOM MATCHES "^[0-9]\.?[0-9]*")
@@ -319,13 +321,6 @@ if(NOT alarmControllerFileSystemEntries STREQUAL "")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-# Special case for SDL2 dependency, goal is to find a config that exports SDL2::SDL2 target
-# libsdl2-dev has a `sdl2-config.cmake` that doesn't export this, but vcpkg does..
-find_package(SDL2 CONFIG QUIET)
-if(NOT TARGET SDL2::SDL2)
-  find_package(SDL2 MODULE REQUIRED)
-endif()
-target_link_libraries(infinisim PRIVATE SDL2::SDL2)
 
 # Some toolchains (e.g. g++-8) require to explicitly link with the standard filesystem library
 # See https://github.com/InfiniTimeOrg/InfiniSim/issues/57#issuecomment-1386889378
@@ -352,7 +347,7 @@ endif()
 
 target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/gif-h")
 
-# embedd background image for the status window to use
+# embed background image for the status window to use
 add_subdirectory(img)
 add_dependencies(infinisim infinisim_img_background)
 
@@ -380,7 +375,6 @@ add_executable(littlefs-do
 target_link_libraries(littlefs-do PUBLIC sim-base)
 target_link_libraries(littlefs-do PUBLIC littlefs)
 
-target_link_libraries(littlefs-do PRIVATE SDL2::SDL2)
 target_link_libraries(littlefs-do PRIVATE infinitime_fonts)
 
 add_subdirectory(external/miniz)

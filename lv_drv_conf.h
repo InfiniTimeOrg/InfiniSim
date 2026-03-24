@@ -107,7 +107,7 @@
       #define MONITOR_DOUBLE_BUFFERED 0
 
       /*Eclipse: <SDL2/SDL.h>    Visual Studio: <SDL.h>*/
-      #define MONITOR_SDL_INCLUDE_PATH <SDL2/SDL.h>
+      #define MONITOR_SDL_INCLUDE_PATH <SDL.h>
 
       /*Different rendering might be used if running in a Virtual machine*/
       #define MONITOR_VIRTUAL_MACHINE 0

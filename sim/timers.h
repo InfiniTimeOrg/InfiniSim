@@ -31,7 +31,7 @@
 #include "FreeRTOS.h" // TickType_t
 #include "task.h" // configTICK_RATE_HZ
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include <chrono>
 #include <cstdint>

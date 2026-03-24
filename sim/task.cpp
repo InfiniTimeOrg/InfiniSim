@@ -26,7 +26,7 @@
  * 1 tab == 4 spaces!
  */
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 /* Standard includes. */
 #include <chrono>
