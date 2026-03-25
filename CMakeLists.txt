@@ -333,6 +333,7 @@ find_package(Filesystem REQUIRED)
 target_link_libraries(infinisim PRIVATE std::filesystem)
 
 # Get the latest abbreviated commit hash of the working branch
+find_package(Git REQUIRED)
 execute_process(
   COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
