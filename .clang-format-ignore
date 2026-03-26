@@ -7,7 +7,6 @@ sim/FreeRTOS.h
 sim/nrfx/**
 sim/libraries/**
 sim/host/**
-gif-h/**
 external/**
 InfiniTime/**
 lv_drivers/**
