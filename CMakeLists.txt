@@ -350,7 +350,7 @@ if(WITH_PNG)
   target_link_libraries(infinisim PRIVATE PNG::PNG)
 endif()
 
-target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/gif-h")
+target_include_directories(infinisim PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/external/gif-h")
 
 # embedd background image for the status window to use
 add_subdirectory(img)
