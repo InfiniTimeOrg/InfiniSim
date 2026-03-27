@@ -114,6 +114,7 @@ target_include_directories(sim-base PUBLIC "lv_drivers")
 target_include_directories(sim-base PUBLIC "${InfiniTime_DIR}/src") # InfiniTime drivers, components and all
 
 find_package(SDL2 REQUIRED)
+message(STATUS "Found SDL2 version ${SDL2_VERSION}")
 target_link_libraries(sim-base PUBLIC SDL2::SDL2)
 
 set(MONITOR_ZOOM 1 CACHE STRING "Scale simulator window by this factor")
