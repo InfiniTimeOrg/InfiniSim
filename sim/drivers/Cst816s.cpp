@@ -1,6 +1,6 @@
 #include "drivers/Cst816s.h"
 #include "lv_drv_conf.h" // MONITOR_ZOOM
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <libraries/log/nrf_log.h>
 #include <cmath>
 

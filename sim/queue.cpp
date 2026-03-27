@@ -1,7 +1,7 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include <stdexcept>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 QueueHandle_t xQueueCreate(const UBaseType_t uxQueueLength, const UBaseType_t uxItemSize) {
   Queue_t* xQueue = new Queue_t;

@@ -11,7 +11,7 @@
 // lv-sim monitor display driver for monitor_flush() function
 #include "lv_drivers/display/monitor.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <array>
 
 using namespace Pinetime::Components;
