@@ -22,6 +22,8 @@ tools
 !bootloader/bootloader-5.0.4.bin
 *.map
 *.out
+*.AppImage
+*.raw
 pinetime*.cbp
 
 # InfiniTime's files

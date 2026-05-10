@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=InfiniSim
+Comment=InfiniTime simulator launcher
+Exec=infinisim-launcher
+Icon=infinisim
+Categories=Development;Emulator;
+Terminal=false

@@ -9,6 +9,94 @@ Or use it to develop new Watchfaces, new Screens, or quickly iterate on the user
 
 For a history on how this simulator started and the challenges on its way visit the [original PR](https://github.com/InfiniTimeOrg/InfiniTime/pull/743).
 
+## Quick start
+
+The recommended way to distribute InfiniSim is the AppImage built by GitHub Actions.
+It contains the launcher, InfiniSim sources, and a prebuilt simulator for the bundled official InfiniTime checkout.
+That means the default official path does not require users to install CMake, SDL2 development headers, Node.js, or
+Python packages locally.
+
+After downloading the AppImage:
+
+```sh
+chmod +x InfiniSim-*.AppImage
+./InfiniSim-*.AppImage
+```
+
+On first start it shows 3 simple actions:
+
+- start a simulator that is already compiled (the bundled official binary is preferred when present)
+- choose a local InfiniTime source directory and compile it
+- clone/update the official InfiniTime repository and compile it
+
+When cloning from the launcher, InfiniSim prefers the InfiniTime revision that was validated for that AppImage build.
+This keeps clone-and-build behavior reproducible and avoids breakage from upstream API drift.
+
+Build output and cloned sources are kept outside the AppImage:
+
+- official InfiniTime clone: `~/.local/share/infinisim/InfiniTime`
+- build cache for custom local sources: `~/.cache/infinisim`
+- last selected source path and executable path: `~/.config/infinisim/launcher.conf`
+
+InfiniTime sources are used at compile time. Because of that, choosing a custom local InfiniTime checkout requires a
+local rebuild. The AppImage keeps a zero-build path with the bundled binary, and only asks for build tools when you
+choose one of the compile actions or set `INFINISIM_FORCE_REBUILD=1`.
+
+Advanced launcher overrides:
+
+- `INFINISIM_BINARY=/path/to/infinisim` starts a precompiled simulator directly
+- `INFINITIME_DIR=/path/to/InfiniTime` skips the chooser and compiles that source tree
+
+For development from a source checkout, run the same launcher directly:
+
+```sh
+./scripts/infinisim-launcher.sh
+```
+
+When a rebuild is needed, these native build tools are required:
+
+- CMake
+- Git
+- SDL2 development files
+- a C++ compiler (`g++` or `clang++`)
+- Node.js/npm
+- Python 3
+
+On Ubuntu/Debian:
+
+```sh
+sudo apt install -y cmake git libsdl2-dev g++ npm python3 python3-venv
+```
+
+On Fedora:
+
+```sh
+sudo dnf install cmake git SDL2-devel gcc-c++ npm python3 python3-virtualenv
+```
+
+The launcher installs `lv_font_conv` and `Pillow` in its own cache when they are not available globally.
+
+### Build an AppImage
+
+An AppImage wrapper can be generated with:
+
+```sh
+./packaging/appimage/build-appimage.sh
+```
+
+This helper builds the official simulator binary, places it inside the AppImage, packages the launcher and source tree,
+and uses `linuxdeploy` to bundle runtime libraries.
+
+Prerequisites for generating the AppImage locally:
+
+- clone with submodules (`git clone --recursive ...`), or run `git submodule update --init --recursive`
+- host build tools: `cmake`, `git`, `g++`/`clang++`, `libsdl2-dev`, `npm`, Python 3 + Pillow
+- packaging helpers: `curl`, `rsync`, and FUSE runtime support for AppImage tooling
+
+The resulting file is generated at the repository root as `InfiniSim-<arch>.AppImage`.
+
+GitHub Actions builds the same artifact via `.github/workflows/appimage.yml`.
+
 ## Get the Sources
 
 Clone this repository and tell `git` to recursively download the submodules as well

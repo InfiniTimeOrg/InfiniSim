@@ -1,0 +1,47 @@
+name: Build AppImage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  appimage:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            cmake \
+            curl \
+            g++ \
+            git \
+            libfuse2 \
+            libpng-dev \
+            libsdl2-dev \
+            ninja-build \
+            npm \
+            python3-pil \
+            rsync
+          sudo npm install -g lv_font_conv@1.5.2
+
+      - name: Checkout source files
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build AppImage
+        run: |
+          chmod +x ./packaging/appimage/build-appimage.sh
+          ./packaging/appimage/build-appimage.sh
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: InfiniSim-AppImage
+          path: ./*.AppImage
+          if-no-files-found: error
