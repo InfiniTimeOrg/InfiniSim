@@ -1,0 +1,188 @@
+# English translation for InfiniSim Launcher UI
+# Copyright (C) 2026
+# This file is distributed under the same license as the InfiniSim package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: InfiniSim Launcher 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 10:00+0000\n"
+"PO-Revision-Date: 2026-05-10 10:00+0000\n"
+"Last-Translator: InfiniSim Team\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: infinisim-launcher-ui.py
+msgid "Preparing..."
+msgstr "Preparing..."
+
+#: infinisim-launcher-ui.py
+msgid "Initializing process"
+msgstr "Initializing process"
+
+#: infinisim-launcher-ui.py
+msgid "Cancel"
+msgstr "Cancel"
+
+#: infinisim-launcher-ui.py
+msgid "Start Simulator"
+msgstr "Start Simulator"
+
+#: infinisim-launcher-ui.py
+msgid "Execution Details"
+msgstr "Execution Details"
+
+#: infinisim-launcher-ui.py
+msgid "Launcher for the simulator"
+msgstr "Launcher for the simulator"
+
+#: infinisim-launcher-ui.py
+msgid "Emulate InfiniTime"
+msgstr "Emulate InfiniTime"
+
+#: infinisim-launcher-ui.py
+msgid "Select a path to open or compile the simulator in a few steps."
+msgstr "Select a path to open or compile the simulator in a few steps."
+
+#: infinisim-launcher-ui.py
+msgid "Select local folder to compile"
+msgstr "Select local folder to compile"
+
+#: infinisim-launcher-ui.py
+msgid "Compile using your local InfiniTime folder."
+msgstr "Compile using your local InfiniTime folder."
+
+#: infinisim-launcher-ui.py
+msgid "Download official repository and compile"
+msgstr "Download official repository and compile"
+
+#: infinisim-launcher-ui.py
+msgid "Download the official repo and compile automatically."
+msgstr "Download the official repo and compile automatically."
+
+#: infinisim-launcher-ui.py
+msgid "Select the local InfiniTime folder"
+msgstr "Select the local InfiniTime folder"
+
+#: infinisim-launcher-ui.py
+msgid "Select"
+msgstr "Select"
+
+#: infinisim-launcher-ui.py
+msgid "⚙️ Preparing simulator"
+msgstr "⚙️ Preparing simulator"
+
+#: infinisim-launcher-ui.py
+msgid "Starting build/startup tasks"
+msgstr "Starting build/startup tasks"
+
+#: infinisim-launcher-ui.py
+msgid "Error starting backend: {exc}"
+msgstr "Error starting backend: {exc}"
+
+#: infinisim-launcher-ui.py
+msgid "Could not start the assistant"
+msgstr "Could not start the assistant"
+
+#: infinisim-launcher-ui.py
+msgid "An error occurred while starting the task. Check the execution details."
+msgstr "An error occurred while starting the task. Check the execution details."
+
+#: infinisim-launcher-ui.py
+msgid "Cancellation requested by user."
+msgstr "Cancellation requested by user."
+
+#: infinisim-launcher-ui.py
+msgid "Could not cancel: {exc}"
+msgstr "Could not cancel: {exc}"
+
+#: infinisim-launcher-ui.py
+msgid "✅ Compilation ready"
+msgstr "✅ Compilation ready"
+
+#: infinisim-launcher-ui.py
+msgid "You can start the simulator or close this window."
+msgstr "You can start the simulator or close this window."
+
+#: infinisim-launcher-ui.py
+msgid "Compilation finished successfully."
+msgstr "Compilation finished successfully."
+
+#: infinisim-launcher-ui.py
+msgid "Simulator ready"
+msgstr "Simulator ready"
+
+#: infinisim-launcher-ui.py
+msgid "Started successfully. You can close this window."
+msgstr "Started successfully. You can close this window."
+
+#: infinisim-launcher-ui.py
+msgid "Simulator started successfully."
+msgstr "Simulator started successfully."
+
+#: infinisim-launcher-ui.py
+msgid "Invalid path"
+msgstr "Invalid path"
+
+#: infinisim-launcher-ui.py
+msgid "The selected folder does not exist or is not accessible."
+msgstr "The selected folder does not exist or is not accessible."
+
+#: infinisim-launcher-ui.py
+msgid "Simulator did not start"
+msgstr "Simulator did not start"
+
+#: infinisim-launcher-ui.py
+msgid "The main window could not be opened. Check graphics dependencies."
+msgstr "The main window could not be opened. Check graphics dependencies."
+
+#: infinisim-launcher-ui.py
+msgid "Invalid configuration"
+msgstr "Invalid configuration"
+
+#: infinisim-launcher-ui.py
+msgid "The InfiniTime folder does not appear to be valid."
+msgstr "The InfiniTime folder does not appear to be valid."
+
+#: infinisim-launcher-ui.py
+msgid "Compilation failed"
+msgstr "Compilation failed"
+
+#: infinisim-launcher-ui.py
+msgid "There were errors compiling the code. Check the details above."
+msgstr "There were errors compiling the code. Check the details above."
+
+#: infinisim-launcher-ui.py
+msgid "Could not start InfiniSim"
+msgstr "Could not start InfiniSim"
+
+#: infinisim-launcher-ui.py
+msgid "An error occurred. Check the details."
+msgstr "An error occurred. Check the details."
+
+#: infinisim-launcher-ui.py
+msgid "Canceling compilation"
+msgstr "Canceling compilation"
+
+#: infinisim-launcher-ui.py
+msgid "Stopping process..."
+msgstr "Stopping process..."
+
+#: infinisim-launcher-ui.py
+msgid "Could not start"
+msgstr "Could not start"
+
+#: infinisim-launcher-ui.py
+msgid "The compiled binary was not found to start the simulator."
+msgstr "The compiled binary was not found to start the simulator."
+
+#: infinisim-launcher-ui.py
+msgid "Exception reading output:"
+msgstr "Exception reading output:"
+
+#: infinisim-launcher-ui.py
+msgid "InfiniSim could not open the assistant. Check the console output for details."
+msgstr "InfiniSim could not open the assistant. Check the console output for details."

@@ -1,6 +1,8 @@
 .idea/
 # Python virtual environment for DFU images
 .venv/
+__pycache__/
+scripts/infinisim-launcher-ui.py.bak
 
 # CMake
 cmake-build-*

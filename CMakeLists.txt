@@ -186,7 +186,6 @@ target_sources(infinisim PUBLIC
   ${InfiniTime_DIR}/src/displayapp/Colors.cpp
   ${InfiniTime_DIR}/src/displayapp/DisplayApp.h
   ${InfiniTime_DIR}/src/displayapp/DisplayApp.cpp
-    ${InfiniTime_DIR}/src/displayapp/localization/Localization.cpp
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.h
   ${InfiniTime_DIR}/src/buttonhandler/ButtonHandler.cpp
   ${InfiniTime_DIR}/src/components/stopwatch/StopWatchController.h
@@ -355,6 +354,12 @@ add_dependencies(infinisim infinisim_img_background)
 
 install(TARGETS infinisim DESTINATION bin)
 install(PROGRAMS scripts/infinisim-launcher.sh DESTINATION bin RENAME infinisim-launcher)
+install(PROGRAMS scripts/infinisim-launcher-ui.py DESTINATION bin RENAME infinisim-launcher-ui.py)
+install(PROGRAMS scripts/infinisim_launcher_i18n.py DESTINATION bin)
+
+# Install i18n translation files
+install(FILES scripts/infinisim-launcher-en.mo DESTINATION share/locale/en/LC_MESSAGES RENAME infinisim-launcher.mo)
+install(FILES scripts/infinisim-launcher-es.mo DESTINATION share/locale/es/LC_MESSAGES RENAME infinisim-launcher.mo)
 
 # helper library to manipulate littlefs raw image
 add_executable(littlefs-do

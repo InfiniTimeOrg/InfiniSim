@@ -29,6 +29,14 @@ On first start it shows 3 simple actions:
 - choose a local InfiniTime source directory and compile it
 - clone/update the official InfiniTime repository and compile it
 
+The launcher now uses a GTK interface (GNOME-style) when available:
+
+- each action is shown as a card with icon, title, and short description
+- after selecting an action, a loading spinner is displayed
+- execution logs are available in an expandable details panel at the bottom
+
+If GTK Python bindings are not available, the launcher falls back to the previous text/dialog flow.
+
 When cloning from the launcher, InfiniSim prefers the InfiniTime revision that was validated for that AppImage build.
 This keeps clone-and-build behavior reproducible and avoids breakage from upstream API drift.
 
@@ -92,6 +100,10 @@ Prerequisites for generating the AppImage locally:
 - clone with submodules (`git clone --recursive ...`), or run `git submodule update --init --recursive`
 - host build tools: `cmake`, `git`, `g++`/`clang++`, `libsdl2-dev`, `npm`, Python 3 + Pillow
 - packaging helpers: `curl`, `rsync`, and FUSE runtime support for AppImage tooling
+
+Optional (recommended for the rich launcher UI):
+
+- `python3-gi` and GTK 3 runtime libraries
 
 The resulting file is generated at the repository root as `InfiniSim-<arch>.AppImage`.
 

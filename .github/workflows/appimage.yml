@@ -5,7 +5,12 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  release:
+    types: [ published ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   appimage:
@@ -45,3 +50,9 @@ jobs:
           name: InfiniSim-AppImage
           path: ./*.AppImage
           if-no-files-found: error
+
+      - name: Attach AppImage to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./*.AppImage

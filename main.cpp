@@ -429,10 +429,66 @@ public:
       // SDL_Init(SDL_INIT_VIDEO);       // Initializing SDL as Video
       SDL_CreateWindowAndRenderer(width, height, 0, &window, &renderer);
       SDL_SetWindowTitle(window, "LV Simulator Status");
-      { // move window a bit to the right, to not be over the PineTime Screen
-        int x, y;
-        SDL_GetWindowPosition(window, &x, &y);
-        SDL_SetWindowPosition(window, x + LV_HOR_RES_MAX, y);
+      { // keep both simulator windows aligned vertically and separated horizontally
+        SDL_Window* tftWindow = nullptr;
+        const Uint32 statusId = SDL_GetWindowID(window);
+        if (statusId > 1) {
+          SDL_Window* candidate = SDL_GetWindowFromID(statusId - 1);
+          if (candidate != nullptr && candidate != window) {
+            tftWindow = candidate;
+          }
+        }
+
+        if (tftWindow == nullptr) {
+          constexpr Uint32 maxWindowSearch = 256;
+          for (Uint32 offset = 1; offset <= maxWindowSearch; ++offset) {
+            if (statusId > offset) {
+              SDL_Window* previous = SDL_GetWindowFromID(statusId - offset);
+              if (previous != nullptr && previous != window) {
+                tftWindow = previous;
+                break;
+              }
+            }
+
+            SDL_Window* next = SDL_GetWindowFromID(statusId + offset);
+            if (next != nullptr && next != window) {
+              tftWindow = next;
+              break;
+            }
+          }
+        }
+
+        // Get display bounds to center windows on screen
+        SDL_Rect displayBounds;
+        if (SDL_GetDisplayBounds(0, &displayBounds) != 0) {
+          displayBounds = {0, 0, 1280, 720};
+        }
+        
+        int screenCenterY = displayBounds.y + (displayBounds.h / 2);
+        
+        if (tftWindow != nullptr) {
+          int tftX = 0;
+          int tftW = 0;
+          int tftH = 0;
+          int statusH = 0;
+          
+          SDL_GetWindowPosition(tftWindow, &tftX, nullptr);
+          SDL_GetWindowSize(tftWindow, &tftW, &tftH);
+          SDL_GetWindowSize(window, nullptr, &statusH);
+          
+          // Calculate Y position to center vertically on screen
+          int centeredY = screenCenterY - (std::max(tftH, statusH) / 2);
+          
+          // Keep the TFT window untouched and place the status window to its right
+          SDL_SetWindowPosition(window, tftX + tftW + 28, centeredY);
+        } else {
+          int statusH = 0;
+          SDL_GetWindowSize(window, nullptr, &statusH);
+          
+          // Center this window vertically on screen
+          int centeredY = screenCenterY - (statusH / 2);
+          SDL_SetWindowPosition(window, displayBounds.x + 100, centeredY);
+        }
       }
       SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0); // setting draw color
       SDL_RenderClear(renderer);                    // Clear the newly created window

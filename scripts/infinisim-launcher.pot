@@ -1,0 +1,188 @@
+# Translation file for InfiniSim Launcher UI
+# Copyright (C) 2026
+# This file is distributed under the same license as the InfiniSim package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: InfiniSim Launcher 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 10:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: infinisim-launcher-ui.py
+msgid "Preparing..."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Initializing process"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Cancel"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Start Simulator"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Execution Details"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Launcher for the simulator"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Emulate InfiniTime"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Select a path to open or compile the simulator in a few steps."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Select local folder to compile"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Compile using your local InfiniTime folder."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Download official repository and compile"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Download the official repo and compile automatically."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Select the local InfiniTime folder"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Select"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "⚙️ Preparing simulator"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Starting build/startup tasks"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Error starting backend: {exc}"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Could not start the assistant"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "An error occurred while starting the task. Check the execution details."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Cancellation requested by user."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Could not cancel: {exc}"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "✅ Compilation ready"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "You can start the simulator or close this window."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Compilation finished successfully."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Simulator ready"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Started successfully. You can close this window."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Simulator started successfully."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Invalid path"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "The selected folder does not exist or is not accessible."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Simulator did not start"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "The main window could not be opened. Check graphics dependencies."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Invalid configuration"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "The InfiniTime folder does not appear to be valid."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Compilation failed"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "There were errors compiling the code. Check the details above."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Could not start InfiniSim"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "An error occurred. Check the details."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Canceling compilation"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Stopping process..."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Could not start"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "The compiled binary was not found to start the simulator."
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "Exception reading output:"
+msgstr ""
+
+#: infinisim-launcher-ui.py
+msgid "InfiniSim could not open the assistant. Check the console output for details."
+msgstr ""

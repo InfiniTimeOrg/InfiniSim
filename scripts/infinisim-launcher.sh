@@ -3,6 +3,8 @@ set -euo pipefail
 
 APP_NAME="InfiniSim"
 INFINITIME_REPO="https://github.com/InfiniTimeOrg/InfiniTime.git"
+LAUNCHER_ACTION_OVERRIDE=""
+SIM_ARGS=()
 
 if [[ -n "${APPDIR:-}" && -d "${APPDIR}/usr/share/infinisim/source" ]]; then
   export PATH="${APPDIR}/usr/bin:${PATH}"
@@ -14,10 +16,14 @@ if [[ -n "${APPDIR:-}" && -d "${APPDIR}/usr/share/infinisim/source" ]]; then
   fi
   PACKAGED_INFINISIM_SOURCE_DIR="${APPDIR}/usr/share/infinisim/source"
   INFINISIM_SOURCE_DIR="${PACKAGED_INFINISIM_SOURCE_DIR}"
+  LAUNCHER_SCRIPT="${APPDIR}/usr/bin/infinisim-launcher"
+  LAUNCHER_UI_SCRIPT="${APPDIR}/usr/bin/infinisim-launcher-ui.py"
 else
   PACKAGED_INFINISIM_SOURCE_DIR=""
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   INFINISIM_SOURCE_DIR="$(cd "${script_dir}/.." && pwd)"
+  LAUNCHER_SCRIPT="${script_dir}/infinisim-launcher.sh"
+  LAUNCHER_UI_SCRIPT="${script_dir}/infinisim-launcher-ui.py"
 fi
 
 DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/infinisim"
@@ -33,6 +39,89 @@ BUNDLED_RESOURCE_ZIP="${APPDIR:-}/usr/share/infinisim/resources/resource.zip"
 BUNDLED_INFINITIME_REF_FILE="${APPDIR:-}/usr/share/infinisim/resources/infinitime-ref.txt"
 
 mkdir -p "${DATA_HOME}" "${CACHE_HOME}" "${CONFIG_HOME}" "${BUILD_ROOT}" "${DEPS_ROOT}"
+
+parse_launcher_args() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --launcher-action)
+        if [[ $# -lt 2 ]]; then
+          error "Falta valor para --launcher-action"
+          exit 2
+        fi
+        LAUNCHER_ACTION_OVERRIDE="$2"
+        shift 2
+        ;;
+      --launcher-infinitime-dir)
+        if [[ $# -lt 2 ]]; then
+          error "Falta valor para --launcher-infinitime-dir"
+          exit 2
+        fi
+        export INFINITIME_DIR="$2"
+        shift 2
+        ;;
+      --launcher-binary)
+        if [[ $# -lt 2 ]]; then
+          error "Falta valor para --launcher-binary"
+          exit 2
+        fi
+        export INFINISIM_BINARY="$2"
+        shift 2
+        ;;
+      --launcher-no-gui)
+        export INFINISIM_DISABLE_GUI=1
+        shift
+        ;;
+      --launcher-detach)
+        export INFINISIM_DETACH=1
+        shift
+        ;;
+      --)
+        shift
+        while [[ $# -gt 0 ]]; do
+          SIM_ARGS+=("$1")
+          shift
+        done
+        ;;
+      *)
+        SIM_ARGS+=("$1")
+        shift
+        ;;
+    esac
+  done
+}
+
+maybe_run_graphical_ui() {
+  if [[ "${INFINISIM_DISABLE_GUI:-0}" == "1" ]]; then
+    return
+  fi
+
+  if [[ -n "${LAUNCHER_ACTION_OVERRIDE}" || -n "${INFINISIM_BINARY:-}" || -n "${INFINITIME_DIR:-}" ]]; then
+    return
+  fi
+
+  if [[ -z "${DISPLAY:-}" && -z "${WAYLAND_DISPLAY:-}" ]]; then
+    return
+  fi
+
+  if ! command -v python3 >/dev/null 2>&1; then
+    return
+  fi
+
+  if [[ ! -f "${LAUNCHER_UI_SCRIPT}" ]]; then
+    return
+  fi
+
+  set +e
+  python3 "${LAUNCHER_UI_SCRIPT}" --backend "${LAUNCHER_SCRIPT}" -- "${SIM_ARGS[@]}"
+  local ui_exit_code=$?
+  set -e
+
+  if [[ ${ui_exit_code} -eq 90 ]]; then
+    return
+  fi
+
+  exit ${ui_exit_code}
+}
 
 prepare_stable_appimage_source() {
   if [[ -z "${PACKAGED_INFINISIM_SOURCE_DIR}" ]]; then
@@ -61,6 +150,11 @@ prepare_stable_appimage_source() {
 
 message() {
   local text="$1"
+  if [[ "${INFINISIM_EMBEDDED_UI:-0}" == "1" ]]; then
+    printf 'Info: %s\n' "${text}" >&2
+    return
+  fi
+
   if command -v zenity >/dev/null 2>&1; then
     zenity --info --title="${APP_NAME}" --text="${text}" || true
   elif command -v kdialog >/dev/null 2>&1; then
@@ -79,6 +173,11 @@ load_config() {
 
 error() {
   local text="$1"
+  if [[ "${INFINISIM_EMBEDDED_UI:-0}" == "1" ]]; then
+    printf 'Error: %s\n' "${text}" >&2
+    return
+  fi
+
   if command -v zenity >/dev/null 2>&1; then
     zenity --error --title="${APP_NAME}" --text="${text}" || true
   elif command -v kdialog >/dev/null 2>&1; then
@@ -94,25 +193,21 @@ choose_action() {
       --width=760 --height=320 \
       --text="Elige como iniciar InfiniSim." \
       --column="accion" --column="opcion" --hide-column=1 \
-      "run-compiled" "Iniciar un simulador ya compilado" \
-      "build-local" "Compilar desde una carpeta local de InfiniTime" \
-      "build-clone" "Descargar InfiniTime oficial y compilar" 2>/dev/null || true
+      "build-local" "Seleccionar carpeta local para compilar" \
+      "build-clone" "Descargar repositorio oficial y compilar" 2>/dev/null || true
   elif command -v kdialog >/dev/null 2>&1; then
     kdialog --title "${APP_NAME}" --menu "Elige como iniciar InfiniSim." \
-      "run-compiled" "Iniciar un simulador ya compilado" \
-      "build-local" "Compilar desde una carpeta local de InfiniTime" \
-      "build-clone" "Descargar InfiniTime oficial y compilar" 2>/dev/null || true
+      "build-local" "Seleccionar carpeta local para compilar" \
+      "build-clone" "Descargar repositorio oficial y compilar" 2>/dev/null || true
   else
     printf '%s\n' "Selecciona una accion:" >&2
-    printf '%s\n' "1) Iniciar simulador ya compilado" >&2
-    printf '%s\n' "2) Compilar desde carpeta local de InfiniTime" >&2
-    printf '%s\n' "3) Descargar InfiniTime oficial y compilar" >&2
+    printf '%s\n' "1) Seleccionar carpeta local para compilar" >&2
+    printf '%s\n' "2) Descargar repositorio oficial y compilar" >&2
     printf '> ' >&2
     read -r reply
     case "${reply}" in
-      1) printf '%s\n' "run-compiled" ;;
-      2) printf '%s\n' "build-local" ;;
-      3) printf '%s\n' "build-clone" ;;
+      1) printf '%s\n' "build-local" ;;
+      2) printf '%s\n' "build-clone" ;;
       *) return 1 ;;
     esac
   fi
@@ -253,6 +348,35 @@ ensure_build_tools() {
   fi
 }
 
+launch_simulator() {
+  if [[ "${INFINISIM_DETACH:-0}" == "1" ]]; then
+    local launch_pid launch_log rc
+    launch_log="${CACHE_HOME}/last-simulator-launch.log"
+
+    "$@" >"${launch_log}" 2>&1 &
+    launch_pid="$!"
+
+    # Detect fast failures (missing libs, invalid executable, etc.).
+    sleep 0.25
+    if kill -0 "${launch_pid}" 2>/dev/null; then
+      return 0
+    fi
+
+    if wait "${launch_pid}"; then
+      rc=0
+    else
+      rc="$?"
+    fi
+    error "[INFINISIM_ERROR_TYPE:sim_launch] No se pudo abrir la ventana principal del simulador."
+    if [[ -s "${launch_log}" ]]; then
+      printf 'Detalle de arranque: %s\n' "$(tail -n 3 "${launch_log}" | tr '\n' ' ')" >&2
+    fi
+    return "${rc}"
+  fi
+
+  exec "$@"
+}
+
 run_bundled_official() {
   local infinitime_dir="$1"
   shift
@@ -265,7 +389,8 @@ run_bundled_official() {
     if [[ -f "${BUNDLED_RESOURCE_ZIP}" && -x "${BUNDLED_LITTLEFS_DO}" ]]; then
       "${BUNDLED_LITTLEFS_DO}" res load "${BUNDLED_RESOURCE_ZIP}" || true
     fi
-    exec "${BUNDLED_INFINISIM}" "$@"
+    launch_simulator "${BUNDLED_INFINISIM}" "$@"
+    return 0
   fi
 
   return 1
@@ -399,24 +524,42 @@ build_and_run() {
   build_dir="${BUILD_ROOT}/${source_key}"
   jobs="${INFINISIM_BUILD_JOBS:-$(getconf _NPROCESSORS_ONLN 2>/dev/null || printf '2')}"
 
+  message "Configurando compilacion..."
   cmake -S "${INFINISIM_SOURCE_DIR}" -B "${build_dir}" \
     -DInfiniTime_DIR="${infinitime_dir}" \
     -DCMAKE_BUILD_TYPE=Release \
-    -DWITH_PNG=OFF
-  cmake --build "${build_dir}" --parallel "${jobs}"
+    -DWITH_PNG=OFF || {
+    error "[INFINISIM_ERROR_TYPE:cmake_config] Fallo la configuracion de compilacion con CMake"
+    return 1
+  }
+
+  message "Compilando..."
+  cmake --build "${build_dir}" --parallel "${jobs}" || {
+    error "[INFINISIM_ERROR_TYPE:cmake_build] Fallo la compilacion. Revisa los errores arriba."
+    return 1
+  }
 
   if [[ -f "${build_dir}/resources/resource.zip" && -x "${build_dir}/littlefs-do" ]]; then
     "${build_dir}/littlefs-do" res load "${build_dir}/resources/resource.zip" || true
   fi
 
-  exec "${build_dir}/infinisim" "$@"
+  if [[ "${INFINISIM_BUILD_ONLY:-0}" == "1" ]]; then
+    printf '[INFINISIM_READY_BINARY:%s]\n' "${build_dir}/infinisim"
+    return 0
+  fi
+
+  launch_simulator "${build_dir}/infinisim" "$@"
 }
 
 main() {
   local action infinitime_dir binary_path last_dir
+  parse_launcher_args "$@"
   prepare_stable_appimage_source
+  maybe_run_graphical_ui
 
-  if [[ -n "${INFINITIME_DIR:-}" ]]; then
+  if [[ -n "${LAUNCHER_ACTION_OVERRIDE}" ]]; then
+    action="${LAUNCHER_ACTION_OVERRIDE}"
+  elif [[ -n "${INFINITIME_DIR:-}" ]]; then
     action="build-local"
   elif [[ -n "${INFINISIM_BINARY:-}" ]]; then
     action="run-compiled"
@@ -427,7 +570,8 @@ main() {
   case "${action}" in
     run-compiled)
       binary_path="$(resolve_compiled_binary "${action}")"
-      exec "${binary_path}" "$@"
+      launch_simulator "${binary_path}" "${SIM_ARGS[@]}"
+      return 0
       ;;
     build-local)
       last_dir="$(load_last_dir)"
@@ -453,18 +597,24 @@ main() {
     exit 0
   fi
 
-  infinitime_dir="$(cd "${infinitime_dir}" && pwd)"
+  if ! infinitime_dir="$(cd "${infinitime_dir}" && pwd)"; then
+    error "[INFINISIM_ERROR_TYPE:invalid_path] La ruta proporcionada no existe."
+    return 1
+  fi
+  
   ensure_infinitime_tree "${infinitime_dir}"
   save_last_dir "${infinitime_dir}"
 
-  run_bundled_official "${infinitime_dir}" "$@" || true
+  if [[ "${INFINISIM_BUILD_ONLY:-0}" != "1" ]] && run_bundled_official "${infinitime_dir}" "${SIM_ARGS[@]}"; then
+    return 0
+  fi
 
   ensure_build_tools
   ensure_infinisim_submodules
   ensure_node_tools
   ensure_python_tools
 
-  build_and_run "${infinitime_dir}" "$@"
+  build_and_run "${infinitime_dir}" "${SIM_ARGS[@]}"
 }
 
 main "$@"

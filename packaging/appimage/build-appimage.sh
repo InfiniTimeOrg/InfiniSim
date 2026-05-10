@@ -32,6 +32,14 @@ else
 fi
 
 install -m 0755 "${ROOT_DIR}/scripts/infinisim-launcher.sh" "${APPDIR}/usr/bin/infinisim-launcher"
+install -m 0755 "${ROOT_DIR}/scripts/infinisim-launcher-ui.py" "${APPDIR}/usr/bin/infinisim-launcher-ui.py"
+install -m 0755 "${ROOT_DIR}/scripts/infinisim_launcher_i18n.py" "${APPDIR}/usr/bin/infinisim_launcher_i18n.py"
+
+# Install i18n translation files
+mkdir -p "${APPDIR}/usr/share/locale/en/LC_MESSAGES" \
+         "${APPDIR}/usr/share/locale/es/LC_MESSAGES"
+install -m 0644 "${ROOT_DIR}/scripts/infinisim-launcher-en.mo" "${APPDIR}/usr/share/locale/en/LC_MESSAGES/infinisim-launcher.mo"
+install -m 0644 "${ROOT_DIR}/scripts/infinisim-launcher-es.mo" "${APPDIR}/usr/share/locale/es/LC_MESSAGES/infinisim-launcher.mo"
 install -m 0755 "${ROOT_DIR}/packaging/appimage/AppRun" "${APPDIR}/AppRun"
 install -m 0644 "${ROOT_DIR}/packaging/appimage/infinisim.desktop" "${APPDIR}/usr/share/applications/infinisim.desktop"
 install -m 0644 "${ROOT_DIR}/packaging/appimage/infinisim.svg" "${APPDIR}/usr/share/icons/hicolor/scalable/apps/infinisim.svg"
@@ -67,7 +75,6 @@ linuxdeploy_args=(
   --appdir "${APPDIR}"
   --desktop-file "${APPDIR}/usr/share/applications/infinisim.desktop"
   --icon-file "${APPDIR}/usr/share/icons/hicolor/scalable/apps/infinisim.svg"
-  --executable "${APPDIR}/usr/bin/infinisim-launcher"
 )
 
 if [[ -x "${APPDIR}/usr/bin/infinisim-official" ]]; then
@@ -81,8 +88,10 @@ fi
 if [[ -x "${APPDIR}/usr/bin/git" ]]; then
   linuxdeploy_args+=(--executable "${APPDIR}/usr/bin/git")
   while IFS= read -r helper; do
-    linuxdeploy_args+=(--executable "${helper}")
+    if readelf -h "${helper}" >/dev/null 2>&1; then
+      linuxdeploy_args+=(--executable "${helper}")
+    fi
   done < <(find "${APPDIR}/usr/lib/git-core" -maxdepth 1 -type f -executable 2>/dev/null)
 fi
 
-ARCH=x86_64 "${LINUXDEPLOY}" "${linuxdeploy_args[@]}" --output appimage
+NO_STRIP=1 ARCH=x86_64 "${LINUXDEPLOY}" "${linuxdeploy_args[@]}" --output appimage
