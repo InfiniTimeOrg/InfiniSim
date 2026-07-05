@@ -12,29 +12,50 @@ void APP_ERROR_HANDLER(int err) {
 }
 
 namespace {
-  std::unordered_map<void*, size_t> allocatedMemory;
-  size_t currentFreeHeap = configTOTAL_HEAP_SIZE;
-  size_t minimumEverFreeHeap = configTOTAL_HEAP_SIZE;
+  bool heapTrackingAlive = false;
+
+  struct HeapTracking {
+    std::unordered_map<void*, size_t> allocatedMemory;
+    size_t currentFreeHeap = configTOTAL_HEAP_SIZE;
+    size_t minimumEverFreeHeap = configTOTAL_HEAP_SIZE;
+
+    HeapTracking() {
+      heapTrackingAlive = true;
+    }
+
+    ~HeapTracking() {
+      heapTrackingAlive = false;
+    }
+  };
+
+  HeapTracking heapTracking;
 }
 
 void* pvPortMalloc(size_t xWantedSize) {
   void* ptr = malloc(xWantedSize);
-  allocatedMemory[ptr] = xWantedSize;
+  if (!heapTrackingAlive) {
+    return ptr;
+  }
+  heapTracking.allocatedMemory[ptr] = xWantedSize;
 
-  const size_t currentSize =
-    std::accumulate(allocatedMemory.begin(), allocatedMemory.end(), 0, [](const size_t lhs, const std::pair<void*, size_t>& item) {
-      return lhs + item.second;
-    });
+  const size_t currentSize = std::accumulate(heapTracking.allocatedMemory.begin(),
+                                             heapTracking.allocatedMemory.end(),
+                                             0,
+                                             [](const size_t lhs, const std::pair<void*, size_t>& item) {
+                                               return lhs + item.second;
+                                             });
 
-  currentFreeHeap = configTOTAL_HEAP_SIZE - currentSize;
-  minimumEverFreeHeap = std::min(currentFreeHeap, minimumEverFreeHeap);
+  heapTracking.currentFreeHeap = configTOTAL_HEAP_SIZE - currentSize;
+  heapTracking.minimumEverFreeHeap = std::min(heapTracking.currentFreeHeap, heapTracking.minimumEverFreeHeap);
 
   return ptr;
 }
 
 void vPortFree(void* pv) {
-  allocatedMemory.erase(pv);
-  return free(pv);
+  if (heapTrackingAlive) {
+    heapTracking.allocatedMemory.erase(pv);
+  }
+  free(pv);
 }
 
 size_t xPortGetHeapSize(void) {
@@ -42,9 +63,9 @@ size_t xPortGetHeapSize(void) {
 }
 
 size_t xPortGetFreeHeapSize(void) {
-  return currentFreeHeap;
+  return heapTracking.currentFreeHeap;
 }
 
 size_t xPortGetMinimumEverFreeHeapSize(void) {
-  return minimumEverFreeHeap;
+  return heapTracking.minimumEverFreeHeap;
 }
