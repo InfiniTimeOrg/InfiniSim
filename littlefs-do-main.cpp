@@ -603,6 +603,7 @@ int command_settings(const std::string& program_name, const std::vector<std::str
     }(notif);
     std::cout << "NotificationStatus: " << static_cast<int>(notif) << " " << notif_str << std::endl;
   }
+  std::cout << "NotificationTimeout: " << settingsController.GetNotificationTimeout() << " ms" << std::endl;
   std::cout << "ScreenTimeOut: " << settingsController.GetScreenTimeOut() << " ms" << std::endl;
   std::cout << "ShakeThreshold: " << settingsController.GetShakeThreshold() << std::endl;
   {
