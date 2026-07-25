@@ -29,6 +29,12 @@ else()
 endif()
 set(CMAKE_C_STANDARD 11)#C11
 
+# The firmware targets ARM, where `char` is unsigned; on x86 it is signed, so
+# code that stores byte values in a plain `char` (or compares one to a value
+# above 127) behaves differently in the simulator than on the watch. Match the
+# hardware so the sim reproduces the firmware's arithmetic.
+add_compile_options(-funsigned-char)
+
 # copy lv_conf.h from InfiniTime project and do little modifications
 file(READ "${InfiniTime_DIR}/src/libs/lv_conf.h" lv_conf_main)
 # set '#define LV_TICK_CUSTOM     0'

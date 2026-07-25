@@ -38,10 +38,25 @@ void SpiNorFlash::Uninit() {
 }
 
 void SpiNorFlash::Sleep() {
+  sleeping = true;
   NRF_LOG_INFO("[SpiNorFlash] Sleep")
 }
 
-void SpiNorFlash::Wakeup() {NRF_LOG_INFO("[SpiNorFlash] Wakeup")}
+void SpiNorFlash::Wakeup() {
+  sleeping = false;
+  NRF_LOG_INFO("[SpiNorFlash] Wakeup")
+}
+
+void SpiNorFlash::AssertAwake(const char* op) const {
+  if (sleeping) {
+    // On hardware the chip is in deep power-down here: reads return garbage
+    // and writes are ignored. Fail deterministically in the sim instead of
+    // letting the corruption go unnoticed. abort() rather than throw: the
+    // caller is often littlefs C code, which exceptions must not unwind.
+    fprintf(stderr, "SpiNorFlash::%s while flash is asleep - firmware bug (missing wakeup)\n", op);
+    abort();
+  }
+}
 
 SpiNorFlash::Identification SpiNorFlash::ReadIdentification() {
   return {};
@@ -65,6 +80,7 @@ uint8_t SpiNorFlash::ReadConfigurationRegister() {
 
 void SpiNorFlash::Read(uint32_t address, uint8_t* buffer, size_t size) {
   static_assert(sizeof(uint8_t) == sizeof(char));
+  AssertAwake("Read");
   if (address + size * sizeof(uint8_t) > memorySize) {
     throw std::runtime_error("SpiNorFlash::Read out of bounds");
   }
@@ -76,6 +92,8 @@ void SpiNorFlash::WriteEnable() {
 }
 
 void SpiNorFlash::SectorErase(uint32_t sectorAddress) {
+  AssertAwake("SectorErase");
+  (void) sectorAddress;
 }
 
 uint8_t SpiNorFlash::ReadSecurityRegister() {
@@ -95,6 +113,7 @@ SpiNorFlash::Identification SpiNorFlash::GetIdentification() const {
 }
 
 void SpiNorFlash::Write(uint32_t address, const uint8_t* buffer, size_t size) {
+  AssertAwake("Write");
   if (address + size * sizeof(uint8_t) > memorySize) {
     throw std::runtime_error("SpiNorFlash::Write out of bounds");
   }

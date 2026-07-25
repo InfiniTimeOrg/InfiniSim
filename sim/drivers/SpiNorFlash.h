@@ -44,6 +44,7 @@ namespace Pinetime {
 
     private:
       Identification ReadIdentification();
+      void AssertAwake(const char* op) const;
 
       enum class Commands : uint8_t {
         PageProgram = 0x02,
@@ -64,6 +65,7 @@ namespace Pinetime {
 
       Identification device_id;
       std::fstream memoryFile;
+      bool sleeping = false;
     };
   }
 }

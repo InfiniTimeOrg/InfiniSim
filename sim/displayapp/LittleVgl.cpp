@@ -214,10 +214,15 @@ void MoveScreen(lv_disp_drv_t* disp_drv, int16_t height) {
     }
   }
   int16_t buffer_height = sdl_height - abs(height);
+  // The buffer only holds `buffer_height` valid rows. The area height MUST be
+  // buffer_height, not sdl_height: in the up case (y1 = 0) an sdl_height area
+  // makes monitor_flush read a full 240 rows from a pointer already advanced by
+  // sdl_width*abs(height), running sdl_width*abs(height) colors off the end of
+  // the stack array (a stack-buffer-overflow that corrupts adjacent frames).
   if (height >= 0) {
-    DrawBuffer(disp_drv, 0, height, sdl_width, sdl_height, (uint8_t*) color_p.data(), sdl_width * buffer_height * 2);
+    DrawBuffer(disp_drv, 0, height, sdl_width, buffer_height, (uint8_t*) color_p.data(), sdl_width * buffer_height * 2);
   } else {
-    DrawBuffer(disp_drv, 0, 0, sdl_width, sdl_height, (uint8_t*) (&color_p.at(sdl_width * abs(height))), sdl_width * buffer_height * 2);
+    DrawBuffer(disp_drv, 0, 0, sdl_width, buffer_height, (uint8_t*) (&color_p.at(sdl_width * abs(height))), sdl_width * buffer_height * 2);
   }
 }
 
