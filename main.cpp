@@ -37,6 +37,7 @@
 #include "components/motor/MotorController.h"
 #include "components/datetime/DateTimeController.h"
 #include "components/heartrate/HeartRateController.h"
+#include "components/sleeptracking/SleepTrackingController.h"
 #include "components/fs/FS.h"
 #include "drivers/Spi.h"
 #include "drivers/SpiMaster.h"
@@ -371,6 +372,11 @@ Pinetime::Controllers::AlarmController alarmController {dateTimeController};
 Pinetime::Controllers::TouchHandler touchHandler;
 Pinetime::Controllers::ButtonHandler buttonHandler;
 Pinetime::Controllers::BrightnessController brightnessController {};
+Pinetime::Controllers::SleepTrackingController sleeptrackingController {fs,
+                                                                        dateTimeController,
+                                                                        motionSensor,
+                                                                        heartRateController,
+                                                                        motorController};
 
 Pinetime::Applications::DisplayApp displayApp(lcd,
                                               touchPanel,
@@ -389,6 +395,7 @@ Pinetime::Applications::DisplayApp displayApp(lcd,
                                               stopWatchController,
                                               alarmController,
                                               brightnessController,
+                                              sleeptrackingController,
                                               touchHandler,
                                               fs,
                                               spiNorFlash);
@@ -405,6 +412,7 @@ Pinetime::System::SystemTask systemTask(spi,
 #endif
                                         stopWatchController,
                                         alarmController,
+                                        sleeptrackingController,
                                         watchdog,
                                         notificationManager,
                                         heartRateSensor,
