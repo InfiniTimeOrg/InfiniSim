@@ -357,7 +357,7 @@ Pinetime::Controllers::MotorController motorController {};
 Pinetime::Controllers::DateTime dateTimeController {settingsController};
 Pinetime::Drivers::Watchdog watchdog;
 Pinetime::Controllers::NotificationManager notificationManager;
-Pinetime::Controllers::MotionController motionController;
+Pinetime::Controllers::MotionController motionController {settingsController};
 #if defined(INFINITIME_TIMERCONTROLLER)
 Pinetime::Controllers::TimerController timerController;
 #endif
