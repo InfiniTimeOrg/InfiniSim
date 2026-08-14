@@ -181,6 +181,8 @@ Using the keyboard the following events can be triggered:
 - `P` ... disable print memory usage
 - `s` ... increase step count by 500 steps
 - `S` ... decrease step count by 500 steps
+- `g` ... increase step goal by 500 steps
+- `G` ... decrease step goal by 500 steps
 - `h` ... set heartrate running, and on further presses increase by 10 bpm
 - `H` ... stop heartrate
 - `i` ... take screenshot

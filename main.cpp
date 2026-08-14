@@ -686,6 +686,7 @@ public:
     debounce('l', 'L', state[SDL_SCANCODE_L], key_handled_l);
     debounce('p', 'P', state[SDL_SCANCODE_P], key_handled_p);
     debounce('s', 'S', state[SDL_SCANCODE_S], key_handled_s);
+    debounce('g', 'G', state[SDL_SCANCODE_G], key_handled_g);
     debounce('h', 'H', state[SDL_SCANCODE_H], key_handled_h);
     debounce('i', 'I', state[SDL_SCANCODE_I], key_handled_i);
     debounce('w', 'W', state[SDL_SCANCODE_W], key_handled_w);
@@ -771,6 +772,18 @@ public:
         motionSensor.steps -= 500;
       } else {
         motionSensor.steps = 0;
+      }
+    } else if (key == 'g') {
+      uint32_t value = settingsController.GetStepsGoal();
+      value += 500;
+      settingsController.SetStepsGoal(value);
+    } else if (key == 'G') {
+      uint32_t value = settingsController.GetStepsGoal();
+      if (value > 1000) {
+        value -= 500;
+        settingsController.SetStepsGoal(value);
+      } else {
+        settingsController.SetStepsGoal(1000);
       }
     } else if (key == 'h') {
       if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::Stopped) {
@@ -1051,6 +1064,7 @@ private:
   bool key_handled_l = false; // l ... increase brightness level, L ... lower brightness level
   bool key_handled_p = false; // p ... enable print memory usage, P ... disable print memory usage
   bool key_handled_s = false; // s ... increase step count, S ... decrease step count
+  bool key_handled_g = false; // g ... increase step goal, G ... decrease step goal
   bool key_handled_h = false; // h ... set heartrate running, H ... stop heartrate
   bool key_handled_i = false; // i ... take screenshot, I ... start/stop Gif screen capture
   bool key_handled_w = false; // w ... generate weather data, W ... clear weather data
