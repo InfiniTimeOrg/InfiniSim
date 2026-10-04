@@ -62,10 +62,12 @@ Cst816S::TouchInfos Cst816S::GetTouchInfo() {
         if (is_stationary && press_duration.count() > 1.0) {
           // longer than 1 second pressed, then it is long-press
           is_long_press = true;
+          tapped_recently = false;
           info.gesture = Gestures::LongPress;
         } else if (!is_stationary) {
           // moved mouse fast enough to not be a long-press
           is_swipe = true;
+          tapped_recently = false;
           double x_diff = static_cast<double>(info.x) - x_start;
           double y_diff = static_cast<double>(info.y) - y_start;
           if (fabs(x_diff) > fabs(y_diff)) {
@@ -95,7 +97,15 @@ Cst816S::TouchInfos Cst816S::GetTouchInfo() {
       if (norm < 20) {
         if (is_stationary && !is_long_press && !is_swipe) {
           // no swipe with less than 5 pixel mouse movement
-          info.gesture = Gestures::SingleTap;
+          std::chrono::duration<double> since_last_tap = std::chrono::steady_clock::now() - last_tapped;
+          if (tapped_recently && since_last_tap.count() < 0.4) {
+            info.gesture = Gestures::DoubleTap;
+            tapped_recently = false;
+          } else {
+            info.gesture = Gestures::SingleTap;
+            last_tapped = std::chrono::steady_clock::now();
+            tapped_recently = true;
+          }
         }
       }
     }
