@@ -77,8 +77,10 @@ namespace Pinetime {
       const uint8_t vendorId = 0;
       const uint8_t fwVersion = 1;
 
-      // simulation members for swipe detection from mouse
+      // simulation members for swipe/double click detection from mouse
       std::chrono::time_point<std::chrono::steady_clock> pressed_since;
+      std::chrono::time_point<std::chrono::steady_clock> last_tapped;
+      bool tapped_recently = false;
       bool is_pressed = false;
       bool is_long_press = false;
       bool is_stationary = true;
