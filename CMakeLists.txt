@@ -67,6 +67,8 @@ add_library(sim-base STATIC
   sim/queue.cpp
   sim/semphr.h
   sim/semphr.cpp
+  sim/lvgl_lock.h
+  sim/lvgl_lock.cpp
   # src/FreeRTOS
   sim/portmacro_cmsis.h
   sim/portmacro_cmsis.cpp
@@ -320,6 +322,11 @@ if(NOT alarmControllerFileSystemEntries STREQUAL "")
   message(STATUS "detected AlarmController.h using 'Controllers::FS'")
   set_source_files_properties(main.cpp PROPERTIES COMPILE_DEFINITIONS ALARMCONTROLLER_NEEDS_FS)
 endif()
+
+# Serialize every lv_task_handler() call (main thread and DisplayApp thread)
+# through the simulator's LVGL/SDL lock.
+set_property(SOURCE main.cpp "${InfiniTime_DIR}/src/displayapp/DisplayApp.cpp"
+  APPEND PROPERTY COMPILE_DEFINITIONS "lv_task_handler=sim_lv_task_handler")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
