@@ -1,5 +1,6 @@
 #pragma once
 
+#include <condition_variable>
 #include <mutex>
 #include <vector>
 
@@ -12,13 +13,15 @@ typedef void* QueueHandle_t;
 
 struct Queue_t {
   std::mutex mutex;
+  std::condition_variable cv;
   std::vector<uint8_t> queue;
+  size_t max_length;
 
-  Queue_t() {
-  }
+  Queue_t() = default;
 
   Queue_t(const Queue_t& o) {
     queue = o.queue;
+    max_length = o.max_length;
   }
 
   Queue_t& operator=(const Queue_t& o) {
