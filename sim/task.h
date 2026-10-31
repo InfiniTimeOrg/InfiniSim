@@ -74,6 +74,7 @@ typedef struct TaskHandle_t {
   void *thread_handle;
   TaskFunction_t task_fn;
   void *instance;
+  UBaseType_t priority;
 }TaskHandle_t;
 
 /* Task states returned by eTaskGetState. */

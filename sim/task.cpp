@@ -72,6 +72,7 @@ BaseType_t xTaskCreate(
 {
   pxCreatedTask->task_fn = pxTaskCode;
   pxCreatedTask->instance = pvParameters;
+  pxCreatedTask->priority = uxPriority;
   pxCreatedTask->thread_handle = SDL_CreateThread(sdl_function_wrapper, pcName, pxCreatedTask);
   return pxCreatedTask->thread_handle != nullptr;
 }
