@@ -44,7 +44,7 @@ NimbleController::NimbleController(Pinetime::System::SystemTask& systemTask,
     //    alertNotificationClient {systemTask, notificationManager},
     //    currentTimeService {dateTimeController},
     musicService {*this},
-    weatherService {dateTimeController},
+    weatherService {*this, dateTimeController},
     //    batteryInformationService {batteryController},
     //    immediateAlertService {systemTask, notificationManager},
     //    heartRateService {systemTask, heartRateController},
@@ -135,6 +135,45 @@ void NimbleController::Init() {
   //
   //  StartAdvertising();
 }
+
+void NimbleController::AddCharacteristicSecurity(const struct ble_gatt_svc_def* svcs) {
+  // if (!systemTask.GetSettings().GetBleSecured())
+  //   return;
+
+  // struct ble_gatt_chr_def* chrs;
+  // for (int si = 0; svcs[si].type != 0; si++) {
+  //   chrs = const_cast<struct ble_gatt_chr_def*>(svcs[si].characteristics);
+  //   for (int ci = 0; chrs[ci].uuid != NULL; ci++) {
+  //     if (chrs[ci].flags & BLE_GATT_CHR_F_READ) {
+  //       chrs[ci].flags |= BLE_GATT_CHR_F_READ_ENC | BLE_GATT_CHR_F_READ_AUTHEN;
+  //     }
+  //     if ((chrs[ci].flags & BLE_GATT_CHR_F_WRITE) || (chrs[ci].flags & BLE_GATT_CHR_F_WRITE_NO_RSP)) {
+  //       chrs[ci].flags |= BLE_GATT_CHR_F_WRITE_ENC | BLE_GATT_CHR_F_WRITE_AUTHEN;
+  //     }
+  //     chrs[ci].min_key_size = 16;
+  //   }
+  // }
+}
+
+bool NimbleController::IsConnSecurityOK() {
+  // #ifndef PINETIME_IS_RECOVERY
+  // if (!bleController.IsRadioEnabled() || !systemTask.GetSettings().GetBleRadioEnabled())
+  //   return false;
+
+  // if (!systemTask.GetSettings().GetBleSecured())
+  //   return true;
+
+  // if (connectionHandle == 0 || connectionHandle == BLE_HS_CONN_HANDLE_NONE)
+  //   return false;
+
+  // struct ble_gap_conn_desc desc;
+  // return (ble_gap_conn_find(connectionHandle, &desc) == 0 && desc.sec_state.encrypted && desc.sec_state.authenticated &&
+  //         desc.sec_state.bonded && desc.sec_state.key_size >= 16);
+  // #else
+  return true;
+  // #endif
+}
+
 
 // void NimbleController::StartAdvertising() {
 //   struct ble_gap_adv_params adv_params;
