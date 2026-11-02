@@ -2,40 +2,39 @@
 // #include <hal/nrf_gpio.h>
 #include "displayapp/screens/Symbols.h"
 #include "drivers/PinMap.h"
+
+#include <tuple> // std::ignore
+
 using namespace Pinetime::Controllers;
 
 void BrightnessController::Init() {
-  // nrf_gpio_cfg_output(PinMap::LcdBacklightLow);
-  // nrf_gpio_cfg_output(PinMap::LcdBacklightMedium);
-  // nrf_gpio_cfg_output(PinMap::LcdBacklightHigh);
   Set(level);
+}
+
+void BrightnessController::ApplyBrightness(uint16_t rawBrightness) {
+  std::ignore = rawBrightness;
 }
 
 void BrightnessController::Set(BrightnessController::Levels level) {
   this->level = level;
-  // switch (level) {
-  //   default:
-  //   case Levels::High:
-  //     nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
-  //     nrf_gpio_pin_clear(PinMap::LcdBacklightMedium);
-  //     nrf_gpio_pin_clear(PinMap::LcdBacklightHigh);
-  //     break;
-  //   case Levels::Medium:
-  //     nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
-  //     nrf_gpio_pin_clear(PinMap::LcdBacklightMedium);
-  //     nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
-  //     break;
-  //   case Levels::Low:
-  //     nrf_gpio_pin_clear(PinMap::LcdBacklightLow);
-  //     nrf_gpio_pin_set(PinMap::LcdBacklightMedium);
-  //     nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
-  //     break;
-  //   case Levels::Off:
-  //     nrf_gpio_pin_set(PinMap::LcdBacklightLow);
-  //     nrf_gpio_pin_set(PinMap::LcdBacklightMedium);
-  //     nrf_gpio_pin_set(PinMap::LcdBacklightHigh);
-  //     break;
-  // }
+  switch (level) {
+    default:
+    case Levels::High:
+      ApplyBrightness(3 * timerPeriod);
+      break;
+    case Levels::Medium:
+      ApplyBrightness(2 * timerPeriod);
+      break;
+    case Levels::Low:
+      ApplyBrightness(timerPeriod);
+      break;
+    case Levels::AlwaysOn:
+      ApplyBrightness(timerPeriod / 10);
+      break;
+    case Levels::Off:
+      ApplyBrightness(0);
+      break;
+  }
 }
 
 void BrightnessController::Lower() {
@@ -74,14 +73,6 @@ BrightnessController::Levels BrightnessController::Level() const {
   return level;
 }
 
-void BrightnessController::Backup() {
-  backupLevel = level;
-}
-
-void BrightnessController::Restore() {
-  Set(backupLevel);
-}
-
 void BrightnessController::Step() {
   switch (level) {
     case Levels::Low:
@@ -97,7 +88,6 @@ void BrightnessController::Step() {
       break;
   }
 }
-
 const char* BrightnessController::GetIcon() {
   switch (level) {
     case Levels::Medium:
