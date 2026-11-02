@@ -1,5 +1,6 @@
 #include "semphr.h"
 #include <SDL.h>
+#include <mutex>
 #include <stdexcept>
 
 QueueHandle_t xSemaphoreCreateMutex() {
@@ -38,5 +39,20 @@ BaseType_t xSemaphoreGive(SemaphoreHandle_t xSemaphore) {
     throw std::runtime_error("Mutex released without being held");
   }
   pxQueue->queue.pop_back();
+  return true;
+}
+
+SemaphoreHandle_t xSemaphoreCreateRecursiveMutex() {
+  // Only ever locked with portMAX_DELAY, so std::recursive_mutex maps directly.
+  return reinterpret_cast<SemaphoreHandle_t>(new std::recursive_mutex());
+}
+
+BaseType_t xSemaphoreTakeRecursive(SemaphoreHandle_t xSemaphore, TickType_t /*xTicksToWait*/) {
+  reinterpret_cast<std::recursive_mutex*>(xSemaphore)->lock();
+  return true;
+}
+
+BaseType_t xSemaphoreGiveRecursive(SemaphoreHandle_t xSemaphore) {
+  reinterpret_cast<std::recursive_mutex*>(xSemaphore)->unlock();
   return true;
 }
