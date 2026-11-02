@@ -62,6 +62,7 @@
 #include <typeinfo>
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <vector>
 #include <span>
 #include <cmath> // std::pow
@@ -77,10 +78,27 @@
 #include <gif.h>
 
 #include "img/sim_background.h" // provides variable SIM_BACKGROUND
+#include "lvgl_lock.h"
 
 /*********************
  *      DEFINES
  *********************/
+
+namespace {
+  // Serializes LVGL and SDL access between the main thread and the
+  // FreeRTOS DisplayApp thread.
+  class ScopedLvglLock {
+  public:
+    ScopedLvglLock() {
+      sim_lvgl_lock();
+    }
+    ~ScopedLvglLock() {
+      sim_lvgl_unlock();
+    }
+    ScopedLvglLock(const ScopedLvglLock&) = delete;
+    ScopedLvglLock& operator=(const ScopedLvglLock&) = delete;
+  };
+}
 
 /**********************
  *      TYPEDEFS
@@ -103,6 +121,7 @@ extern monitor_t monitor;
 }
 
 void saveScreenshot() {
+  ScopedLvglLock lock;
   auto now = std::chrono::system_clock::now();
   auto in_time_t = std::chrono::system_clock::to_time_t(now);
   // timestamped png filename
@@ -229,6 +248,7 @@ public:
   }
 
   void write_frame(bool force = false) {
+    ScopedLvglLock lock;
     assert(in_progress);
     auto now = std::chrono::system_clock::now();
     if (force || ((now - last_frame) > std::chrono::milliseconds(delay_ds * 10))) {
@@ -438,22 +458,22 @@ public:
       SDL_RenderClear(renderer);                    // Clear the newly created window
       SDL_RenderPresent(renderer);                  // Reflects the changes done in the
                                                     //  window.
+      // Attempt to load background BMP from memory for the status display window
+      const size_t SIM_BACKGROUND_size = sizeof(SIM_BACKGROUND);
+      SDL_RWops* rw = SDL_RWFromMem((void*) SIM_BACKGROUND, SIM_BACKGROUND_size);
+      SDL_Surface* simDisplayBgRaw = SDL_LoadBMP_RW(rw, 1);
+      if (simDisplayBgRaw == NULL) {
+        printf("Failed to load sim background image: %s\n", SDL_GetError());
+      } else {
+        // convert the loaded image into a texture
+        simDisplayTexture = SDL_CreateTextureFromSurface(renderer, simDisplayBgRaw);
+        SDL_FreeSurface(simDisplayBgRaw);
+        simDisplayBgRaw = NULL;
+      }
     }
     init_NRF_WDT();
     init_NRF_POWER();
 
-    // Attempt to load background BMP from memory for the status display window
-    const size_t SIM_BACKGROUND_size = sizeof(SIM_BACKGROUND);
-    SDL_RWops* rw = SDL_RWFromMem((void*) SIM_BACKGROUND, SIM_BACKGROUND_size);
-    SDL_Surface* simDisplayBgRaw = SDL_LoadBMP_RW(rw, 1);
-    if (simDisplayBgRaw == NULL) {
-      printf("Failed to load sim background image: %s\n", SDL_GetError());
-    } else {
-      // convert the loaded image into a texture
-      simDisplayTexture = SDL_CreateTextureFromSurface(renderer, simDisplayBgRaw);
-      SDL_FreeSurface(simDisplayBgRaw);
-      simDisplayBgRaw = NULL;
-    }
     motorController.Init();
     settingsController.Init();
 
@@ -521,6 +541,7 @@ public:
   }
 
   void refresh() {
+    ScopedLvglLock lock;
     // left edge for all "bubbles" (circles)
     constexpr const int bubbleLeftEdge = 65;
     // always refresh the LVGL screen
@@ -661,7 +682,13 @@ public:
   // can't use SDL_PollEvent, as those are fed to lvgl
   // implement a non-descructive key-pressed handler (as not consuming SDL_Events)
   void handle_keys() {
-    const Uint8* state = SDL_GetKeyboardState(NULL);
+    std::array<Uint8, SDL_NUM_SCANCODES> keyState;
+    {
+      ScopedLvglLock lock;
+      const Uint8* state = SDL_GetKeyboardState(NULL);
+      std::copy(state, state + SDL_NUM_SCANCODES, keyState.begin());
+    }
+    const Uint8* state = keyState.data();
     const bool key_shift = state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT];
     auto debounce = [&](const char key_low, const char key_capital, const bool scancode, bool& key_handled) {
       if (scancode && !key_handled) {
@@ -907,7 +934,11 @@ public:
 
   void handle_touch_and_button() {
     int x, y;
-    uint32_t buttons = SDL_GetMouseState(&x, &y);
+    uint32_t buttons;
+    {
+      ScopedLvglLock lock;
+      buttons = SDL_GetMouseState(&x, &y);
+    }
     const bool left_click = (buttons & SDL_BUTTON_LMASK) != 0;
     const bool right_click = (buttons & SDL_BUTTON_RMASK) != 0;
     if (left_click) {
@@ -976,37 +1007,56 @@ public:
       if (obj == fw->screen_off_bg) {
         // on delete make sure to not double free the screen_off objects
         fw->screen_off_created = false;
+        fw->screen_off_bg = nullptr;
       }
     }
   }
 
+  // Runs inside lv_task_handler(): while asleep it is called from the main
+  // thread, after waking up from the DisplayApp thread. Deleting the overlay
+  // here avoids mutating LVGL from the main thread while DisplayApp is running.
+  static void screen_off_task_cb(lv_task_t* task) {
+    auto* fw = static_cast<Framework*>(task->user_data);
+    if (fw->screen_off_created && brightnessController.Level() == Pinetime::Controllers::BrightnessController::Levels::Off) {
+      return;
+    }
+    if (fw->screen_off_created) {
+      fw->screen_off_created = false;
+      if (fw->screen_off_bg != nullptr) {
+        lv_obj_del(fw->screen_off_bg);
+      }
+    }
+    fw->screen_off_task = nullptr;
+    lv_task_del(task);
+  }
+
   // render the current status of the simulated controller
   void refresh_screen() {
-    const Pinetime::Controllers::BrightnessController::Levels level = brightnessController.Level();
-    if (level == Pinetime::Controllers::BrightnessController::Levels::Off) {
-      if (!screen_off_created) {
-        screen_off_created = true;
-        screen_off_bg = lv_obj_create(lv_scr_act(), nullptr);
-        lv_obj_set_size(screen_off_bg, 240, 240);
-        lv_obj_set_pos(screen_off_bg, 0, 0);
-        lv_obj_set_style_local_bg_color(screen_off_bg, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-        screen_off_bg->user_data = this; // add callback to prevent double free through Alarm Screen
-        lv_obj_set_event_cb(screen_off_bg, screen_off_delete_cb);
-        screen_off_label = lv_label_create(lv_scr_act(), nullptr);
-        lv_label_set_text_static(screen_off_label, "Screen is OFF");
-        lv_obj_align(screen_off_label, nullptr, LV_ALIGN_CENTER, 0, -20);
+    if (systemTask.IsSleeping()) {
+      if (!screen_off_created && brightnessController.Level() == Pinetime::Controllers::BrightnessController::Levels::Off) {
+        // create task to delete the overlay when screen is turned on again
+        if (screen_off_task == nullptr) {
+          screen_off_task = lv_task_create(screen_off_task_cb, 50, LV_TASK_PRIO_LOW, this);
+        }
+        // if task was created successfully create screen-off-overlay
+        if (screen_off_task != nullptr) {
+          screen_off_created = true;
+          screen_off_bg = lv_obj_create(lv_scr_act(), nullptr);
+          lv_obj_set_size(screen_off_bg, 240, 240);
+          lv_obj_set_pos(screen_off_bg, 0, 0);
+          lv_obj_set_style_local_bg_color(screen_off_bg, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+          screen_off_bg->user_data = this; // add callback to prevent double free through Alarm Screen
+          lv_obj_set_event_cb(screen_off_bg, screen_off_delete_cb);
+          lv_obj_t* screen_off_label = lv_label_create(screen_off_bg, nullptr);
+          lv_label_set_text_static(screen_off_label, "Screen is OFF");
+          lv_obj_align(screen_off_label, nullptr, LV_ALIGN_CENTER, 0, -20);
+        }
       }
       /* Periodically call the lv_task handler.
        * It could be done in a timer interrupt or an OS task too.*/
       // only call the task handler if the screen is off,
       // when the screen is enabled the call is done in the SystemTask class
       lv_task_handler();
-    } else {
-      if (screen_off_created) {
-        screen_off_created = false;
-        lv_obj_del(screen_off_bg);
-        lv_obj_del(screen_off_label);
-      }
     }
 
     if (print_memory_usage) {
@@ -1037,9 +1087,9 @@ public:
   bool print_memory_usage = false;
 
   // variables to create and destroy an lvgl overlay to indicate a turned off screen
-  bool screen_off_created = false;
-  lv_obj_t* screen_off_bg;
-  lv_obj_t* screen_off_label;
+  std::atomic<bool> screen_off_created {false};
+  lv_obj_t* screen_off_bg = nullptr;
+  lv_task_t* screen_off_task = nullptr;
 
 private:
   bool key_handled_r = false; // r ... enable ringing, R ... disable ringing
